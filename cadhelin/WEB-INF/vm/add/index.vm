@@ -1,0 +1,12 @@
+<html>
+<head><title>add</title></head>
+<body>
+<form action="/Cadhelin/do/add/add">
+	<input type="text" name="lhs" value="0"/>
+	+
+	<input type="text" name="rhs" value="0"/>
+	= 0
+	<input type="submit" value="add"/>
+</form>
+</body>
+</html>

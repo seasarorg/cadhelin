@@ -1,0 +1,23 @@
+<html>
+<head><title>add</title></head>
+<body>
+$link
+<table>
+<tbody>
+<tr><th>empno</th><th>name</th><th>date</th><th></th></tr>
+#foreach($emp in $ret)
+<tr>
+	<td>$emp.empno</td>
+	<td>$emp.name</td>
+	<td>$dateFormat.format($emp.date)</td>
+	<td>
+		<a href="$link.setRelative('/do/employee/delete').addQueryData('empno',$emp.empno)">delete</a>
+		<a href="$link.setRelative('/do/employee/update').addQueryData('empno',$emp.empno)">delete</a>
+	</td>
+</tr>
+#end
+</tbody>
+</table>
+<a href="$link.setRelative('/do/employee/addForm')">Add Employee</a>
+</body>
+</html>
