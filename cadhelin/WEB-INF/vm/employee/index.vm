@@ -1,5 +1,5 @@
 <html>
-<head><title>add</title></head>
+<head><title>Employee List</title></head>
 <body>
 $link
 <table>
@@ -11,13 +11,14 @@ $link
 	<td>$emp.name</td>
 	<td>$dateFormat.format($emp.date)</td>
 	<td>
-		<a href="$link.setRelative('/do/employee/delete').addQueryData('empno',$emp.empno)">delete</a>
-		<a href="$link.setRelative('/do/employee/update').addQueryData('empno',$emp.empno)">delete</a>
+		<a href="$command.employee.delete($emp.empno)">delete</a>
+		<a href="$command.employee.updateForm($emp.empno)">update</a>
 	</td>
 </tr>
 #end
 </tbody>
 </table>
-<a href="$link.setRelative('/do/employee/addForm')">Add Employee</a>
+#set($args = [])
+<a href="$command.employee.addForm()">Add Employee</a>
 </body>
 </html>

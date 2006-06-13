@@ -12,8 +12,8 @@ import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validater;
 
 public class DateConverter extends AbstractConverter {
-	private static final String ERROR_KEY_DATE_REQUIRED = "error.converter.integer.required";
-	private static final String ERROR_KEY_DATE_FORMAT = "error.converter.integer.format";
+	private static final String ERROR_KEY_DATE_REQUIRED = "error.converter.date.required";
+	private static final String ERROR_KEY_DATE_FORMAT = "error.converter.date.format";
 	private boolean required = true;
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	public DateConverter() {
@@ -37,7 +37,7 @@ public class DateConverter extends AbstractConverter {
 			HttpServletRequest request, 
 			Map<String,Message> messages) {
 		String str = request.getParameter(parameterName);
-		if(str==null){
+		if(str==null || str.length()==0){
 			if(required){
 				messages.put(parameterName,new Message(ERROR_KEY_DATE_REQUIRED+"."+parameterName));
 			}

@@ -3,7 +3,6 @@ package org.seasar.cadhelin;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.seasar.cadhelin.converter.ConverterFactory;
 import org.seasar.cadhelin.converter.ConverterFactoryImpl;
 import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
@@ -16,7 +15,13 @@ public class ControllerMetadataFactory {
 		
 	public ControllerMetadataFactory(S2Container container) {
 		int size = container.getComponentDefSize();
-		ConverterFactory converter = (ConverterFactory) container.getComponent(ConverterFactoryImpl.class);
+		ConverterFactoryImpl converter = 
+			(ConverterFactoryImpl) container.getComponent(ConverterFactoryImpl.class);
+		if(container.hasComponentDef("sessionManager")){
+			ComponentDef componentDef = container.getComponentDef("sessionManager");
+			converter.addConverters(
+					new SessionManagerConverter(container,new Object[]{componentDef.getComponentClass()}));
+		}
 		for(int i=0;i<size;i++){
 			ComponentDef def = container.getComponentDef(i);
 			String componentName = def.getComponentName();
@@ -25,7 +30,8 @@ public class ControllerMetadataFactory {
 			}
 			if(componentName.endsWith("Controller")){
 				componentName = componentName.replace("Controller","");
-				ControllerMetadata controllerMetadata = new ControllerMetadata(componentName,def,converter);
+				ControllerMetadata controllerMetadata = 
+					new ControllerMetadata(componentName,def,converter);
 				controllers.put(
 						componentName,
 						controllerMetadata);

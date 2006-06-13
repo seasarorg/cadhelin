@@ -36,7 +36,7 @@ public class IntConverter extends AbstractConverter {
 			HttpServletRequest request, 
 			Map<String,Message> messages) {
 		String str = request.getParameter(parameterName);
-		if(str==null){
+		if(str==null || str.length() == 0){
 			if(required){
 				messages.put(parameterName,new Message(ERROR_KEY_INTEGER_REQUIRED+"."+parameterName));
 			}

@@ -18,7 +18,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/ognl-2.6.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.3.10.jar"/>
 	<classpathentry sourcepath="WEB-INF/lib/s2-framework-2.3.10-sources.jar" kind="lib" path="WEB-INF/lib/s2-framework-2.3.10.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
+	<classpathentry sourcepath="/velocity" kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/velocity-tools-1.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/velocity-tools-generic-1.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/velocity-tools-view-1.2.jar"/>

@@ -11,6 +11,12 @@ import org.seasar.cadhelin.Validater;
 public class ConverterFactoryImpl implements ConverterFactory {
 	private Map<Object,Converter> converters 
 		= new HashMap<Object,Converter>();
+	public void addConverters(Converter converter){
+		Object[] converterKey = converter.getConverterKey();
+		for (Object key : converterKey) {
+			this.converters.put(key,converter);
+		}
+	}
 	public void addConverters(Object[] converters){
 		for (Object c : converters) {
 			Converter converter = (Converter) c; 

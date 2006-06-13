@@ -19,20 +19,36 @@ public class ControllerContext {
 	}
 	private boolean redirected = false;
 	private boolean firstAction = true;
-	private ControllerServlet servlet;
+	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
+	private ControllerMetadataFactory controllerMetadataFactory;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
+	private String urlPrefix = "/do/";
 	
-	public ControllerContext(ControllerServlet servlet,HttpServletRequest request, HttpServletResponse response) {
-		this.servlet = servlet;
+	public ControllerContext(
+			ControllerMetadataFactory controllerMetadataFactory,
+			HttpServletRequest request,
+			HttpServletResponse response,
+			String urlPrefix,
+			String viewUrlPattern) {
+		this.controllerMetadataFactory = controllerMetadataFactory;
 		this.request = request;
 		this.response = response;
+		this.urlPrefix = urlPrefix;
+		this.viewUrlPattern = viewUrlPattern;
+	}
+	public String getUrl(String controllerName,String actionName,Object[] arguments){
+		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
+		return request.getContextPath() + urlPrefix  + metadata.convertToURL(actionName,arguments);
 	}
 	public String getUrl(Class clazz,Method method,Object[] arguments){
-		return servlet.convertToURL(request.getContextPath(),clazz,method,arguments);
+		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
+		return request.getContextPath() + urlPrefix  + metadata.convertToURL(method,arguments);
 	}
 	public String getViewURL(RequestInfo info,Class clazz,String method){
-		return servlet.convertToViewURL(info,clazz,method);
+		return viewUrlPattern.
+			replace("${controllerName}",info.getControllerName()).
+			replace("${actionName}",info.getActionName());
 	}
 	public void setFirstAction(){
 		firstAction = false;
@@ -42,7 +58,7 @@ public class ControllerContext {
 		return redirected;
 	}
 	public void setRedirected(boolean redirected) {
-		System.out.println("setRedirected = " + this.redirected+" to " + redirected);
+		System.out.println("setRedirected2 = " + this.redirected+" to " + redirected);
 		this.redirected = redirected;
 	}
 	public boolean isFirstAction() {

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN" 
     "http://www.seasar.org/dtd/components23.dtd">
-<components namespace="aop">
+<components>
 	<include path="ConverterFactory.dicon"/>
+	<include path="application.dicon"/>
 	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />
 	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
 		<initMethod name="addClassPattern">
@@ -22,7 +23,9 @@
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 	<arg>"messages"</arg>
 	</component>
+	<component name="command" class="org.seasar.cadhelin.velocity.LinkTool" instance="request"/>
 	<component name="dateFormat" class="java.text.SimpleDateFormat">
 		<arg>"yyyy-MM-dd"</arg>
 	</component>
+	
 </components>

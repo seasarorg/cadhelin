@@ -50,6 +50,11 @@ public class ControllerMetadata {
 		}
 	}
 	public String convertToURL(Method method, Object[] arguments) {
-		return name+"/"+method.getName();
+		ActionMetadata metadata = actions.get(method.getName());
+		return name+"/"+metadata.convertToURL(arguments);
+	}
+	public String convertToURL(String actionName, Object[] arguments) {
+		ActionMetadata metadata = actions.get(actionName);
+		return name+"/"+metadata.convertToURL(arguments);
 	}
 }

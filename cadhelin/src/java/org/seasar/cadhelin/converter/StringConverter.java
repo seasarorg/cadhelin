@@ -9,7 +9,7 @@ import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validater;
 
 public class StringConverter extends AbstractConverter {
-	private static final String ERROR_KEY_REQUIRED = "error.integer.required"; 
+	private static final String ERROR_KEY_REQUIRED = "error.converter.string.required"; 
 	private boolean required = true;
 	private boolean trim = false;
 	public StringConverter() {
@@ -40,7 +40,7 @@ public class StringConverter extends AbstractConverter {
 			HttpServletRequest request, 
 			Map<String,Message> message) {
 		String str = request.getParameter(parameterName);
-		if(str == null && required){
+		if((str == null ) && required){
 			message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName));
 			return null;
 		}

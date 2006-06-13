@@ -1,13 +1,13 @@
 <html>
-<head><title>add Employee</title></head>
+<head><title>Add Employee</title></head>
 <body>
-<form action="/cadhelin/do/employee/add">
+<form action="add">
 <input type="hidden" name="cadhelin_redirect_to" value="$cadhelin_redirect_to">
 	<table>
 		<tbody>
-			<tr><td>empno</td><td><input type="text" name="empno" value="$!employee.empno"/> $!msg.get('empno')</td></tr>
-			<tr><td>name</td><td><input type="text" name="name" value="$!employee.name"/> $!msg.get('name')</td></tr>
-			<tr><td>date</td><td><input type="text" name="date" value="$!employee.date"/> $!msg.get('date')</td></tr>
+			<tr><td>empno</td><td><input type="text" name="empno" value="$!employee.empno"/> $!msg.getMessage('empno')</td></tr>
+			<tr><td>name</td><td><input type="text" name="name" value="$!employee.name"/> $!msg.getMessage('name')</td></tr>
+			<tr><td>date</td><td><input type="text" name="date" value="$!employee.date"/> $!msg.getMessage('date')</td></tr>
 			<tr><td></td><td><input type="submit" value="add"/></td></tr>
 		</tbody>
 	</table>

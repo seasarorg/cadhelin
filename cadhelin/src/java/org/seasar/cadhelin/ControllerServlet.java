@@ -15,8 +15,10 @@ import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
 public class ControllerServlet extends HttpServlet {
 	private String urlPrefix = "/do/";
+	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
 	private S2Container container;
 	private ControllerMetadataFactory controllerMetadataFactory;
+	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		String s = config.getInitParameter("urlPrefix");
@@ -25,6 +27,8 @@ public class ControllerServlet extends HttpServlet {
 		}
 		container = SingletonS2ContainerFactory.getContainer();
 		controllerMetadataFactory = new ControllerMetadataFactory(container);
+		if(container.hasComponentDef("sessionManager")){
+		}
 	}
 	public String convertToURL(String contextPath,Class clazz,Method method,Object[] arguments){
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
@@ -35,13 +39,13 @@ public class ControllerServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		RedirectSession.move(request.getSession());
-		ControllerContext.setContext(new ControllerContext(this,request,response));
+		ControllerContext controllerContext = new ControllerContext(controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
+		ControllerContext.setContext(
+				controllerContext);
+		request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
 		RequestInfo info = new RequestInfo(request.getPathInfo());
 		ControllerMetadata metadata =
 			controllerMetadataFactory.getControllerMetadata(info.getControllerName());
 		metadata.service(info,request,response);
-	}
-	public String convertToViewURL(RequestInfo info,Class clazz, String method) {
-		return "/WEB-INF/vm/"+ info.getControllerName()+"/"+method+".vm";
 	}
 }

@@ -17,6 +17,7 @@ public class MessageTool {
     	this.request = request;
     }
     public String getMessage(String key){
+    	System.out.println("message");
     	Map msgs = (Map) request.getAttribute(MESSAGE_KEY);
     	if(msgs==null){
     		return null;

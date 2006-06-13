@@ -90,4 +90,21 @@ public class ActionMetadata {
 		}
 		return false;
 	}
+	public String convertToURL(Object[] arguments) {
+		StringBuffer buff = new StringBuffer();
+		buff.append(actionName);
+		if(arguments.length>0){
+			buff.append("?");
+			for(int i=0;i<arguments.length;i++){
+				if(i>0){
+					buff.append("&");
+				}
+				buff.append(parameterNames[i]);
+				buff.append("=");
+				buff.append(arguments[i].toString());
+			}
+			
+		}
+		return buff.toString();
+	}
 }
