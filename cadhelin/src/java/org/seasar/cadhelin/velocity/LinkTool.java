@@ -28,5 +28,16 @@ public class LinkTool extends AbstractMap{
 			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		return new LinkMetadata(context,(String)key);
 	}
+    public String setRelative(String uri)
+    {
+        if (uri.startsWith("/"))
+        {
+            return request.getContextPath() + uri;
+        }
+        else
+        {
+            return request.getContextPath() + '/' + uri;
+        }        
+    }
 	
 }

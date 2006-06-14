@@ -14,7 +14,7 @@ public class SessionManagerConverter extends AbstractConverter {
 		this.container = container;
 	}
 	public Converter createInstance(String parameterName, Class targetClass,
-			Validater validater) {
+			Param validater) {
 		try {
 			return (Converter) clone();
 		} catch (CloneNotSupportedException e) {

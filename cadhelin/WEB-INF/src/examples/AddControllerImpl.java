@@ -1,13 +1,14 @@
 package examples;
 
 import org.seasar.cadhelin.Action;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Param;
+import org.seasar.cadhelin.Validate;
 
 public class AddControllerImpl {
 	@Action({"lhs","rhs"})
 	public int add(
-			@Validater(arg="min=0")int lhs,
-			@Validater(arg="max=1000")int rhs){
+			@Param(arg=@Validate(name="",args="min=0"))int lhs,
+			@Param(arg=@Validate(name="",args="min=0"))int rhs){
 		return lhs + rhs;
 	}
 }

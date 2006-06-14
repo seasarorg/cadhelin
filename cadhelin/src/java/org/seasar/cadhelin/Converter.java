@@ -5,10 +5,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public interface Converter extends Cloneable{
+	public void addValidater(Validater validater);
 	public Converter createInstance(
 			String parameterName,
 			Class targetClass,
-			Validater validater);
+			Param validater);
 	/**
 	 * Converter‚ÌKey
 	 * @return

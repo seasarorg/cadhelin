@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.util.AnnotationUtil;
 import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.PropertyDesc;
@@ -28,7 +28,7 @@ public class BeanConverter extends AbstractConverter {
 			ConverterFactory converterFactory,
 			String parameterName,
 			Class targetClass,
-			Validater validater){
+			Param validater){
 		super(new Object[]{Object.class});
 		this.converterFactory = converterFactory;
 		beanDesc = BeanDescFactory.getBeanDesc(targetClass);
@@ -44,15 +44,15 @@ public class BeanConverter extends AbstractConverter {
 			}
 			Converter child = null;
 			//Validater.nameプロパティが指定されていればその値でConverterを検索。されてなければproperty名Converterを検索
-			Validater propertyValidator = AnnotationUtil.getPropertyAnnotation(pd,Validater.class);
+			Param propertyValidator = AnnotationUtil.getPropertyAnnotation(pd,Param.class);
 			if(propertyValidator!=null && propertyValidator.name().length()>0){
-				child = converterFactory.getConverter(pd.getPropertyName(),propertyValidator.name(),pd.getPropertyType(),validater);				
+				child = converterFactory.getConverter(pd.getPropertyName(),propertyValidator.name(),pd.getPropertyType(),propertyValidator);				
 			}else{
-				child = converterFactory.getConverter(pd.getPropertyName(),pd.getPropertyName(),pd.getPropertyType(),validater);								
+				child = converterFactory.getConverter(pd.getPropertyName(),pd.getPropertyName(),pd.getPropertyType(),propertyValidator);								
 			}
 			//Converterが見つかっていなければClassでConverterを検索
 			if(child==null){
-				child = converterFactory.getConverter(pd.getPropertyName(),pd.getPropertyType(),validater);
+				child = converterFactory.getConverter(pd.getPropertyName(),pd.getPropertyType(),propertyValidator);
 			}
 			if(child!=null){
 				pl.add(pd);
@@ -68,7 +68,7 @@ public class BeanConverter extends AbstractConverter {
 	public Converter createInstance(
 			String parameterName, 
 			Class targetClass, 
-			Validater validater) {
+			Param validater) {
 		return new BeanConverter(converterFactory,parameterName,targetClass,validater);
 	}
 	public Object convert(

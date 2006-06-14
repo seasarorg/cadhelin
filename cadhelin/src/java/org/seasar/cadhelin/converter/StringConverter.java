@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Param;
 
 public class StringConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.string.required"; 
@@ -15,27 +15,21 @@ public class StringConverter extends AbstractConverter {
 	public StringConverter() {
 		super(new Object[]{String.class});
 	}
+	public StringConverter(Object[] keys,String parameterName,Param validater){
+		super(keys);
+		this.parameterName = parameterName;
+		if(validater!=null){
+			required = validater.required();
+
+		}
+	}
 	public Converter createInstance(
 			String parameterName, 
 			Class targetClass, 
-			Validater validater) {
-		StringConverter converter = null;
-		try {
-			converter = (StringConverter) clone();
-			converter.parameterName = parameterName;
-			if(validater!=null){
-				converter.required = validater.required();
-				for (String arg : validater.arg()) {
-					if(arg.equals("trim")){
-						converter.trim = true;
-					}
-				}				
-			}
-			return converter;
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
+			Param validater) {
+		return new StringConverter(converterKeys,parameterName,validater);
 	}
+	
 	public Object convert(
 			HttpServletRequest request, 
 			Map<String,Message> message) {

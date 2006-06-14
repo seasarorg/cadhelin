@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Param;
 
 public class DateConverter extends AbstractConverter {
 	private static final String ERROR_KEY_DATE_REQUIRED = "error.converter.date.required";
@@ -19,7 +19,7 @@ public class DateConverter extends AbstractConverter {
 	public DateConverter() {
 		super(new Object[]{"date",Date.class});
 	}
-	public Converter createInstance(String parameterName, Class targetClass, Validater validater) {
+	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
 		DateConverter converter = null;
 		try {
 			converter = (DateConverter) clone();

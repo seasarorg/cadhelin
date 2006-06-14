@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<project name="drmirror" default="prepare">
+
+  <property file="build.properties" />
+
+  <!-- Init -->
+  <property name="cadhelin.build"    value="target"/>
+  <property name="cadhelin.classes"  value="${cadhelin.build}/classes"/>
+  <property name="cadhelin.apidocs"  value="${cadhelin.build}/docs"/>
+  <property name="cadhelin.dist"     value="${cadhelin.build}/dist"/>
+  <property name="jar"               value="${cadhelin.dist}/cadhelin-${build.currentVersion}.jar"/>
+  <property name="tomcat.lib"        value="${tomcat.home}/common/lib"/>
+
+  <!-- Clean -->   
+  <target name="clean">
+	<delete dir="${cadhelin.build}"/>
+  </target>
+
+  <!-- Prepare -->   
+  <target name="prepare" depends="clean">
+    <mkdir dir="${cadhelin.build}"/>
+    <mkdir dir="${cadhelin.classes}"/>
+    <mkdir dir="${cadhelin.apidocs}"/>
+    <mkdir dir="${cadhelin.dist}"/>
+  </target>
+      
+  <!-- Native2ascii -->   
+  <target name="native2ascii" depends="prepare">
+	<native2ascii
+        encoding="Shift_JIS"
+        src="WEB-INF/src"
+        dest="${drmirror.build}/classes"
+        includes="*.properties.SJIS"
+        ext="" />
+  </target>
+
+  <!-- Compile -->   
+  <target name="compile" depends="native2ascii">
+    <javac
+        srcdir="src/java"
+        destdir="${cadhelin.classes}"
+        encoding="MS932"
+        debug="$build.debug"
+        optimize="$build.optimize"
+        deprecation="off">
+      <classpath>
+        <fileset dir="WEB-INF/">
+          <include name="lib/*.jar" />
+        </fileset>
+        <fileset dir="${tomcat.lib}" />
+      </classpath>
+    </javac>
+    <copy todir="${cadhelin.build}/classes">
+      <fileset dir="src/java">
+        <include name="*"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Jar Build -->
+  <target name="jar-build" depends="compile">
+    <jar jarfile="${jar}" basedir="${cadhelin.classes}"/>
+  </target>
+
+  <!-- Java Docs -->
+  <target name="docs">
+    <javadoc 
+        encoding ="SHIFT_JIS"
+        docencoding ="SHIFT_JIS"
+        sourcepath="WEB-INF/src"
+        packagenames="jp.biointegra.*"
+        destdir="${drmirror.apidocs}"
+        private="yes">
+      <classpath>
+        <fileset dir="${tomcat.lib}">
+          <include name="*.jar"/>
+        </fileset>
+        <fileset dir="WEB-INF/lib">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc> 
+  </target>
+</project>
