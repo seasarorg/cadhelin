@@ -5,10 +5,13 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.seasar.cadhelin.ActionMetadata;
+import org.seasar.cadhelin.AuthorizationManager;
 import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerServlet;
 
 public class LinkTool extends AbstractMap{
+	private AuthorizationManager authorizationManager;
 	private HttpServletRequest request;
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
@@ -18,11 +21,16 @@ public class LinkTool extends AbstractMap{
 			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		return context.getUrl(controllerName,actionName,arguments);
 	}
-	@Override
+	public boolean authorized(String controllerName,String actionName){
+		ControllerContext context =
+			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
+		ActionMetadata action = context.getAction(controllerName,actionName);
+		return authorizationManager.authorized(
+				request.getSession().getAttribute("sessionManager"),action.getRole());
+	}
 	public Set entrySet() {
 		return null;
 	}
-	@Override
 	public Object get(Object key) {
 		ControllerContext context =
 			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);

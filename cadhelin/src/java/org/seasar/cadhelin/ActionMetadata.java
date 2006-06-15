@@ -35,7 +35,7 @@ public class ActionMetadata {
 		}
 		converters = factory.createConverters(method,parameterNames);
 	}
-	protected void service(RequestInfo info,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(ControllerContext context,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Object[] argumants = new Object[converters.length];
 		int i = 0;
 		Map<String,Message> message = new HashMap<String,Message>();
@@ -48,17 +48,16 @@ public class ActionMetadata {
 			values.put(parameterNames[i],arg);
 			i++;
 		}
-		if(widthError(info, request, response, message, values)){
+		if(widthError(context, request, response, message, values)){
 			return;
 		}
 		try {
 			Object ret = method.invoke(controller,argumants);
 			request.getSession().setAttribute(resultName,ret);
-			ControllerContext context = ControllerContext.getContext();
 			if(context.isRedirected()){
 				return;
 			}
-			String url = context.getViewURL(info,controller.getClass(),method.getName());
+			String url = context.getViewURL();
 			String redirectUrl = request.getRequestURI();
 			if(request.getQueryString()!=null){
 				redirectUrl += "?" + request.getQueryString();
@@ -71,16 +70,20 @@ public class ActionMetadata {
 			throw new RuntimeException(e);
 		}
 	}
-	private boolean widthError(RequestInfo info, HttpServletRequest request, HttpServletResponse response, Map message, Map m) throws IOException, ServletException {
+	private boolean widthError(
+			ControllerContext context,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			Map message, 
+			Map<String,Object> m) throws IOException, ServletException {
 		if(message.size()>0){
 			String redirectUrl = request.getParameter(redirectParameterName);
-			ControllerContext context = ControllerContext.getContext();
 			if(redirectUrl!=null){
 				RedirectSession.setAttribute(request.getSession(),m);
 				RedirectSession.setAttribute(request.getSession(),MessageTool.MESSAGE_KEY,message);
 				response.sendRedirect(redirectUrl);
 			}else{
-				String url = context.getViewURL(info,controller.getClass(),method.getName());
+				String url = context.getViewURL();
 				context.addMessage(message);
 				request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 				RequestDispatcher dispatcher = request.getRequestDispatcher(url);
@@ -106,5 +109,8 @@ public class ActionMetadata {
 			
 		}
 		return buff.toString();
+	}
+	public String getRole() {
+		return null;
 	}
 }

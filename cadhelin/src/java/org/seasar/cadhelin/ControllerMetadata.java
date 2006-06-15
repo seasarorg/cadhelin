@@ -37,8 +37,8 @@ public class ControllerMetadata {
 			}
 		}
 	}
-	protected void service(RequestInfo info,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String actionName = info.getActionName();
+	protected void service(ControllerContext context,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String actionName = context.getActionName();
 		ActionMetadata metadata = null;
 		if(actionName!=null && actionName.length() > 0){
 			metadata = actions.get(actionName);
@@ -46,7 +46,7 @@ public class ControllerMetadata {
 			metadata = actions.get("index");
 		}
 		if(metadata!=null){
-			metadata.service(info,request,response);			
+			metadata.service(context,request,response);			
 		}
 	}
 	public String convertToURL(Method method, Object[] arguments) {
@@ -56,5 +56,8 @@ public class ControllerMetadata {
 	public String convertToURL(String actionName, Object[] arguments) {
 		ActionMetadata metadata = actions.get(actionName);
 		return name+"/"+metadata.convertToURL(arguments);
+	}
+	public ActionMetadata getAction(String actionName) {
+		return actions.get(actionName);
 	}
 }

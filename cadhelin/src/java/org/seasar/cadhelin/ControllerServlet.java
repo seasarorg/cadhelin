@@ -46,6 +46,6 @@ public class ControllerServlet extends HttpServlet {
 		RequestInfo info = new RequestInfo(request.getPathInfo());
 		ControllerMetadata metadata =
 			controllerMetadataFactory.getControllerMetadata(info.getControllerName());
-		metadata.service(info,request,response);
+		metadata.service(controllerContext,request,response);
 	}
 }

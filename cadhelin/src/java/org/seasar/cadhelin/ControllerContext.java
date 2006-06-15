@@ -1,5 +1,6 @@
 package org.seasar.cadhelin;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class ControllerContext {
 	public static ControllerContext getContext(){
 		return context.get();
 	}
+	private RequestInfo info;
 	private boolean redirected = false;
 	private boolean firstAction = true;
 	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
@@ -38,6 +40,14 @@ public class ControllerContext {
 		this.response = response;
 		this.urlPrefix = urlPrefix;
 		this.viewUrlPattern = viewUrlPattern;
+		this.info = 
+			new RequestInfo(request.getPathInfo());
+	}
+	public String getActionName(){
+		return info.getActionName();
+	}
+	public String getControllerName(){
+		return info.getControllerName();
 	}
 	public String getUrl(String controllerName,String actionName,Object[] arguments){
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
@@ -47,7 +57,7 @@ public class ControllerContext {
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
 		return request.getContextPath() + urlPrefix  + metadata.convertToURL(method,arguments);
 	}
-	public String getViewURL(RequestInfo info,Class clazz,String method){
+	public String getViewURL(){
 		return viewUrlPattern.
 			replace("${controllerName}",info.getControllerName()).
 			replace("${actionName}",info.getActionName());
@@ -100,5 +110,20 @@ public class ControllerContext {
 	}
 	public HttpServletResponse getResponse() {
 		return response;
+	}
+	public ActionMetadata getAction(String controllerName, String actionName) {
+		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
+		return metadata.getAction(actionName);
+	}
+	public void doFilter() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setRedirect(String redirectUrl) {
+		try {
+			response.sendRedirect(redirectUrl);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

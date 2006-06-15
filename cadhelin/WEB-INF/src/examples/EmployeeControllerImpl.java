@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.seasar.cadhelin.Action;
 import org.seasar.cadhelin.Input;
 import org.seasar.cadhelin.ResultName;
+import org.seasar.cadhelin.Role;
 
 public class EmployeeControllerImpl {
 	EmployeeDao empdao;
@@ -27,6 +28,7 @@ public class EmployeeControllerImpl {
 		index();
 	}
 	@Action("empno")
+	@Role("admin")
 	public void delete(int empno){
 		empdao.deleteEmployee(empno);
 		index();
