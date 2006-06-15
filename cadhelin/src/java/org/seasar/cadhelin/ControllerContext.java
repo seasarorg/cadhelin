@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.seasar.cadhelin.util.RedirectSession;
+
 public class ControllerContext {
 	private static ThreadLocal<ControllerContext> context = 
 		new ThreadLocal<ControllerContext>();
@@ -65,10 +67,22 @@ public class ControllerContext {
 		return firstAction;
 	}
 	@SuppressWarnings("unchecked")
+	public void sendMessage(String key,Message message){
+		Map map = (Map) RedirectSession.getAttribute(
+				request.getSession(),MessageTool.MESSAGE_KEY);
+		if(map==null){
+			map = new HashMap();
+			RedirectSession.setAttribute(request.getSession(),
+					MessageTool.MESSAGE_KEY,map);
+		}
+		map.put(key,message);
+	}
+	@SuppressWarnings("unchecked")
 	public void addMessage(String key,Message message){
 		Map map = (Map) request.getAttribute(MessageTool.MESSAGE_KEY);
 		if(map==null){
 			map = new HashMap();
+			request.setAttribute(MessageTool.MESSAGE_KEY,map);
 		}
 		map.put(key,message);
 	}

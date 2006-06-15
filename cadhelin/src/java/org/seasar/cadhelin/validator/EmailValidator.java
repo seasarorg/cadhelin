@@ -53,15 +53,15 @@ public class EmailValidator extends AbstractValidator {
     private static final String WORD = "((" + VALID_CHARS + "|')+|" + QUOTED_USER + ")";
 
     // Each pattern must be surrounded by /
-    private static final String LEGAL_ASCII_PATTERN = "/^[\\0000-\\0177]+$/";
-    private static final String EMAIL_PATTERN = "/^(.+)@(.+)$/";
+    private static final String LEGAL_ASCII_PATTERN = "^[\\00-\\0177]+$";
+    private static final String EMAIL_PATTERN = "^(.+)@(.+)$";
     private static final String IP_DOMAIN_PATTERN =
-            "/^\\[(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})\\]$/";
-    private static final String TLD_PATTERN = "/^([a-zA-Z]+)$/";
+            "^\\[(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})\\]$";
+    private static final String TLD_PATTERN = "^([a-zA-Z]+)$";
             
-    private static final String USER_PATTERN = "/^\\s*" + WORD + "(\\." + WORD + ")*$/";
-    private static final String DOMAIN_PATTERN = "/^" + ATOM + "(\\." + ATOM + ")*\\s*$/";
-    private static final String ATOM_PATTERN = "/(" + ATOM + ")/";
+    private static final String USER_PATTERN = "^\\s*" + WORD + "(\\." + WORD + ")*$";
+    private static final String DOMAIN_PATTERN = "^" + ATOM + "(\\." + ATOM + ")*\\s*$";
+    private static final String ATOM_PATTERN = "(" + ATOM + ")";
 
     Pattern matchAsciiPat = Pattern.compile(LEGAL_ASCII_PATTERN);
     Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
@@ -185,7 +185,7 @@ public class EmailValidator extends AbstractValidator {
         int i = 0;
         while (match) {
             Matcher atomMatcher = atomPattern.matcher(domain);
-			match = atomMatcher.matches();
+			match = atomMatcher.lookingAt();
             if (match) {
                 domainSegment[i] = atomMatcher.group(1);
                 int l = domainSegment[i].length() + 1;

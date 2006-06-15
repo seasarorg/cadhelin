@@ -40,9 +40,9 @@
         srcdir="src/java"
         destdir="${cadhelin.classes}"
         encoding="MS932"
-        debug="$build.debug"
-        optimize="$build.optimize"
-	    	debuglevel="lines,var,source"
+        debug="on"
+        optimize="off"
+    	debuglevel="lines,vars,source"
         deprecation="off">
       <classpath>
         <fileset dir="WEB-INF/">

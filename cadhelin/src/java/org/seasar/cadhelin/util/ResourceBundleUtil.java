@@ -7,6 +7,8 @@ public class ResourceBundleUtil {
 	public static String getString(ResourceBundle bundle,String key,String defaultStr){
 		try {
 			return bundle.getString(key);
+		} catch (NullPointerException e) {
+			return defaultStr;
 		} catch (MissingResourceException e) {
 			return defaultStr;
 		}

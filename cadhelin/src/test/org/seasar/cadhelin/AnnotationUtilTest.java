@@ -1,4 +1,4 @@
-package org.seasar.cadhelin.util;
+package org.seasar.cadhelin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

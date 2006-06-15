@@ -42,14 +42,13 @@ public class BeanConverter extends AbstractConverter {
 			if(!pd.hasWriteMethod()){
 				continue;
 			}
-			Converter child = null;
 			//Validater.nameプロパティが指定されていればその値でConverterを検索。されてなければproperty名Converterを検索
 			Param param = AnnotationUtil.getPropertyAnnotation(pd,Param.class);
 			Converter converter = this.converterFactory.findConverter(pd.getPropertyName(),pd.getPropertyType(),param);
-			if(child!=null){
+			if(converter!=null){
 				this.converterFactory.setUpValidater(converter,param);
 				pl.add(pd);
-				cl.add(child);
+				cl.add(converter);
 			}
 		}
 		converters = cl.toArray(new Converter[cl.size()]);
