@@ -39,8 +39,9 @@ public class StringConverter extends AbstractConverter {
 			return null;
 		}
 		if(trim){
-			return str.trim();
+			str = str.trim();
 		}
+		validate(str,message);
 		return str;
 	};
 

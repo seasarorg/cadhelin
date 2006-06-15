@@ -1,13 +1,13 @@
-package org.seasar.cadhelin.validater;
+package org.seasar.cadhelin.validator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validate;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Validator;
 
-public class IntRangeValidator extends AbstractValidater{
+public class IntRangeValidator extends AbstractValidator{
 	private String errorMessageKey;
 	private Integer minValue;
 	private Integer maxValue;
@@ -16,7 +16,7 @@ public class IntRangeValidator extends AbstractValidater{
 	public IntRangeValidator(){
 	}
 	public IntRangeValidator(String errorMessageKey,String[] arguments){
-		errorMessageKey = (errorMessageKey!=null)? 
+		this.errorMessageKey = (errorMessageKey!=null)? 
 				errorMessageKey :
 				"error.integer.outofrange" ;
 		minValue = getInteger(arguments,"min");
@@ -24,11 +24,11 @@ public class IntRangeValidator extends AbstractValidater{
 			messageArguments.put("min",minValue.toString());						
 		}
 		maxValue = getInteger(arguments,"max");
-		if(minValue!=null){
+		if(maxValue!=null){
 			messageArguments.put("max",maxValue.toString());						
 		}
 	}
-	public Validater createValidater(Validate validate) {
+	public Validator createValidater(Validate validate) {
 		return new IntRangeValidator(errorMessageKey,validate.args());
 	}
 	public String getValidaterKey() {
@@ -38,11 +38,11 @@ public class IntRangeValidator extends AbstractValidater{
 		if (value instanceof Number) {
 			Number number = (Number) value;
 			if(minValue!=null && minValue.intValue() > number.intValue()){
-				errors.put(name,new Message(errorMessageKey + "." + name));
+				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
 				return true;
 			}
 			if(maxValue!=null && maxValue.intValue() < number.intValue()){
-				errors.put(name,new Message(errorMessageKey + "." + name));
+				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
 				return true;
 			}
 		}

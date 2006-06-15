@@ -7,8 +7,8 @@ import org.seasar.cadhelin.Validate;
 public class AddControllerImpl {
 	@Action({"lhs","rhs"})
 	public int add(
-			@Param(arg=@Validate(name="",args="min=0"))int lhs,
-			@Param(arg=@Validate(name="",args="min=0"))int rhs){
+			@Param(validate=@Validate(name="intRange",args="min=0"))int lhs,
+			@Param(validate=@Validate(name="intRange",args="min=0"))int rhs){
 		return lhs + rhs;
 	}
 }

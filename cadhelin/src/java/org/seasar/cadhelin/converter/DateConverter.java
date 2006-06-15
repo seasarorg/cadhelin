@@ -44,7 +44,9 @@ public class DateConverter extends AbstractConverter {
 			return null;
 		}
 		try {
-			return sdf.parse(str);
+			Date date = sdf.parse(str);
+			validate(date,messages);
+			return date;
 		} catch (ParseException e1) {
 			messages.put(parameterName,new Message(ERROR_KEY_DATE_FORMAT+"."+parameterName));
 			return str;

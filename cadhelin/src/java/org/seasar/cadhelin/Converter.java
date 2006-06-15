@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public interface Converter extends Cloneable{
-	public void addValidater(Validater validater);
+	public void addValidater(Validator validater);
 	public Converter createInstance(
 			String parameterName,
 			Class targetClass,

@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Validator;
 
 public abstract class AbstractConverter implements Converter {
-	protected List<Validater> validaters = 
-		new ArrayList<Validater>();
+	protected List<Validator> validaters = 
+		new ArrayList<Validator>();
 	protected String parameterName;
 	protected Object[] converterKeys;
 	public AbstractConverter(Object[] converterKeys){
@@ -20,11 +20,11 @@ public abstract class AbstractConverter implements Converter {
 		return converterKeys;
 	}
 	public void validate(Object value,Map<String,Message> messages){
-		for (Validater validater : validaters) {
+		for (Validator validater : validaters) {
 			validater.validate(parameterName,value,messages);
 		}
 	}
-	public void addValidater(Validater validater){
+	public void addValidater(Validator validater){
 		validaters.add(validater);
 	}
 }

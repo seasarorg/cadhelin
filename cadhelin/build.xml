@@ -42,6 +42,7 @@
         encoding="MS932"
         debug="$build.debug"
         optimize="$build.optimize"
+	    	debuglevel="lines,var,source"
         deprecation="off">
       <classpath>
         <fileset dir="WEB-INF/">

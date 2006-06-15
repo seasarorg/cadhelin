@@ -8,13 +8,13 @@ import java.util.Map;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.Validate;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Validator;
 
 public class ConverterFactoryImpl implements ConverterFactory {
 	private Map<Object,Converter> converters 
 		= new HashMap<Object,Converter>();
-	private Map<String,Validater> validaters 
-		= new HashMap<String,Validater>();
+	private Map<String,Validator> validaters 
+		= new HashMap<String,Validator>();
 	public void addConverters(Converter converter){
 		Object[] converterKey = converter.getConverterKey();
 		for (Object key : converterKey) {
@@ -30,9 +30,9 @@ public class ConverterFactoryImpl implements ConverterFactory {
 			}
 		}		
 	}
-	public void setValidaters(Object[] validaters){
+	public void setValidators(Object[] validaters){
 		for (Object c : validaters) {
-			Validater validater = (Validater) c; 
+			Validator validater = (Validator) c; 
 			this.validaters.put(validater.getValidaterKey(),validater);
 		}		
 	}
@@ -57,7 +57,7 @@ public class ConverterFactoryImpl implements ConverterFactory {
 		}
 		return converter.createInstance(parameterName,targetClass,validater);
 	}
-	protected Converter findConverter(String parameterName,
+	public Converter findConverter(String parameterName,
 			Class targetClass,
 			Param param){
 		Converter converter = null;
@@ -79,12 +79,16 @@ public class ConverterFactoryImpl implements ConverterFactory {
 			Param param = findParam(annot[i]);
 			Converter converter = findConverter(parameterNames[i],parameterTypes[i],param);
 			setUpValidater(converter,param);
+			converters[i] = converter;
 		}
 		return converters;
 	}
-	protected void setUpValidater(Converter converter,Param param){
-		for (Validate validate : param.arg()) {
-			Validater validater = validaters.get(validate.name());
+	public void setUpValidater(Converter converter,Param param){
+		if(param == null){
+			return;
+		}
+		for (Validate validate : param.validate()) {
+			Validator validater = validaters.get(validate.name());
 			if(validater==null){
 				continue;
 			}

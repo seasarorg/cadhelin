@@ -1,20 +1,22 @@
-package org.seasar.cadhelin.validater;
+package org.seasar.cadhelin.validator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validate;
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Validator;
 
-public class LengthValidater extends AbstractValidater {
+public class LengthValidator extends AbstractValidator {
 	private String errorMessageKey;
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
 	private Integer minLength;
 	private Integer maxLength;
-	public LengthValidater(String errorMessageKey,String[] arguments){
-		errorMessageKey = (errorMessageKey!=null)? 
+	public LengthValidator() {
+	}
+	public LengthValidator(String errorMessageKey,String[] arguments){
+		this.errorMessageKey = (errorMessageKey!=null)? 
 				errorMessageKey :
 				"error.integer.outofrange" ;
 		minLength = getInteger(arguments,"min");
@@ -26,8 +28,8 @@ public class LengthValidater extends AbstractValidater {
 			messageArguments.put("max",maxLength.toString());						
 		}
 	}
-	public Validater createValidater(Validate validate) {
-		return new LengthValidater(errorMessageKey,validate.args());
+	public Validator createValidater(Validate validate) {
+		return new LengthValidator(errorMessageKey,validate.args());
 	}
 	public String getValidaterKey() {
 		return "length";
@@ -38,11 +40,11 @@ public class LengthValidater extends AbstractValidater {
 		if (value instanceof String) {
 			String string = (String) value;
 			if(minLength!=null && minLength.intValue() > string.length()){
-				errors.put(name,new Message(errorMessageKey + "." + name));
+				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
 				return true;
 			}
 			if(maxLength!=null && maxLength.intValue() < string.length()){
-				errors.put(name,new Message(errorMessageKey + "." + name));
+				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
 				return true;
 			}
 		}

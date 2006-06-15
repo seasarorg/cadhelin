@@ -12,10 +12,7 @@ import org.seasar.cadhelin.Param;
 public class IntConverter extends AbstractConverter {
 	private static final String ERROR_KEY_INTEGER_REQUIRED = "error.converter.integer.required";
 	private static final String ERROR_KEY_INTEGER_FORMAT = "error.converter.integer.format";
-	private static final String ERROR_KEY_INTEGER_OUTOF_RANGE = "error.converter.integer.outofrang";
 	private boolean required = true;
-	private Integer min;
-	private Integer max;
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
 	public IntConverter() {

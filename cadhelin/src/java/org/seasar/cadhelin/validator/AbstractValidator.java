@@ -1,8 +1,8 @@
-package org.seasar.cadhelin.validater;
+package org.seasar.cadhelin.validator;
 
-import org.seasar.cadhelin.Validater;
+import org.seasar.cadhelin.Validator;
 
-public abstract class AbstractValidater implements Validater {
+public abstract class AbstractValidator implements Validator {
 	protected Integer getInteger(String[] arguments,String key){
 		for (String argument : arguments) {
 			if(argument.startsWith(key)){

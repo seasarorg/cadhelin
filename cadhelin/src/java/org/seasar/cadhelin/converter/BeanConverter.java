@@ -44,17 +44,10 @@ public class BeanConverter extends AbstractConverter {
 			}
 			Converter child = null;
 			//Validater.nameプロパティが指定されていればその値でConverterを検索。されてなければproperty名Converterを検索
-			Param propertyValidator = AnnotationUtil.getPropertyAnnotation(pd,Param.class);
-			if(propertyValidator!=null && propertyValidator.name().length()>0){
-				child = converterFactory.getConverter(pd.getPropertyName(),propertyValidator.name(),pd.getPropertyType(),propertyValidator);				
-			}else{
-				child = converterFactory.getConverter(pd.getPropertyName(),pd.getPropertyName(),pd.getPropertyType(),propertyValidator);								
-			}
-			//Converterが見つかっていなければClassでConverterを検索
-			if(child==null){
-				child = converterFactory.getConverter(pd.getPropertyName(),pd.getPropertyType(),propertyValidator);
-			}
+			Param param = AnnotationUtil.getPropertyAnnotation(pd,Param.class);
+			Converter converter = this.converterFactory.findConverter(pd.getPropertyName(),pd.getPropertyType(),param);
 			if(child!=null){
+				this.converterFactory.setUpValidater(converter,param);
 				pl.add(pd);
 				cl.add(child);
 			}
