@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN" 
+    "http://www.seasar.org/dtd/components23.dtd">
+<components>
+	<include path="app.dicon"/>
+	<include path="ConverterFactory.dicon"/>
+	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />
+	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
+		<initMethod name="addClassPattern">
+			<arg>"examples"</arg>
+			<arg>".*ControllerImpl"</arg>
+		</initMethod>
+	</component>
+	<component
+	  class="org.seasar.framework.container.autoregister.AspectAutoRegister">
+	    <property name="interceptor">ca</property>
+	    <property name="pointcut">".*"</property>
+	    <initMethod name="addClassPattern">
+	        <arg>"examples"</arg>
+	        <arg>".*ControllerImpl"</arg>
+	    </initMethod>
+	</component>
+	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
+		<arg>"messages"</arg>
+	</component>
+	<component name="link" class="org.seasar.cadhelin.velocity.LinkTool" instance="request"/>
+</components>
