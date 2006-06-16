@@ -1,0 +1,15 @@
+<project name="s2dao" default="dist" basedir=".">
+	<property name="ver" value="0.1"/>
+
+	<target name="dist">
+		<mkdir dir="target"/>
+		<zip zipfile="target/cadhelin-blank.zip">
+			<zipfileset prefix="cadhelin-blank" dir=".">
+				<exclude name="**/build/**"/>
+				<exclude name="**/target/**"/>
+				<exclude name="*.log"/>
+				<exclude name="**/.settings/**"/>
+			</zipfileset>
+		</zip>
+	</target>
+</project>
