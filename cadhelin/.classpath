@@ -6,18 +6,18 @@
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-ejb_2.1_spec-1.0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-j2ee_1.4_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-jta_1.0.1B_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javassist-3.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ognl-2.6.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.3.10.jar"/>
 	<classpathentry sourcepath="WEB-INF/lib/s2-framework-2.3.10-sources.jar" kind="lib" path="WEB-INF/lib/s2-framework-2.3.10.jar"/>
-	<classpathentry sourcepath="/velocity" kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
+	<classpathentry sourcepath="C:/download/jakarta/velocity-1.4/velocity-1.4/src/java" kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/common/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/common/lib/jasper-runtime.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/common/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang-2.1.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

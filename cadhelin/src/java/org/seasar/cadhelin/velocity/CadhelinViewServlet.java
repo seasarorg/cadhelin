@@ -1,13 +1,23 @@
 package org.seasar.cadhelin.velocity;
 
+import java.io.Writer;
+
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.app.event.EventCartridge;
+import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
 import org.apache.velocity.context.Context;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
@@ -15,11 +25,31 @@ import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 public class CadhelinViewServlet extends VelocityViewServlet {
 	private S2Container container = 
 		SingletonS2ContainerFactory.getContainer();
-	protected Context createContext(HttpServletRequest request, HttpServletResponse response) {
-		Context context = super.createContext(request, response);
-		return new SeasarContext(container,context);
+	
+    protected EventCartridge eventCartridge;
+
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+        initEventCartridge(config);
 	}
-	@Override
+
+	protected Context createContext(HttpServletRequest request, HttpServletResponse response) {
+		SeasarContext context = new SeasarContext(getVelocityEngine(), request, response, getServletContext(),container);
+    	eventCartridge.attachToContext(context);
+		return context;
+	}
+    protected void initEventCartridge(ServletConfig config) throws ServletException {
+        eventCartridge = new EventCartridge();
+        eventCartridge.addEventHandler(new ReferenceInsertionEventHandler() {
+                public Object referenceInsert(String reference, Object value) {
+                    if (value == null || value instanceof InsertAsIs) {
+                        return value;
+                    } else {
+                        return StringEscapeUtils.escapeHtml(value.toString());
+                    }
+                }
+            });
+    }
 	protected void initVelocity(ServletConfig config) throws ServletException {
 		VelocityEngine velocity = new VelocityEngine();
         setVelocityEngine(velocity);
@@ -66,36 +96,29 @@ public class CadhelinViewServlet extends VelocityViewServlet {
             throw new ServletException(e);
         }
 	}
+	protected void performMerge(Template template, Context context, Writer writer) 
+	throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
+		context.put("velocityWriter",writer);
+		super.performMerge(template, context, writer);
+	}
 }
-class SeasarContext implements Context{
+class SeasarContext extends ChainedContext{
 	private S2Container container;
-	private Context context;
 	
-	public SeasarContext(S2Container container,Context context) {
+	public SeasarContext(
+			VelocityEngine velocityEngine, 
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			ServletContext application, 
+			S2Container container) {
+		super(velocityEngine,request,response,application);
 		this.container = container;
-		this.context = context;
 	}
-	public boolean containsKey(Object key) {
-		return context.containsKey(key);
-	}
-	public Object get(String key) {
-		Object value = context.get(key);
-		if(value!=null){
-			return value;
+	public Object internalGet(String key) {
+		Object object = super.internalGet(key);
+		if(object!=null){
+			return object;
 		}
-		if(container.hasComponentDef(key)){
-			return container.getComponent(key);			
-		}
-		return null;
-	}
-	public Object[] getKeys() {
-		return context.getKeys();
-	}
-	public Object put(String key, Object value) {
-		return context.put(key,value);
-	}
-	
-	public Object remove(Object arg0) {
-		return context.remove(arg0);
+		return container.getComponent(key);
 	}
 }

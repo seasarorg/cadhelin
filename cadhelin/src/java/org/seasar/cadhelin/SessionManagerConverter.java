@@ -25,7 +25,7 @@ public class SessionManagerConverter extends AbstractConverter {
 	public Object convert(HttpServletRequest request,
 			Map<String, Message> message) {
 		Object component = container.getComponent("sessionManager");
-		return request.getSession().getAttribute("sessionManager");
+		return component;
 	}
 
 }

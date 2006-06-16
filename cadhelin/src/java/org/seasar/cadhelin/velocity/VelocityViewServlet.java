@@ -49,7 +49,7 @@ import org.apache.velocity.util.SimplePool;
  * <p>The servlet provides the following features:</p>
  * <ul>
  *   <li>renders Velocity templates</li>
- *   <li>provides support for an auto-loaded, configurable toolbox</li>
+ *   <li>provides support for an auto-loaded</li>
  *   <li>provides transparent access to the servlet request attributes,
  *       servlet session attributes and servlet context attributes by
  *       auto-searching them</li>
@@ -59,10 +59,6 @@ import org.apache.velocity.util.SimplePool;
  * <p>VelocityViewServlet supports the following configuration parameters
  * in web.xml:</p>
  * <dl>
- *   <dt>org.apache.velocity.toolbox</dt>
- *   <dd>Path and name of the toolbox configuration file. The path must be
- *     relative to the web application root directory. If this parameter is
- *     not found, no toolbox is instantiated.</dd>
  *   <dt>org.apache.velocity.properties</dt>
  *   <dd>Path and name of the Velocity configuration file. The path must be
  *     relative to the web application root directory. If this parameter
@@ -114,13 +110,6 @@ public class VelocityViewServlet extends HttpServlet
 
 
     /**
-     * Key used to access the toolbox configuration file path from the
-     * Servlet or webapp init parameters ("org.apache.velocity.toolbox").
-     */
-    protected static final String TOOLBOX_KEY = 
-        "org.apache.velocity.toolbox";
-
-    /**
      * This is the string that is looked for when getInitParameter is
      * called ("org.apache.velocity.properties").
      */
@@ -149,7 +138,7 @@ public class VelocityViewServlet extends HttpServlet
 
 
     /**
-     * <p>Initializes servlet, toolbox and Velocity template engine.
+     * <p>Initializes servlet and Velocity template engine.
      * Called by the servlet container on loading.</p>
      *
      * <p>NOTE: If no charset is specified in the default.contentType

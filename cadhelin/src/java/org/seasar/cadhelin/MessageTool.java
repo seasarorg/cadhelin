@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.util.ResourceBundleUtil;
+import org.seasar.cadhelin.velocity.InsertAsIs;
 
 public class MessageTool {
 	public static String MESSAGE_KEY = "org.seasar.cadhelin.messages";
@@ -27,7 +28,7 @@ public class MessageTool {
     	return msg != null;
     }
     
-    public String getMessage(String key){
+    private String getMessageString(String key){
     	Map msgs = (Map) request.getAttribute(MESSAGE_KEY);
     	if(msgs==null){
     		return null;
@@ -46,26 +47,35 @@ public class MessageTool {
     	}
     	return message;
     }
-    public String getErrors(){
+    public InsertAsIs getMessage(String key){
+    	String message = getMessageString(key);
+    	return (message!=null)?new InsertAsIs(message):null;
+    }
+    @SuppressWarnings("unchecked")
+	public InsertAsIs getErrors(){
     	StringBuffer buff = new StringBuffer();
-    	Map<String,Message> msgs = (Map<String,Message>) request.getAttribute(MESSAGE_KEY);
+    	Map<String,Message> msgs = (Map) request.getAttribute(MESSAGE_KEY);
     	if(msgs == null || msgs.size()==0){
     		return null;
     	}
     	String header = ResourceBundleUtil.getString(bundle,"errors.header","");
     	String hooter = ResourceBundleUtil.getString(bundle,"errors.footer","");
     	for (String key : msgs.keySet()) {
-			buff.append(getError(key));
+			buff.append(getErrorString(key));
 		}
-    	return header + buff.toString() +hooter;
+    	return new InsertAsIs(header + buff.toString() +hooter);
     }
-    public String getError(String key){
-    	String message = getMessage(key);
+    private String getErrorString(String key){
+    	String message = getMessageString(key);
     	if(message==null){
     		return  null;
     	}
     	String header = ResourceBundleUtil.getString(bundle,"error.header","");
     	String hooter = ResourceBundleUtil.getString(bundle,"error.footer","");
     	return header+message+hooter;
+    }
+    public InsertAsIs getError(String key){
+    	String message = getErrorString(key);
+    	return (message!=null)?new InsertAsIs(message):null;
     }
 }
