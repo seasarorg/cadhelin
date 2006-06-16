@@ -5,9 +5,6 @@
 	<classpathentry output="work" kind="src" path="work"/>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/commons-collections.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/commons-digester.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-ejb_2.1_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-j2ee_1.4_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-jta_1.0.1B_spec-1.0.jar"/>
@@ -16,9 +13,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.3.10.jar"/>
 	<classpathentry sourcepath="WEB-INF/lib/s2-framework-2.3.10-sources.jar" kind="lib" path="WEB-INF/lib/s2-framework-2.3.10.jar"/>
 	<classpathentry sourcepath="/velocity" kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/velocity-tools-1.2.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/velocity-tools-generic-1.2.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/velocity-tools-view-1.2.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.0.4.jar"/>

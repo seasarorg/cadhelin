@@ -27,5 +27,8 @@
 	<component name="dateFormat" class="java.text.SimpleDateFormat">
 		<arg>"yyyy-MM-dd"</arg>
 	</component>
+	<component class="org.seasar.cadhelin.filter.AuthorizationFilter">
+		<property name="redirectUrl">"/cadhelin/do/logon/logonForm"</property>
+	</component>
 	
 </components>

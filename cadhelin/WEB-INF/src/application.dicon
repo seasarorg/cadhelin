@@ -2,8 +2,10 @@
 <!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN" 
     "http://www.seasar.org/dtd/components23.dtd">
 <components>
+	<component class="examples.AuthorizationManagerImpl"/>
 	<component name="sessionManager" 
 		class="examples.SessionManager"
 		instance="session"/>
 	<component class="examples.EmployeeDaoImpl"/>
+	<component class="examples.UserManagerImpl"/>
 </components>

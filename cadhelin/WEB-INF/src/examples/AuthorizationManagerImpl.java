@@ -5,17 +5,20 @@ import org.seasar.cadhelin.AuthorizationManager;
 public class AuthorizationManagerImpl implements AuthorizationManager {
 
 	public boolean authorized(Object sessionManager, String role) {
+		if(role==null || role.length()==0){
+			return true;
+		}
 		if (sessionManager instanceof SessionManager) {
 			SessionManager sessionManager2 = (SessionManager) sessionManager;
-			if(role.equals("admin")){
+			if("admin".equals(role)){
 				User user = sessionManager2.getUser();
-				if(user!=null){
+				if(user==null){
 					return false;
 				}
 				return user.getRole().equals("admin");
 			}
 		}
-		return true                                                                                                                                                                                                                                                                        ;
+		return false;
 	}
 
 }

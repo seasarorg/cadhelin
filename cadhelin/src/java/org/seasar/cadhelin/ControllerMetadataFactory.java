@@ -12,7 +12,16 @@ public class ControllerMetadataFactory {
 			= new HashMap<String,ControllerMetadata>();
 	private Map<Class,ControllerMetadata> classMap
 			= new HashMap<Class,ControllerMetadata>();
-		
+	private String defaultRole;
+	public void setDefaultRole(String defaultRole) {
+		this.defaultRole = defaultRole;
+	}
+	private ActionFilter[] filters = new ActionFilter[0];	
+	private void setFilters(Object[] filters) {
+		ActionFilter[] f = new ActionFilter[filters.length];
+		System.arraycopy(filters,0,f,0,f.length);
+		this.filters = f;
+	}
 	public ControllerMetadataFactory(S2Container container) {
 		int size = container.getComponentDefSize();
 		ConverterFactoryImpl converter = 
@@ -20,8 +29,12 @@ public class ControllerMetadataFactory {
 		if(container.hasComponentDef("sessionManager")){
 			ComponentDef componentDef = container.getComponentDef("sessionManager");
 			converter.addConverters(
-					new SessionManagerConverter(container,new Object[]{componentDef.getComponentClass()}));
+					new SessionManagerConverter(
+							container,
+							new Object[]{componentDef.getComponentClass()}));
 		}
+		Object[] f = container.findComponents(ActionFilter.class);
+		setFilters(f);
 		for(int i=0;i<size;i++){
 			ComponentDef def = container.getComponentDef(i);
 			String componentName = def.getComponentName();
@@ -31,7 +44,7 @@ public class ControllerMetadataFactory {
 			if(componentName.endsWith("Controller")){
 				componentName = componentName.replace("Controller","");
 				ControllerMetadata controllerMetadata = 
-					new ControllerMetadata(componentName,def,converter);
+					new ControllerMetadata(componentName,defaultRole,def,converter,filters);
 				controllers.put(
 						componentName,
 						controllerMetadata);

@@ -13,6 +13,10 @@ import org.seasar.cadhelin.ControllerServlet;
 public class LinkTool extends AbstractMap{
 	private AuthorizationManager authorizationManager;
 	private HttpServletRequest request;
+	
+	public LinkTool(AuthorizationManager authorizationManager) {
+		this.authorizationManager = authorizationManager;
+	}
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
@@ -25,6 +29,9 @@ public class LinkTool extends AbstractMap{
 		ControllerContext context =
 			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		ActionMetadata action = context.getAction(controllerName,actionName);
+		if(authorizationManager == null || action==null){
+			return false;
+		}
 		return authorizationManager.authorized(
 				request.getSession().getAttribute("sessionManager"),action.getRole());
 	}

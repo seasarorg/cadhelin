@@ -11,7 +11,9 @@ $link
 	<td>$emp.name</td>
 	<td>$dateFormat.format($emp.date)</td>
 	<td>
+		#if($command.authorized('employee','delete'))
 		<a href="$command.employee.delete($emp.empno)">delete</a>
+		#end
 		<a href="$command.employee.updateForm($emp.empno)">update</a>
 	</td>
 </tr>

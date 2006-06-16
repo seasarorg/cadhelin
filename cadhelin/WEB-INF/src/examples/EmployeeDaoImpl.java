@@ -1,14 +1,15 @@
 package examples;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-
-import org.apache.commons.collections.ListUtils;
 
 public class EmployeeDaoImpl implements EmployeeDao {
 	HashMap <Integer,Employee> employees 
 		= new HashMap<Integer,Employee>();
+	public EmployeeDaoImpl() {
+		employees.put(1,new Employee(1,"test",new Date()));
+	}
 	public Collection<Employee> findAll() {
 		return employees.values();
 	}

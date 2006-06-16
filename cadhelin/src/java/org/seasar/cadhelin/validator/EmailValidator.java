@@ -14,17 +14,12 @@ public class EmailValidator extends AbstractValidator {
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
 	
-	private Pattern pattern;
 	public EmailValidator() {
 	}
 	public EmailValidator(String errorMessageKey,String[] arguments){
 		this.errorMessageKey = (errorMessageKey!=null)? 
 				errorMessageKey :
 				"error.string.email" ;
-		String regex = getString(arguments,"regex",null);
-		if(regex!=null){
-			pattern = Pattern.compile(regex);
-		}
 	}
 	public Validator createValidater(Validate validate) {
 		return new EmailValidator(errorMessageKey,validate.args());

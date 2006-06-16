@@ -8,9 +8,10 @@ public class Employee {
 	private Date date;
 	public Employee(){
 	}
-	public Employee(int empno, String name, Date hireDate, float salary) {
+	public Employee(int empno, String name, Date hireDate) {
 		this.empno = empno;
 		this.name = name;
+		this.date = hireDate;
 	}
 	public int getEmpno() {
 		return empno;

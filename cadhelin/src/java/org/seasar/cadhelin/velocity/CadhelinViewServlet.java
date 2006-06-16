@@ -9,10 +9,6 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.tools.generic.log.LogSystemCommonsLog;
-import org.apache.velocity.tools.view.servlet.ServletLogger;
-import org.apache.velocity.tools.view.servlet.VelocityViewServlet;
-import org.apache.velocity.tools.view.servlet.WebappLoader;
 import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 

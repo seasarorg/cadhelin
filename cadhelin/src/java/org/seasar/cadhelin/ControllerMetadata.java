@@ -17,27 +17,44 @@ import org.seasar.framework.beans.factory.BeanDescFactory;
 import org.seasar.framework.container.ComponentDef;
 
 public class ControllerMetadata {
+	private String role;
 	private String name;
 	private Object controller;
 	private BeanDesc beanDesc;
-	private Map<String,ActionMetadata> actions = new HashMap<String,ActionMetadata>();
-	public ControllerMetadata(String name,ComponentDef componentDef,ConverterFactory factory){
+	private Map<String,ActionMetadata> actions = 
+		new HashMap<String,ActionMetadata>();
+	private ActionFilter[] filters = new ActionFilter[0];
+	
+	@SuppressWarnings("unchecked")
+	public ControllerMetadata(
+			String name,
+			String defaultRole,
+			ComponentDef componentDef,
+			ConverterFactory factory,
+			ActionFilter[] filters){
 		this.name = name;
 		this.controller = componentDef.getComponent();
+		this.filters = filters;
 		beanDesc = BeanDescFactory.getBeanDesc(componentDef.getComponentClass());
-		Method[] methods = beanDesc.getBeanClass().getDeclaredMethods();
+		Class beanClass = beanDesc.getBeanClass();
+		Role r = (Role) beanClass.getAnnotation(Role.class);
+		role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
+		Method[] methods = beanClass.getDeclaredMethods();
 		for(Method method : methods){
 			Action action = (Action)
-				AnnotationUtil.getAnnotation(beanDesc.getBeanClass(),Action.class,method);
+				AnnotationUtil.getAnnotation(beanClass,Action.class,method);
 			String actionName = method.getName();
 			if(action !=null &&
 					(method.getModifiers() & Modifier.PUBLIC) > 0){
 				actions.put(actionName,
-						new ActionMetadata(method.getName(),controller,method,action.value(),factory));				
+						new ActionMetadata(method.getName(),role,controller,method,action.value(),factory));				
 			}
 		}
 	}
-	protected void service(ControllerContext context,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(
+			ControllerContext context,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
 		String actionName = context.getActionName();
 		ActionMetadata metadata = null;
 		if(actionName!=null && actionName.length() > 0){
@@ -46,7 +63,8 @@ public class ControllerMetadata {
 			metadata = actions.get("index");
 		}
 		if(metadata!=null){
-			metadata.service(context,request,response);			
+			FilterContextImpl filter = new FilterContextImpl(filters,context,metadata);
+			filter.doFilter(request,response);
 		}
 	}
 	public String convertToURL(Method method, Object[] arguments) {

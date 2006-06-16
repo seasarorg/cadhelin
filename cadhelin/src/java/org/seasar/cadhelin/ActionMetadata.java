@@ -19,16 +19,19 @@ public class ActionMetadata {
 	private String resultName = "ret";
 	private String actionName;
 	private Object controller;
+	private String role;
 	private Method method;
 	private String[] parameterNames;
 	private Converter[] converters;
 
-	public ActionMetadata(String actionName,Object controller,
+	public ActionMetadata(String actionName,String defaultRole,Object controller,
 			Method method,String[] parameterNames,ConverterFactory factory) {
 		this.actionName = actionName;
 		this.controller = controller;
 		this.method = method;
 		this.parameterNames = parameterNames;
+		Role r = method.getAnnotation(Role.class);
+		role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
 		ResultName rna = (ResultName) AnnotationUtil.getAnnotation(controller.getClass(),ResultName.class,method);
 		if(rna!=null){
 			resultName = rna.value();
@@ -111,6 +114,6 @@ public class ActionMetadata {
 		return buff.toString();
 	}
 	public String getRole() {
-		return null;
+		return role;
 	}
 }

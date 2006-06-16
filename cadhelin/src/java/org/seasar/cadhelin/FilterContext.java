@@ -6,10 +6,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-public interface ActionFilter {
+public interface FilterContext {
 	public void doFilter(
-			FilterContext context,
 			HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException;
+
+	public ActionMetadata getActionMetadata();
+
+	public void sendRedirect(String redirectUrl) throws IOException;
 }
