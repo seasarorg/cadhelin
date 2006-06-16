@@ -12,7 +12,7 @@
     
 	<filter-mapping>
 		<filter-name>s2filter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/do/*</url-pattern>
 	</filter-mapping>
 	<servlet>
 		<servlet-name>s2servlet</servlet-name>
@@ -35,10 +35,6 @@
   <servlet>
     <servlet-name>velocity</servlet-name>
     <servlet-class>org.seasar.cadhelin.velocity.CadhelinViewServlet</servlet-class>
-    <init-param>
-      <param-name>org.apache.velocity.toolbox</param-name>
-      <param-value>/WEB-INF/toolbox.xml</param-value>
-    </init-param>
     <load-on-startup>10</load-on-startup>
   </servlet>
 
