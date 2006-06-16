@@ -16,4 +16,13 @@ public class StringUtil {
 		}
 		return buff.toString();
 	}
+	public static boolean isNullOrEmpty(String str){
+		return str == null || str.length() == 0;
+	}
+	public static String toLowwerCaseInitial(String str){
+		if(str.length()==0){
+			return str;
+		}
+		return Character.toLowerCase(str.charAt(0)) + str.substring(1);
+	}
 }

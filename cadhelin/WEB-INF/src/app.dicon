@@ -14,7 +14,7 @@
 	<component
 	  class="org.seasar.framework.container.autoregister.AspectAutoRegister">
 	    <property name="interceptor">ca</property>
-	    <property name="pointcut">".*"</property>
+	    <property name="pointcut">"get.*,post.*"</property>
 	    <initMethod name="addClassPattern">
 	        <arg>"examples"</arg>
 	        <arg>".*ControllerImpl"</arg>

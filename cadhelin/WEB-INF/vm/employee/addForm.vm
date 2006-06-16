@@ -3,7 +3,7 @@
 <body>
 $!msg.getErrors()
 
-<form action="add">
+<form action="add" method="POST">
 <input type="hidden" name="cadhelin_redirect_to" value="$cadhelin_redirect_to">
 	<table>
 		<tbody>

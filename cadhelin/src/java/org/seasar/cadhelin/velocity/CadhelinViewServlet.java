@@ -119,6 +119,9 @@ class SeasarContext extends ChainedContext{
 		if(object!=null){
 			return object;
 		}
-		return container.getComponent(key);
+		if(container.hasComponentDef(key)){
+			return container.getComponent(key);
+		}
+		return null;
 	}
 }

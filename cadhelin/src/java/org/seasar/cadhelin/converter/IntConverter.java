@@ -8,23 +8,26 @@ import javax.servlet.http.HttpServletRequest;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
+import org.seasar.cadhelin.util.StringUtil;
 
 public class IntConverter extends AbstractConverter {
-	private static final String ERROR_KEY_INTEGER_REQUIRED = "error.converter.integer.required";
-	private static final String ERROR_KEY_INTEGER_FORMAT = "error.converter.integer.format";
+	private String errorMessageKey;
+	private String defaultValue;
 	private boolean required = true;
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
 	public IntConverter() {
 		super(new Object[]{int.class,Integer.class});
 	}
-	public IntConverter(Object[] keys,String parameterName,Param validater){
+	public IntConverter(Object[] keys,String parameterName,Param param){
 		super(keys);
 		this.parameterName = parameterName;
-		if(validater!=null){
-			required = validater.required();
-
+		this.errorMessageKey = "error.integer." + parameterName;
+		if(param != null){
+			this.defaultValue = param.defaultVal();
+			required = param.required();
 		}
+		
 	}
 	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
 		return new IntConverter(converterKeys,parameterName,validater);
@@ -33,9 +36,14 @@ public class IntConverter extends AbstractConverter {
 			HttpServletRequest request, 
 			Map<String,Message> messages) {
 		String str = request.getParameter(parameterName);
-		if(str==null || str.length() == 0){
+		if(StringUtil.isNullOrEmpty(str)){
+			str = defaultValue;
+		}
+		if(StringUtil.isNullOrEmpty(str)){
 			if(required){
-				messages.put(parameterName,new Message(ERROR_KEY_INTEGER_REQUIRED+"."+parameterName,messageArguments));
+				messages.put(parameterName,
+						new Message(errorMessageKey+".required",
+								messageArguments));
 			}
 			return null;
 		}
@@ -44,7 +52,8 @@ public class IntConverter extends AbstractConverter {
 			validate(value,messages);
 			return value;
 		} catch (NumberFormatException e) {
-			messages.put(parameterName,new Message(ERROR_KEY_INTEGER_FORMAT+"."+parameterName,messageArguments));
+			messages.put(parameterName,
+					new Message(errorMessageKey+".format",messageArguments));
 			return str;
 		}
 	};

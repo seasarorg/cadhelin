@@ -8,6 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Param {
 	String name() default "";
+	String defaultVal() default "";
 	Validate[] validate() default {};
 	boolean required() default true;
 }

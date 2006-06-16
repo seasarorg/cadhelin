@@ -1,58 +1,131 @@
 package org.seasar.cadhelin;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.seasar.cadhelin.converter.ConverterFactory;
 import org.seasar.cadhelin.converter.ConverterFactoryImpl;
+import org.seasar.cadhelin.util.AnnotationUtil;
+import org.seasar.cadhelin.util.StringUtil;
+import org.seasar.framework.beans.BeanDesc;
+import org.seasar.framework.beans.factory.BeanDescFactory;
 import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
 
 public class ControllerMetadataFactory {
-	private Map<String,ControllerMetadata> controllers 
+	protected Map<String,ControllerMetadata> controllers 
 			= new HashMap<String,ControllerMetadata>();
-	private Map<Class,ControllerMetadata> classMap
+	protected Map<Class,ControllerMetadata> classMap
 			= new HashMap<Class,ControllerMetadata>();
-	private String defaultRole;
+	protected String[] getActionPrefix = new String[]{"get"};
+	protected String[] postActionPrefix = new String[]{"post"};
+	
+	/**
+	 * 
+	 */
+	protected String defaultRole;
+	/**
+	 * アプリケーションのデフォルトロールを設定します。
+	 * コントローラークラスやアクションメソッドにRoleアノテーションが設定されていない場合は
+	 * このロールが使われます。
+	 * @param defaultRole
+	 */
 	public void setDefaultRole(String defaultRole) {
 		this.defaultRole = defaultRole;
 	}
-	private ActionFilter[] filters = new ActionFilter[0];	
-	private void setFilters(Object[] filters) {
-		ActionFilter[] f = new ActionFilter[filters.length];
-		System.arraycopy(filters,0,f,0,f.length);
-		this.filters = f;
-	}
+	protected ActionFilter[] filters = new ActionFilter[0];
+	
+	protected ConverterFactory factory;
 	public ControllerMetadataFactory(S2Container container) {
-		int size = container.getComponentDefSize();
-		ConverterFactoryImpl converter = 
+		factory = 
 			(ConverterFactoryImpl) container.getComponent(ConverterFactoryImpl.class);
 		if(container.hasComponentDef("sessionManager")){
 			ComponentDef componentDef = container.getComponentDef("sessionManager");
-			converter.addConverters(
+			factory.addConverters(
 					new SessionManagerConverter(
 							container,
 							new Object[]{componentDef.getComponentClass()}));
 		}
 		Object[] f = container.findComponents(ActionFilter.class);
-		setFilters(f);
+		this.filters = new ActionFilter[f.length];
+		System.arraycopy(f,0,filters,0,filters.length);
+		setupControllers(container);
+	}
+	protected void setupControllers(S2Container container){
+		int size = container.getComponentDefSize();
 		for(int i=0;i<size;i++){
-			ComponentDef def = container.getComponentDef(i);
-			String componentName = def.getComponentName();
+			ComponentDef componentDef = container.getComponentDef(i);
+			String componentName = componentDef.getComponentName();
 			if(componentName==null){
-				componentName = def.getComponentClass().getSimpleName();
+				componentName = componentDef.getComponentClass().getSimpleName();
 			}
 			if(componentName.endsWith("Controller")){
 				componentName = componentName.replace("Controller","");
 				ControllerMetadata controllerMetadata = 
-					new ControllerMetadata(componentName,defaultRole,def,converter,filters);
+					createControllerMetadata(componentName, componentDef);
 				controllers.put(
 						componentName,
 						controllerMetadata);
-				classMap.put(def.getComponentClass(),controllerMetadata);
+				classMap.put(componentDef.getComponentClass(),controllerMetadata);
+			}
+		}		
+	}
+	protected ControllerMetadata createControllerMetadata(
+			String name,
+			ComponentDef componentDef){
+		Object controller = componentDef.getComponent();
+		ControllerMetadata metadata = new ControllerMetadata(name,componentDef,filters);
+		BeanDesc beanDesc = BeanDescFactory.getBeanDesc(componentDef.getComponentClass());
+		Class<?> beanClass = beanDesc.getBeanClass();
+		Role r = (Role) beanClass.getAnnotation(Role.class);
+		String role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
+		Method[] methods = beanClass.getDeclaredMethods();
+		for(Method method : methods){
+			if((method.getModifiers() & Modifier.PUBLIC) > 0){
+				ActionMetadata actionMetadata = createActionMetadata(beanDesc,controller, method, role);
+				if(actionMetadata!=null){
+					metadata.addActionMetadata(actionMetadata.getName(),actionMetadata);					
+				}
 			}
 		}
+		return metadata;
 	}
-
+	protected ActionMetadata createActionMetadata(
+			BeanDesc beanDesc,
+			Object controller,
+			Method method,
+			String defaultRole){
+		HttpMethod httpMethod = null;
+		String actionName = null;
+		for (String prefix : getActionPrefix) {
+			if(method.getName().startsWith(prefix)){
+				httpMethod = HttpMethod.GET;
+				actionName = method.getName().substring(prefix.length());
+			}
+		}
+		for (String prefix : postActionPrefix) {
+			if(method.getName().startsWith(prefix)){
+				httpMethod = HttpMethod.POST;
+				actionName = method.getName().substring(prefix.length());
+			}
+		}
+		if(actionName==null){
+			return null;
+		}
+		actionName = StringUtil.toLowwerCaseInitial(actionName);
+		String[] parameterNames = beanDesc.getMethodParameterNames(method);
+		Role r = method.getAnnotation(Role.class);
+		String role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
+		String resultName = actionName;
+		ResultName rna = (ResultName) AnnotationUtil.getAnnotation(controller.getClass(),ResultName.class,method);
+		if(rna!=null){
+			resultName = rna.value();
+		}
+		Converter[] converters = factory.createConverters(method,parameterNames);
+		return new ActionMetadata(httpMethod,actionName,resultName,role,controller,method,parameterNames,converters);
+	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
 		return controllers.get(controllerName);
 	}

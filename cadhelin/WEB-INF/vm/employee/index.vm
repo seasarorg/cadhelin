@@ -1,26 +1,25 @@
 <html>
 <head><title>Employee List</title></head>
 <body>
-$link
 <table>
 <tbody>
 <tr><th>empno</th><th>name</th><th>date</th><th></th></tr>
-#foreach($emp in $ret)
+#foreach($emp in $employees)
 <tr>
 	<td>$emp.empno</td>
 	<td>$emp.name</td>
 	<td>$dateFormat.format($emp.date)</td>
 	<td>
-		#if($command.authorized('employee','delete'))
-		<a href="$command.employee.delete($emp.empno)">delete</a>
+		#if($link.authorized('employee','delete'))
+		<a href="$link.employee.delete($emp.empno)">delete</a>
 		#end
-		<a href="$command.employee.updateForm($emp.empno)">update</a>
+		<a href="$link.employee.updateForm($emp.empno)">update</a>
 	</td>
 </tr>
 #end
 </tbody>
 </table>
 #set($args = [])
-<a href="$command.employee.addForm()">Add Employee</a>
+<a href="$link.employee.addForm()">Add Employee</a>
 </body>
 </html>

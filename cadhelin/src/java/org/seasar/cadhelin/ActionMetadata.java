@@ -10,13 +10,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.seasar.cadhelin.converter.ConverterFactory;
-import org.seasar.cadhelin.util.AnnotationUtil;
 import org.seasar.cadhelin.util.RedirectSession;
 
 public class ActionMetadata {
+	private HttpMethod httpMethod;
 	private String redirectParameterName = "cadhelin_redirect_to";
-	private String resultName = "ret";
+	private String resultName;
 	private String actionName;
 	private Object controller;
 	private String role;
@@ -24,21 +23,31 @@ public class ActionMetadata {
 	private String[] parameterNames;
 	private Converter[] converters;
 
-	public ActionMetadata(String actionName,String defaultRole,Object controller,
-			Method method,String[] parameterNames,ConverterFactory factory) {
+	public ActionMetadata(
+			HttpMethod httpMethod,
+			String actionName,
+			String resultName,
+			String role,
+			Object controller,
+			Method method,
+			String[] parameterNames,
+			Converter[] converters) {
+		this.httpMethod = httpMethod;
 		this.actionName = actionName;
+		this.resultName = resultName;
+		this.role = role;
 		this.controller = controller;
 		this.method = method;
 		this.parameterNames = parameterNames;
-		Role r = method.getAnnotation(Role.class);
-		role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
-		ResultName rna = (ResultName) AnnotationUtil.getAnnotation(controller.getClass(),ResultName.class,method);
-		if(rna!=null){
-			resultName = rna.value();
-		}
-		converters = factory.createConverters(method,parameterNames);
+		this.converters = converters;
 	}
-	protected void service(ControllerContext context,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(
+			ControllerContext context,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
+		if(!request.getMethod().equals(httpMethod.name())){
+			return;			
+		}
 		Object[] argumants = new Object[converters.length];
 		int i = 0;
 		Map<String,Message> message = new HashMap<String,Message>();
@@ -56,7 +65,7 @@ public class ActionMetadata {
 		}
 		try {
 			Object ret = method.invoke(controller,argumants);
-			request.getSession().setAttribute(resultName,ret);
+			request.setAttribute(resultName,ret);
 			if(context.isRedirected()){
 				return;
 			}
@@ -115,5 +124,24 @@ public class ActionMetadata {
 	}
 	public String getRole() {
 		return role;
+	}
+	public String getName() {
+		return actionName;
+	}
+
+	public String toString() {
+		StringBuilder buff = new StringBuilder();
+		buff.append(httpMethod);
+		buff.append(" ");
+		buff.append(actionName);
+		buff.append(" {");
+		for (String name : parameterNames) {
+			buff.append(name);
+			buff.append(", ");
+		}
+		return buff.toString();
+	}
+	public Method getMethod() {
+		return method;
 	}
 }
