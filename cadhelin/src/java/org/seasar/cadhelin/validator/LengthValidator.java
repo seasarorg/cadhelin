@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Validate;
 import org.seasar.cadhelin.Validator;
+import org.seasar.cadhelin.annotation.Validate;
 
 public class LengthValidator extends AbstractValidator {
 	private String errorMessageKey;

@@ -46,6 +46,7 @@ public class ActionMetadata {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		if(!request.getMethod().equals(httpMethod.name())){
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;			
 		}
 		Object[] argumants = new Object[converters.length];
@@ -69,7 +70,7 @@ public class ActionMetadata {
 			if(context.isRedirected()){
 				return;
 			}
-			String url = context.getViewURL();
+			String url = context.getViewURL(actionName);
 			String redirectUrl = request.getRequestURI();
 			if(request.getQueryString()!=null){
 				redirectUrl += "?" + request.getQueryString();
@@ -95,7 +96,7 @@ public class ActionMetadata {
 				RedirectSession.setAttribute(request.getSession(),MessageTool.MESSAGE_KEY,message);
 				response.sendRedirect(redirectUrl);
 			}else{
-				String url = context.getViewURL();
+				String url = context.getViewURL(actionName);
 				context.addMessage(message);
 				request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 				RequestDispatcher dispatcher = request.getRequestDispatcher(url);

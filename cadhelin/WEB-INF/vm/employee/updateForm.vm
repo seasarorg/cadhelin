@@ -1,7 +1,7 @@
 <html>
 <head><title>Update Employee</title></head>
 <body>
-<form action="update">
+<form action="update" method="POST">
 <input type="hidden" name="cadhelin_redirect_to" value="$cadhelin_redirect_to">
 	<table>
 		<tbody>

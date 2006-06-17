@@ -5,6 +5,9 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.seasar.cadhelin.annotation.Default;
+import org.seasar.cadhelin.annotation.ResultName;
+import org.seasar.cadhelin.annotation.Role;
 import org.seasar.cadhelin.converter.ConverterFactory;
 import org.seasar.cadhelin.converter.ConverterFactoryImpl;
 import org.seasar.cadhelin.util.AnnotationUtil;
@@ -19,8 +22,8 @@ public class ControllerMetadataFactory {
 			= new HashMap<String,ControllerMetadata>();
 	protected Map<Class,ControllerMetadata> classMap
 			= new HashMap<Class,ControllerMetadata>();
-	protected String[] getActionPrefix = new String[]{"get"};
-	protected String[] postActionPrefix = new String[]{"post"};
+	protected String[] getActionPrefix = new String[]{"show"};
+	protected String[] postActionPrefix = new String[]{"do"};
 	
 	/**
 	 * 
@@ -87,6 +90,10 @@ public class ControllerMetadataFactory {
 				ActionMetadata actionMetadata = createActionMetadata(beanDesc,controller, method, role);
 				if(actionMetadata!=null){
 					metadata.addActionMetadata(actionMetadata.getName(),actionMetadata);					
+					Default def = method.getAnnotation(Default.class);
+					if(def!=null){
+						metadata.setDefaultActionName(actionMetadata.getName());
+					}
 				}
 			}
 		}

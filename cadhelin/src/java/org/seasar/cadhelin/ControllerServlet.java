@@ -46,6 +46,10 @@ public class ControllerServlet extends HttpServlet {
 		RequestInfo info = new RequestInfo(request.getPathInfo());
 		ControllerMetadata metadata =
 			controllerMetadataFactory.getControllerMetadata(info.getControllerName());
-		metadata.service(controllerContext,request,response);
+		if(metadata!=null){
+			metadata.service(controllerContext,request,response);			
+		}else{
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		}
 	}
 }

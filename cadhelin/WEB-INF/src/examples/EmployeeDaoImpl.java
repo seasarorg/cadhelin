@@ -8,7 +8,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 	HashMap <Integer,Employee> employees 
 		= new HashMap<Integer,Employee>();
 	public EmployeeDaoImpl() {
-		employees.put(1,new Employee(1,"test",new Date()));
+		employees.put(employees.size()+1,new Employee(1,"test",new Date()));
 	}
 	public Collection<Employee> findAll() {
 		return employees.values();

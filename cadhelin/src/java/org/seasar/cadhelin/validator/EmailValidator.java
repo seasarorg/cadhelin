@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Validate;
 import org.seasar.cadhelin.Validator;
+import org.seasar.cadhelin.annotation.Validate;
 
 public class EmailValidator extends AbstractValidator {
 	private String errorMessageKey;

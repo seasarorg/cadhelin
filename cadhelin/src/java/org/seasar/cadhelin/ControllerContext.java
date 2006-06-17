@@ -57,20 +57,18 @@ public class ControllerContext {
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
 		return request.getContextPath() + urlPrefix  + metadata.convertToURL(method,arguments);
 	}
-	public String getViewURL(){
+	public String getViewURL(String actionName){
 		return viewUrlPattern.
 			replace("${controllerName}",info.getControllerName()).
-			replace("${actionName}",info.getActionName());
+			replace("${actionName}",actionName);
 	}
 	public void setFirstAction(){
 		firstAction = false;
 	}
 	public boolean isRedirected(){
-		System.out.println("redirected = " + redirected);
 		return redirected;
 	}
 	public void setRedirected(boolean redirected) {
-		System.out.println("setRedirected2 = " + this.redirected+" to " + redirected);
 		this.redirected = redirected;
 	}
 	public boolean isFirstAction() {
@@ -78,10 +76,11 @@ public class ControllerContext {
 	}
 	@SuppressWarnings("unchecked")
 	public void sendMessage(String key,Message message){
-		Map map = (Map) RedirectSession.getAttribute(
-				request.getSession(),MessageTool.MESSAGE_KEY);
+		Map<String, Message> attribute = (Map<String, Message>) RedirectSession.getAttribute(
+						request.getSession(),MessageTool.MESSAGE_KEY);
+		Map<String,Message> map = attribute;
 		if(map==null){
-			map = new HashMap();
+			map = new HashMap<String,Message>();
 			RedirectSession.setAttribute(request.getSession(),
 					MessageTool.MESSAGE_KEY,map);
 		}
@@ -89,18 +88,20 @@ public class ControllerContext {
 	}
 	@SuppressWarnings("unchecked")
 	public void addMessage(String key,Message message){
-		Map map = (Map) request.getAttribute(MessageTool.MESSAGE_KEY);
+		Map<String, Message> map = 
+			(Map<String, Message>) request.getAttribute(MessageTool.MESSAGE_KEY);
 		if(map==null){
-			map = new HashMap();
+			map = new HashMap<String, Message>();
 			request.setAttribute(MessageTool.MESSAGE_KEY,map);
 		}
 		map.put(key,message);
 	}
 	@SuppressWarnings("unchecked")
-	public void addMessage(Map messages){
-		Map map = (Map) request.getAttribute(MessageTool.MESSAGE_KEY);
+	public void addMessage(Map<String,Message> messages){
+		Map<String,Message> map = 
+			(Map<String, Message>) request.getAttribute(MessageTool.MESSAGE_KEY);
 		if(map==null){
-			map = new HashMap();
+			map = new HashMap<String,Message>();
 			request.setAttribute(MessageTool.MESSAGE_KEY,map);
 		}
 		map.putAll(messages);
@@ -112,12 +113,9 @@ public class ControllerContext {
 		return response;
 	}
 	public ActionMetadata getAction(String controllerName, String actionName) {
-		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
+		ControllerMetadata metadata = 
+			controllerMetadataFactory.getControllerMetadata(controllerName);
 		return metadata.getAction(actionName);
-	}
-	public void doFilter() {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setRedirect(String redirectUrl) {
 		try {

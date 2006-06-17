@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Param;
-import org.seasar.cadhelin.Validate;
 import org.seasar.cadhelin.Validator;
+import org.seasar.cadhelin.annotation.Validate;
 
 public class ConverterFactoryImpl implements ConverterFactory {
 	private Map<Object,Converter> converters 

@@ -14,7 +14,7 @@
 	<component
 	  class="org.seasar.framework.container.autoregister.AspectAutoRegister">
 	    <property name="interceptor">ca</property>
-	    <property name="pointcut">"get.*,post.*"</property>
+	    <property name="pointcut">"show.*,do.*"</property>
 	    <initMethod name="addClassPattern">
 	        <arg>"examples"</arg>
 	        <arg>".*ControllerImpl"</arg>
@@ -23,7 +23,7 @@
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 	<arg>"messages"</arg>
 	</component>
-	<component name="command" class="org.seasar.cadhelin.velocity.LinkTool" instance="request"/>
+	<component name="link" class="org.seasar.cadhelin.velocity.LinkTool" instance="request"/>
 	<component name="dateFormat" class="java.text.SimpleDateFormat">
 		<arg>"yyyy-MM-dd"</arg>
 	</component>

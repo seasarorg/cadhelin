@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Category;
+import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.framework.container.ComponentDef;
 
 public class ControllerMetadata {
@@ -22,8 +22,7 @@ public class ControllerMetadata {
 	private Map<Method,ActionMetadata> actionByMethods = 
 		new HashMap<Method,ActionMetadata>();
 	private ActionFilter[] filters = new ActionFilter[0];
-	
-	@SuppressWarnings("unchecked")
+	private String defaultActionName = null;
 	public ControllerMetadata(
 			String name,
 			ComponentDef componentDef,
@@ -37,14 +36,16 @@ public class ControllerMetadata {
 			HttpServletResponse response) throws ServletException, IOException {
 		String actionName = context.getActionName();
 		ActionMetadata metadata = null;
-		if(actionName!=null && actionName.length() > 0){
+		if(!StringUtil.isNullOrEmpty(actionName)){
 			metadata = actions.get(actionName);
 		}else{
-			metadata = actions.get("index");
+			metadata = actions.get(defaultActionName);
 		}
 		if(metadata!=null){
 			FilterContextImpl filter = new FilterContextImpl(filters,context,metadata);
 			filter.doFilter(request,response);
+		}else{
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 	public String convertToURL(Method method, Object[] arguments) {
@@ -69,5 +70,8 @@ public class ControllerMetadata {
 	public void addActionMetadata(String name, ActionMetadata metadata) {
 		actions.put(name, metadata);
 		actionByMethods.put(metadata.getMethod(), metadata);
+	}
+	public void setDefaultActionName(String defaultActionName) {
+		this.defaultActionName = defaultActionName;
 	}
 }

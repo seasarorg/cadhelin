@@ -2,8 +2,7 @@ package examples;
 
 import java.util.Collection;
 
-import org.seasar.cadhelin.Action;
-import org.seasar.cadhelin.ResultName;
+import org.seasar.cadhelin.annotation.ResultName;
 
 public class EmployeeControllerImpl {
 	EmployeeDao empdao;
@@ -11,28 +10,28 @@ public class EmployeeControllerImpl {
 		this.empdao = empdao;
 	}
 	@ResultName("employees")
-	public Collection<Employee> getIndex(){
+	public Collection<Employee> showIndex(){
 		return empdao.findAll();
 	}
 	
-	public void getAddForm(){
+	public void showAddForm(){
 	}
 	
-	public void postAdd(Employee employee){
+	public void doAdd(Employee employee){
 		empdao.addEmployee(employee);
-		getIndex();
+		showIndex();
 	}
-	public void postDelete(int empno){
+	public void showDelete(int empno){
 		empdao.deleteEmployee(empno);
-		getIndex();
+		showIndex();
 	}
 
 	@ResultName("employee")
-	public Employee getUpdateForm(int empno){
+	public Employee showUpdateForm(int empno){
 		return empdao.getEmployee(empno);
 	}
-	public void postUpdate(Employee employee){
+	public void doUpdate(Employee employee){
 		empdao.updateEmployee(employee);
-		getIndex();
+		showIndex();
 	}
 }

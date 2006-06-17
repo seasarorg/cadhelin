@@ -4,6 +4,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import org.seasar.cadhelin.annotation.Validate;
+
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Param {

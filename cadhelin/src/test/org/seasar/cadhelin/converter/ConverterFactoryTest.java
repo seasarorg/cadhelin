@@ -6,14 +6,12 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.seasar.cadhelin.Action;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.extension.unit.S2TestCase;
 import org.seasar.framework.mock.servlet.MockHttpServletRequestImpl;
 import org.seasar.framework.mock.servlet.MockServletContextImpl;
-import org.seasar.framework.util.MethodUtil;
 
 public class ConverterFactoryTest extends S2TestCase {
 	private ConverterFactory converterFactory;
@@ -37,7 +35,6 @@ public class ConverterFactoryTest extends S2TestCase {
 		}
 		assertEquals("[123,234]",StringUtil.convertToString(values));
 	}
-	@Action({"lhs","rhs"})
 	public int action1(int lhs,int rhs){
 		return lhs + rhs;
 	}

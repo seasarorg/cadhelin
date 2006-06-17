@@ -1,19 +1,16 @@
 package examples;
 
-import org.seasar.cadhelin.Action;
 import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.ResultName;
+import org.seasar.cadhelin.annotation.ResultName;
 
 public class LogonControllerImpl {
 	UserManager userManager;
 	public LogonControllerImpl(UserManager userManager) {
 		this.userManager = userManager;
 	}
-	@Action
 	public void logonForm(){
 	}
-	@Action({"sessinoManager","userName","password"})
 	@ResultName("user")
 	public User logon(SessionManager sessionManager,String userName,String password){
 		User user = userManager.authenticate(userName,password);
