@@ -17,10 +17,7 @@ package org.seasar.cadhelin;
 
 import java.util.Map;
 
-import org.seasar.cadhelin.annotation.Validate;
-
-public interface Validator {
-	String getValidaterKey();
-	public Validator createValidater(Validate validate);
-	boolean validate(String name,Object value,Map<String,Message> errors);
+public interface Validator<T> {
+	public void setMessageArguments(Map<String, String> messageArguments);
+	boolean validate(String name,T value,Map<String,Message> errors);
 }

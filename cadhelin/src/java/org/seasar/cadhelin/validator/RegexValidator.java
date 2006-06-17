@@ -21,44 +21,34 @@ import java.util.regex.Pattern;
 
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
-import org.seasar.cadhelin.annotation.Validate;
 
-public class RegexValidator extends AbstractValidator {
-	private String errorMessageKey;
+public class RegexValidator implements Validator<String> {
+	private String errorMessageKey = "error.string.regex";
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
 	
 	private Pattern pattern;
 	public RegexValidator() {
 	}
-	public RegexValidator(String errorMessageKey,String[] arguments){
-		this.errorMessageKey = (errorMessageKey!=null)? 
-				errorMessageKey :
-				"error.string.regex" ;
-		String regex = getString(arguments,"regex",null);
-		if(regex!=null){
-			pattern = Pattern.compile(regex);
-		}
-	}
-	public Validator createValidater(Validate validate) {
-		return new RegexValidator(errorMessageKey,validate.args());
-	}
-	public String getValidaterKey() {
-		return "regex";
+	public void setRegex(String regex) {
+		pattern = Pattern.compile(regex);
 	}
 
-	public boolean validate(String name, Object value,
+	public boolean validate(String name, String value,
 			Map<String, Message> errors) {
 		if (value instanceof String) {
 			String string = (String) value;
 			if(!pattern.matcher(string).matches()){
 				errors.put(name,
-						new Message(errorMessageKey + "." + name,
+						new Message(errorMessageKey + name,
 								messageArguments));				
 				return true;
 			}
 		}
 		return false;
+	}
+	public void setMessageArguments(Map<String, String> messageArguments) {
+		this.messageArguments = messageArguments;
 	}
 
 }

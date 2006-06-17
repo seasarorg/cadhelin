@@ -40,4 +40,14 @@ public class StringUtil {
 		}
 		return Character.toLowerCase(str.charAt(0)) + str.substring(1);
 	}
+	public static String join(String[] strs, String delim, int len) {
+		StringBuilder buff = new StringBuilder();
+		for(int i=0;i<len && i < strs.length;i++){
+			if(i>0){
+				buff.append(delim);
+			}
+			buff.append(strs[i]);
+		}
+		return buff.toString();
+	}
 }

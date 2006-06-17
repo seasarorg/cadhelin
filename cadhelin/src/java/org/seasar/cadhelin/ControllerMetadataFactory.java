@@ -61,7 +61,7 @@ public class ControllerMetadataFactory {
 			(ConverterFactoryImpl) container.getComponent(ConverterFactoryImpl.class);
 		if(container.hasComponentDef("sessionManager")){
 			ComponentDef componentDef = container.getComponentDef("sessionManager");
-			factory.addConverters(
+			factory.addConverter(
 					new SessionManagerConverter(
 							container,
 							new Object[]{componentDef.getComponentClass()}));

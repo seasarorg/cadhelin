@@ -30,6 +30,7 @@ public interface Converter extends Cloneable{
 	 * @return
 	 */
 	public Object[] getConverterKey();
+	
 	/**
 	 * @param name		ƒpƒ‰ƒ[ƒ^–¼
 	 * @param request

@@ -27,6 +27,6 @@ public interface ConverterFactory {
 
 	public void setUpValidater(Converter converter, Param param);
 
-	public void addConverters(Converter converter);
+	public void addConverter(Converter converter);
 
 }

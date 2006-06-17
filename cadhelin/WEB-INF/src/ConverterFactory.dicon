@@ -15,26 +15,10 @@
 	        <arg>"Abstract.*"</arg>
 	    </initMethod>
 	</component>
-	<component class="org.seasar.framework.container.autoregister.ComponentAutoRegister">
-	    <initMethod name="addReferenceClass">
-	        <arg>@org.seasar.cadhelin.converter.ConverterFactory@class</arg>
-	    </initMethod>
-		<initMethod name="addClassPattern">
-			<arg>"org.seasar.cadhelin.validator"</arg>
-			<arg>".*Validator"</arg>
-		</initMethod>
-	    <initMethod name="addIgnoreClassPattern">
-	        <arg>"org.seasar.cadhelin.validator"</arg>
-	        <arg>"Abstract.*"</arg>
-	    </initMethod>
-	</component>
 	<component
 	  class="org.seasar.cadhelin.converter.ConverterFactoryImpl">
 	  <initMethod name="addConverters">
 	  	<arg>container.findComponents(@org.seasar.cadhelin.Converter@class)</arg>
-	  </initMethod>
-	  <initMethod name="setValidators">
-	  	<arg>container.findComponents(@org.seasar.cadhelin.Validator@class)</arg>
 	  </initMethod>
 	</component>
 </components>

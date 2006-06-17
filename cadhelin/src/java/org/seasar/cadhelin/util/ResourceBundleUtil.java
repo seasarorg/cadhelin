@@ -28,4 +28,16 @@ public class ResourceBundleUtil {
 			return defaultStr;
 		}
 	}
+	public static String getStringRecursive(ResourceBundle bundle,String key,String defaultStr){
+		String[] strs = key.split("\\.");
+		for(int i=strs.length;0<i;i--){
+			String k = StringUtil.join(strs,".",i);
+			try {
+				return bundle.getString(k);
+			} catch (NullPointerException e) {
+			} catch (MissingResourceException e) {
+			}
+		}
+		return defaultStr;
+	}
 }

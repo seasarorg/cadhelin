@@ -20,50 +20,39 @@ import java.util.Map;
 
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
-import org.seasar.cadhelin.annotation.Validate;
 
-public class LengthValidator extends AbstractValidator {
-	private String errorMessageKey;
+public class LengthValidator implements Validator<String> {
+	private String errorMessageKey = "error.string.outoflength.";
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
-	private Integer minLength;
-	private Integer maxLength;
-	public LengthValidator() {
+	
+	private Integer min;
+	private Integer max;
+	
+	public Integer getMin() {
+		return min;
 	}
-	public LengthValidator(String errorMessageKey,String[] arguments){
-		this.errorMessageKey = (errorMessageKey!=null)? 
-				errorMessageKey :
-				"error.integer.outofrange" ;
-		minLength = getInteger(arguments,"min");
-		if(minLength!=null){
-			messageArguments.put("min",minLength.toString());						
-		}
-		maxLength = getInteger(arguments,"max");
-		if(maxLength!=null){
-			messageArguments.put("max",maxLength.toString());						
-		}
-	}
-	public Validator createValidater(Validate validate) {
-		return new LengthValidator(errorMessageKey,validate.args());
-	}
-	public String getValidaterKey() {
-		return "length";
+	public Integer getMax() {
+		return max;
 	}
 
-	public boolean validate(String name, Object value,
+	public boolean validate(String name, String value,
 			Map<String, Message> errors) {
 		if (value instanceof String) {
 			String string = (String) value;
-			if(minLength!=null && minLength.intValue() > string.length()){
-				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
+			if(min != null && min.intValue() > string.length()){
+				errors.put(name,new Message(errorMessageKey + name,messageArguments));
 				return true;
 			}
-			if(maxLength!=null && maxLength.intValue() < string.length()){
-				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
+			if(max!=null && max.intValue() < string.length()){
+				errors.put(name,new Message(errorMessageKey + name,messageArguments));
 				return true;
 			}
 		}
 		return false;
+	}
+	public void setMessageArguments(Map<String, String> messageArguments) {
+		this.messageArguments = messageArguments;
 	}
 
 }

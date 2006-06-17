@@ -20,44 +20,40 @@ import java.util.Map;
 
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
-import org.seasar.cadhelin.annotation.Validate;
 
-public class IntRangeValidator extends AbstractValidator{
-	private String errorMessageKey;
-	private Integer minValue;
-	private Integer maxValue;
+public class IntRangeValidator implements Validator<Integer>{
+	private String errorMessageKey = "error.integer.outofrange.";
+	private Integer min;
+	private Integer max;
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
+	public void setMessageArguments(Map<String, String> messageArguments) {
+		this.messageArguments = messageArguments;
+	}
 	public IntRangeValidator(){
 	}
-	public IntRangeValidator(String errorMessageKey,String[] arguments){
-		this.errorMessageKey = (errorMessageKey!=null)? 
-				errorMessageKey :
-				"error.integer.outofrange" ;
-		minValue = getInteger(arguments,"min");
-		if(minValue!=null){
-			messageArguments.put("min",minValue.toString());						
-		}
-		maxValue = getInteger(arguments,"max");
-		if(maxValue!=null){
-			messageArguments.put("max",maxValue.toString());						
-		}
+	public void setMin(Integer min) {
+		this.min = min;
 	}
-	public Validator createValidater(Validate validate) {
-		return new IntRangeValidator(errorMessageKey,validate.args());
+	public void setMax(Integer max) {
+		this.max = max;
 	}
-	public String getValidaterKey() {
-		return "intRange";
-	}
-	public boolean validate(String name, Object value, Map<String, Message> errors) {
+
+	public boolean validate(String name,Integer value, Map<String, Message> errors) {
 		if (value instanceof Number) {
 			Number number = (Number) value;
-			if(minValue!=null && minValue.intValue() > number.intValue()){
-				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
+			if(min!=null && min.intValue() > number.intValue()){
+				errors.put(name,
+						new Message(
+								errorMessageKey + name,
+								messageArguments));
 				return true;
 			}
-			if(maxValue!=null && maxValue.intValue() < number.intValue()){
-				errors.put(name,new Message(errorMessageKey + "." + name,messageArguments));
+			if(max != null && max.intValue() < number.intValue()){
+				errors.put(name,
+						new Message(
+								errorMessageKey + name,
+								messageArguments));
 				return true;
 			}
 		}

@@ -22,37 +22,24 @@ import java.util.regex.Pattern;
 
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
-import org.seasar.cadhelin.annotation.Validate;
 
-public class EmailValidator extends AbstractValidator {
-	private String errorMessageKey;
+public class EmailValidator implements Validator<String> {
+	private String errorMessageKey = "error.string.email.";
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
-	
+	public void setMessageArguments(Map<String, String> messageArguments) {
+		this.messageArguments = messageArguments;
+	}
 	public EmailValidator() {
 	}
-	public EmailValidator(String errorMessageKey,String[] arguments){
-		this.errorMessageKey = (errorMessageKey!=null)? 
-				errorMessageKey :
-				"error.string.email" ;
-	}
-	public Validator createValidater(Validate validate) {
-		return new EmailValidator(errorMessageKey,validate.args());
-	}
-	public String getValidaterKey() {
-		return "email";
-	}
 
-	public boolean validate(String name, Object value,
+	public boolean validate(String name, String value,
 			Map<String, Message> errors) {
-		if (value instanceof String) {
-			String string = (String) value;
-			if(!isValid(string)){
-				errors.put(name,
-						new Message(errorMessageKey + "." + name,
-								messageArguments));				
-				return true;
-			}
+		if(!isValid(value)){
+			errors.put(name,
+					new Message(errorMessageKey + name,
+							messageArguments));				
+			return true;
 		}
 		return false;
 	}

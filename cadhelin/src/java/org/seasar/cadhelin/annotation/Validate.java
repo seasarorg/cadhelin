@@ -22,6 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validate {
-	String name();
+	Class value();
 	String[] args() default {};
 }

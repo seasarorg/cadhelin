@@ -18,16 +18,17 @@ package examples;
 import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.annotation.Default;
 import org.seasar.cadhelin.annotation.Validate;
+import org.seasar.cadhelin.validator.IntRangeValidator;
 
 public class AddControllerImpl {
 	@Default
 	public int showAdd(
 			@Param(
 				defaultVal="0",
-				validate=@Validate(name="intRange",args="min=0"))int lhs,
+				validate=@Validate(value=IntRangeValidator.class,args="min=0"))int lhs,
 			@Param(
 				defaultVal="0",
-				validate=@Validate(name="intRange",args="min=0"))int rhs){
+				validate=@Validate(value=IntRangeValidator.class,args="max=0"))int rhs){
 		return lhs + rhs;
 	}
 }

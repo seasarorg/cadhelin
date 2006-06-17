@@ -52,7 +52,7 @@ public class MessageTool {
     	if(msg==null){
     		return null;
     	}
-    	String message = ResourceBundleUtil.getString(bundle,msg.getKey(),msg.getKey());
+    	String message = ResourceBundleUtil.getStringRecursive(bundle, msg.getKey(),msg.getKey());
     	if(msg.getArguments()==null){
     		return message;
     	}
