@@ -1,5 +1,3 @@
-package org.seasar.cadhelin.velocity;
-
 /*
  * Copyright 2003 The Apache Software Foundation.
  *
@@ -15,6 +13,7 @@ package org.seasar.cadhelin.velocity;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.seasar.cadhelin.velocity;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
