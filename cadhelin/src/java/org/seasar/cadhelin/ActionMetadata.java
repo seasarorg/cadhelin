@@ -87,7 +87,7 @@ public class ActionMetadata {
 			ControllerContext context,
 			HttpServletRequest request, 
 			HttpServletResponse response, 
-			Map message, 
+			Map<String,Message> message, 
 			Map<String,Object> m) throws IOException, ServletException {
 		if(message.size()>0){
 			String redirectUrl = request.getParameter(redirectParameterName);

@@ -119,7 +119,8 @@ public class WebappLoader extends ResourceLoader
      * @throws ResourceNotFoundException if template not found
      *         in  classpath.
      */
-    public synchronized InputStream getResourceStream( String name )
+    @SuppressWarnings("unchecked")
+	public synchronized InputStream getResourceStream( String name )
         throws ResourceNotFoundException
     {
         InputStream result = null;
