@@ -69,5 +69,7 @@ public class LinkTool extends AbstractMap{
             return request.getContextPath() + '/' + uri;
         }        
     }
-	
+	public String getContextPath(){
+		return request.getContextPath();
+	}
 }

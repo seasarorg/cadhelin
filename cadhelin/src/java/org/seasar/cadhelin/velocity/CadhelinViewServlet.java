@@ -34,6 +34,10 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.seasar.framework.beans.BeanDesc;
+import org.seasar.framework.beans.PropertyDesc;
+import org.seasar.framework.beans.factory.BeanDescFactory;
+import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
@@ -118,6 +122,7 @@ public class CadhelinViewServlet extends VelocityViewServlet {
 	}
 }
 class SeasarContext extends ChainedContext{
+	private BeanDesc sessionManagerBeanDesc;
 	private S2Container container;
 	
 	public SeasarContext(
@@ -128,6 +133,10 @@ class SeasarContext extends ChainedContext{
 			S2Container container) {
 		super(velocityEngine,request,response,application);
 		this.container = container;
+		if(container.hasComponentDef("sessionManager")){
+			ComponentDef def = container.getComponentDef("sessionManager");
+			sessionManagerBeanDesc = BeanDescFactory.getBeanDesc(def.getComponentClass());
+		}
 	}
 	public Object internalGet(String key) {
 		Object object = super.internalGet(key);
@@ -136,6 +145,12 @@ class SeasarContext extends ChainedContext{
 		}
 		if(container.hasComponentDef(key)){
 			return container.getComponent(key);
+		}
+		Object sessionManager = container.getComponent("sessionManager");
+		if(sessionManager!=null && 
+				sessionManagerBeanDesc.hasPropertyDesc(key)){
+			PropertyDesc pd = sessionManagerBeanDesc.getPropertyDesc(key);
+			return pd.getValue(sessionManager);
 		}
 		return null;
 	}

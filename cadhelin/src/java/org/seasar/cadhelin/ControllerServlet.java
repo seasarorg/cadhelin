@@ -24,11 +24,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
 public class ControllerServlet extends HttpServlet {
+	private static Log LOG = LogFactory.getLog(ControllerServlet.class);
 	private String urlPrefix = "/do/";
 	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
 	private S2Container container;
@@ -36,6 +39,7 @@ public class ControllerServlet extends HttpServlet {
 	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		LOG.info("start cadhelin servlert" + config.getServletName());
 		String s = config.getInitParameter("urlPrefix");
 		if(s!=null){
 			urlPrefix = s;
