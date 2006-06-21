@@ -126,13 +126,17 @@ public class ActionMetadata {
 		buff.append(actionName);
 		if(arguments.length>0){
 			buff.append("?");
+			boolean first = true;
 			for(int i=0;i<arguments.length;i++){
-				if(i>0){
-					buff.append("&");
+				if(arguments[i]!=null){
+					if(!first){
+						buff.append("&");
+					}
+					buff.append(parameterNames[i]);
+					buff.append("=");
+					buff.append(arguments[i].toString());
+					first = false;
 				}
-				buff.append(parameterNames[i]);
-				buff.append("=");
-				buff.append(arguments[i].toString());
 			}
 			
 		}

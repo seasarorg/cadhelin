@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.seasar.cadhelin.util.RedirectSession;
+import org.seasar.framework.container.S2Container;
 
 public class ControllerContext {
 	private static ThreadLocal<ControllerContext> context = 
@@ -35,6 +36,7 @@ public class ControllerContext {
 	public static ControllerContext getContext(){
 		return context.get();
 	}
+	private S2Container container;
 	private RequestInfo info;
 	private boolean redirected = false;
 	private boolean firstAction = true;
@@ -45,11 +47,13 @@ public class ControllerContext {
 	private String urlPrefix = "/do/";
 	
 	public ControllerContext(
+			S2Container container,
 			ControllerMetadataFactory controllerMetadataFactory,
 			HttpServletRequest request,
 			HttpServletResponse response,
 			String urlPrefix,
 			String viewUrlPattern) {
+		this.container = container;
 		this.controllerMetadataFactory = controllerMetadataFactory;
 		this.request = request;
 		this.response = response;
@@ -138,5 +142,11 @@ public class ControllerContext {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	public Object getSessionManager(){
+		if(container.hasComponentDef("sessionManager")){
+			return container.getComponent("sessionManager");
+		}
+		return null;
 	}
 }

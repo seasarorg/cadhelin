@@ -58,7 +58,8 @@ public class ControllerServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		RedirectSession.move(request.getSession());
-		ControllerContext controllerContext = new ControllerContext(controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
+		ControllerContext controllerContext = 
+			new ControllerContext(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
 		ControllerContext.setContext(
 				controllerContext);
 		request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
