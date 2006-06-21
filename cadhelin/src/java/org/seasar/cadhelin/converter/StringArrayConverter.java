@@ -23,14 +23,13 @@ import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
 
-public class StringConverter extends AbstractConverter {
+public class StringArrayConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.stringarray.required"; 
 	private boolean required = true;
-	private boolean trim = false;
-	public StringConverter() {
+	public StringArrayConverter() {
 		super(new Object[]{String[].class});
 	}
-	public StringConverter(Object[] keys,String parameterName,Param validater){
+	public StringArrayConverter(Object[] keys,String parameterName,Param validater){
 		super(keys);
 		this.parameterName = parameterName;
 		if(validater!=null){
@@ -42,7 +41,7 @@ public class StringConverter extends AbstractConverter {
 			String parameterName, 
 			Class targetClass, 
 			Param validater) {
-		return new StringConverter(converterKeys,parameterName,validater);
+		return new StringArrayConverter(converterKeys,parameterName,validater);
 	}
 	
 	public Object convert(
