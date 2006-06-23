@@ -13,13 +13,13 @@
 		#if($link.authorized('employee','delete'))
 		<a href="$link.employee.delete($emp.empno)">delete</a>
 		#end
-		<a href="$link.employee.updateForm($emp.empno)">update</a>
+		<a href="$link.employee.update($emp.empno)">update</a>
 	</td>
 </tr>
 #end
 </tbody>
 </table>
 #set($args = [])
-<a href="$link.employee.addForm()">Add Employee</a>
+<a href="$link.employee.add()">Add Employee</a>
 </body>
 </html>

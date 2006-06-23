@@ -29,7 +29,7 @@ public class EmployeeControllerImpl {
 		return empdao.findAll();
 	}
 	
-	public void showAddForm(){
+	public void showAdd(){
 	}
 	
 	public void doAdd(Employee employee){
@@ -42,7 +42,7 @@ public class EmployeeControllerImpl {
 	}
 
 	@ResultName("employee")
-	public Employee showUpdateForm(int empno){
+	public Employee showUpdate(int empno){
 		return empdao.getEmployee(empno);
 	}
 	public void doUpdate(Employee employee){

@@ -43,7 +43,7 @@ public class LinkTool extends AbstractMap{
 	public boolean authorized(String controllerName,String actionName){
 		ControllerContext context =
 			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
-		ActionMetadata action = context.getAction(controllerName,actionName);
+		ActionMetadata action = context.getAction(controllerName,actionName,"GET");
 		if(authorizationManager == null || action==null){
 			return false;
 		}

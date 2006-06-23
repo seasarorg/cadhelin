@@ -161,6 +161,9 @@ public class ActionMetadata {
 		}
 		return buff.toString();
 	}
+	public HttpMethod getHttpMethod() {
+		return httpMethod;
+	}
 	public Method getMethod() {
 		return method;
 	}

@@ -16,6 +16,7 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,8 +108,8 @@ public class ControllerContext {
 	}
 	@SuppressWarnings("unchecked")
 	public void addMessage(String key,Message message){
-		Map<String, Message> map = 
-			(Map<String, Message>) request.getAttribute(MessageTool.MESSAGE_KEY);
+		Map<String,Message> map = 
+			(Map<String,Message>) request.getAttribute(MessageTool.MESSAGE_KEY);
 		if(map==null){
 			map = new HashMap<String, Message>();
 			request.setAttribute(MessageTool.MESSAGE_KEY,map);
@@ -131,10 +132,10 @@ public class ControllerContext {
 	public HttpServletResponse getResponse() {
 		return response;
 	}
-	public ActionMetadata getAction(String controllerName, String actionName) {
+	public ActionMetadata getAction(String controllerName, String actionName,String method) {
 		ControllerMetadata metadata = 
 			controllerMetadataFactory.getControllerMetadata(controllerName);
-		return metadata.getAction(actionName);
+		return metadata.getAction(actionName,method);
 	}
 	public void setRedirect(String redirectUrl) {
 		try {
@@ -148,5 +149,12 @@ public class ControllerContext {
 			return container.getComponent("sessionManager");
 		}
 		return null;
+	}
+	public Writer createWriter(String fileName,String contentType) throws IOException{
+		redirected = true;
+		response.setContentType( contentType );
+		response.setHeader( "Content-disposition", "attachment; filename=\"" + fileName + '\"' );
+		return response.getWriter();
+		
 	}
 }

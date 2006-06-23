@@ -32,8 +32,8 @@ import org.seasar.framework.container.ComponentDef;
 public class ControllerMetadata {
 	Log log = LogFactory.getLog(this.getClass());
 	private String name;
-	private Map<String,ActionMetadata> actions = 
-		new HashMap<String,ActionMetadata>();
+	private Map<String,ActionMetadata[]> actions = 
+		new HashMap<String,ActionMetadata[]>();
 	private Map<Method,ActionMetadata> actionByMethods = 
 		new HashMap<Method,ActionMetadata>();
 	private ActionFilter[] filters = new ActionFilter[0];
@@ -50,18 +50,29 @@ public class ControllerMetadata {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		String actionName = context.getActionName();
-		ActionMetadata metadata = null;
+		ActionMetadata[] metadata = null;
 		if(!StringUtil.isNullOrEmpty(actionName)){
 			metadata = actions.get(actionName);
 		}else{
 			metadata = actions.get(defaultActionName);
 		}
-		if(metadata!=null){
-			FilterContextImpl filter = new FilterContextImpl(filters,context,metadata);
-			filter.doFilter(request,response);
-		}else{
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		ActionMetadata metadatum = getActionMetadata(metadata,request.getMethod());
+		if(metadatum==null){
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);			
 		}
+		FilterContextImpl filter = new FilterContextImpl(filters,context,metadatum);
+		filter.doFilter(request,response);
+	}
+	private ActionMetadata getActionMetadata(ActionMetadata[] metadata,String method){
+		if(metadata==null || metadata.length==0){
+			return null;
+		}
+		for (ActionMetadata metadatum : metadata) {
+			if(metadatum.getHttpMethod().name().equals(method)){
+				return metadatum;
+			}
+		}
+		return null;
 	}
 	public String convertToURL(Method method, Object[] arguments) {
 		ActionMetadata metadata = actionByMethods.get(method);
@@ -72,18 +83,27 @@ public class ControllerMetadata {
 		return null;
 	}
 	public String convertToURL(String actionName, Object[] arguments) {
-		ActionMetadata metadata = actions.get(actionName);
+		ActionMetadata metadata = 
+			getActionMetadata(actions.get(actionName),"GET");
 		if(metadata!=null){
 			return name+"/"+metadata.convertToURL(arguments);			
 		}
 		log.warn("cannot find ActionMetadata by " + actionName);
 		return null;
 	}
-	public ActionMetadata getAction(String actionName) {
-		return actions.get(actionName);
+	public ActionMetadata getAction(String actionName,String method) {
+		return getActionMetadata(actions.get(actionName),method);
 	}
 	public void addActionMetadata(String name, ActionMetadata metadata) {
-		actions.put(name, metadata);
+		ActionMetadata[] metadatas = actions.get(name);
+		if(metadatas==null){
+			actions.put(name,new ActionMetadata[]{metadata});
+		}else{
+			ActionMetadata[] am = new ActionMetadata[metadatas.length+1];
+			System.arraycopy(metadatas,0,am,0,metadatas.length);
+			am[metadatas.length] = metadata;
+			actions.put(name,am);
+		}
 		actionByMethods.put(metadata.getMethod(), metadata);
 	}
 	public void setDefaultActionName(String defaultActionName) {
