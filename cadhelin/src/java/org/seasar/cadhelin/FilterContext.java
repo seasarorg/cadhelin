@@ -25,7 +25,7 @@ public interface FilterContext {
 	public void doFilter(
 			HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException;
-
+	public ControllerContext getControllerContext();
 	public ActionMetadata getActionMetadata();
 
 	public void sendRedirect(String redirectUrl) throws IOException;

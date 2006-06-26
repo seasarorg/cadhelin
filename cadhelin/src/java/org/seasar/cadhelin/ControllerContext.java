@@ -157,4 +157,7 @@ public class ControllerContext {
 		return response.getWriter();
 		
 	}
+	public void invalidateSession(){
+		request.getSession().invalidate();
+	}
 }

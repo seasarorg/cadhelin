@@ -20,7 +20,7 @@
 		<load-on-startup>1</load-on-startup>
 		<init-param>
 			<param-name>configPath</param-name>
-			<param-value>app.dicon</param-value>
+			<param-value>cadhelin.dicon</param-value>
 		</init-param>
 		<init-param>
 			<param-name>debug</param-name>

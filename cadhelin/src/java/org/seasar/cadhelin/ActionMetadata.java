@@ -16,6 +16,7 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,11 +77,20 @@ public class ActionMetadata {
 			values.put(parameterNames[i],arg);
 			i++;
 		}
-		if(widthError(context, request, response, message, values)){
+		if(message.size()>0){
+			widthError(context,request,response,message,values);
 			return;
 		}
 		try {
-			Object ret = method.invoke(controller,argumants);
+			Object ret = null;
+			try {
+				ret = method.invoke(controller,argumants);
+			} catch (InvocationTargetException e) {
+				RedirectSession.setAttribute(
+						request.getSession(),"exception",e.getTargetException());
+				widthError(context,request,response,message,values);
+				return;
+			}
 			request.setAttribute(resultName,ret);
 			if(context.isRedirected()){
 				return;
@@ -98,28 +108,24 @@ public class ActionMetadata {
 			throw new RuntimeException(e);
 		}
 	}
-	private boolean widthError(
+	private void widthError(
 			ControllerContext context,
 			HttpServletRequest request, 
 			HttpServletResponse response, 
 			Map<String,Message> message, 
 			Map<String,Object> m) throws IOException, ServletException {
-		if(message.size()>0){
-			String redirectUrl = request.getParameter(redirectParameterName);
-			if(redirectUrl!=null){
-				RedirectSession.setAttribute(request.getSession(),m);
-				RedirectSession.setAttribute(request.getSession(),MessageTool.MESSAGE_KEY,message);
-				response.sendRedirect(redirectUrl);
-			}else{
-				String url = context.getViewURL(actionName);
-				context.addMessage(message);
-				request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
-				RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-				dispatcher.forward(request,response);				
-			}
-			return true;
+		String redirectUrl = request.getParameter(redirectParameterName);
+		if(redirectUrl!=null){
+			RedirectSession.setAttribute(request.getSession(),m);
+			RedirectSession.setAttribute(request.getSession(),MessageTool.MESSAGE_KEY,message);
+			response.sendRedirect(redirectUrl);
+		}else{
+			String url = context.getViewURL(actionName);
+			context.addMessage(message);
+			request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
+			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
+			dispatcher.forward(request,response);
 		}
-		return false;
 	}
 	public String convertToURL(Object[] arguments) {
 		StringBuffer buff = new StringBuffer();

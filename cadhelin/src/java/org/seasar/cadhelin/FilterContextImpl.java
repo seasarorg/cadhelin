@@ -44,7 +44,9 @@ public class FilterContextImpl implements FilterContext {
 			actionMetadata.service(controllerContext,request,response);
 		}
 	}
-
+	public ControllerContext getControllerContext() {
+		return controllerContext;
+	}
 	public ActionMetadata getActionMetadata() {
 		return actionMetadata;
 	}
