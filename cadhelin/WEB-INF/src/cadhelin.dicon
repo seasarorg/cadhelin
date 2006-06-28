@@ -21,7 +21,14 @@
 	    </initMethod>
 	</component>
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
-	<arg>"messages"</arg>
+		<arg>"messages"</arg>
+		<arg>@org.seasar.cadhelin.MessageTool@MESSAGE_KEY</arg>
+	</component>
+	<component name="errors" class="org.seasar.cadhelin.MessageTool" instance="request">
+		<arg>"messages"</arg>
+		<arg>@org.seasar.cadhelin.MessageTool@ERROR_KEY</arg>
+		<arg>"error"</arg>
+		<arg>"errors"</arg>
 	</component>
 	<component name="link" class="org.seasar.cadhelin.velocity.LinkTool" instance="request"/>
 	<component name="dateFormat" class="org.seasar.cadhelin.velocity.DateFormat">

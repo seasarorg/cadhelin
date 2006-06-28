@@ -88,7 +88,7 @@ public class BeanConverter extends AbstractConverter {
 				Object value = 
 					converters[i].convert(request,messages);
 				if(messages.size()> errorSize){
-				}else{
+				}else if(value != null){
 					propertyDescs[i].setValue(bean,value);							
 				}
 				errorSize = messages.size();

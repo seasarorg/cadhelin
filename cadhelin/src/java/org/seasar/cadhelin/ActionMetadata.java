@@ -26,9 +26,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.util.RedirectSession;
 
 public class ActionMetadata {
+	private static final Log LOG = LogFactory.getLog(ActionMetadata.class);
 	private HttpMethod httpMethod;
 	private String redirectParameterName = "cadhelin_redirect_to";
 	private String resultName;
@@ -38,6 +42,7 @@ public class ActionMetadata {
 	private Method method;
 	private String[] parameterNames;
 	private Converter[] converters;
+	private String render = null;
 
 	public ActionMetadata(
 			HttpMethod httpMethod,
@@ -56,6 +61,11 @@ public class ActionMetadata {
 		this.method = method;
 		this.parameterNames = parameterNames;
 		this.converters = converters;
+		this.render = actionName;
+		Render render2 = method.getAnnotation(Render.class);
+		if(render2!=null && render2.value().length()>0){
+			render = render2.value();
+		}
 	}
 	protected void service(
 			ControllerContext context,
@@ -65,6 +75,7 @@ public class ActionMetadata {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;			
 		}
+		request.setAttribute("this",controller);
 		Object[] argumants = new Object[converters.length];
 		int i = 0;
 		Map<String,Message> message = new HashMap<String,Message>();
@@ -86,16 +97,21 @@ public class ActionMetadata {
 			try {
 				ret = method.invoke(controller,argumants);
 			} catch (InvocationTargetException e) {
+				LOG.error("exception",e);
 				RedirectSession.setAttribute(
 						request.getSession(),"exception",e.getTargetException());
 				widthError(context,request,response,message,values);
+				return;
+			}
+			if(context.getErrorCount()>0){
+				widthError(context,request,response,message,values);				
 				return;
 			}
 			request.setAttribute(resultName,ret);
 			if(context.isRedirected()){
 				return;
 			}
-			String url = context.getViewURL(actionName);
+			String url = context.getViewURL(render);
 			String redirectUrl = request.getRequestURI();
 			if(request.getQueryString()!=null){
 				redirectUrl += "?" + request.getQueryString();

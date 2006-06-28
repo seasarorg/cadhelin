@@ -126,6 +126,32 @@ public class ControllerContext {
 		}
 		map.putAll(messages);
 	}
+	@SuppressWarnings("unchecked")
+	public int getErrorCount(){
+		Map<String,Message> map = 
+			(Map<String,Message>) request.getAttribute(MessageTool.ERROR_KEY);
+		return (map==null)?0:map.size();
+	}
+	@SuppressWarnings("unchecked")
+	public void addError(String key,Message message){
+		Map<String,Message> map = 
+			(Map<String,Message>) request.getAttribute(MessageTool.ERROR_KEY);
+		if(map==null){
+			map = new HashMap<String, Message>();
+			request.setAttribute(MessageTool.ERROR_KEY,map);
+		}
+		map.put(key,message);
+	}
+	@SuppressWarnings("unchecked")
+	public void addError(Map<String,Message> messages){
+		Map<String,Message> map = 
+			(Map<String, Message>) request.getAttribute(MessageTool.ERROR_KEY);
+		if(map==null){
+			map = new HashMap<String,Message>();
+			request.setAttribute(MessageTool.ERROR_KEY,map);
+		}
+		map.putAll(messages);
+	}
 	public HttpServletRequest getRequest() {
 		return request;
 	}

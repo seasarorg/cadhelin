@@ -26,25 +26,42 @@ import org.seasar.cadhelin.velocity.InsertAsIs;
 
 public class MessageTool {
 	public static String MESSAGE_KEY = "org.seasar.cadhelin.messages";
+	public static String ERROR_KEY = "org.seasar.cadhelin.errors";
+	private String messageKey;
+	private String messagePrefix = "";
+	private String messageSuffix = "";
+	private String messagesPrefix = "";
+	private String messagesSuffix = "";
     private ResourceBundle bundle;
 	private HttpServletRequest request;
-    public MessageTool(String prefix){
-    	bundle = MessageResources.getResourceBundle(prefix);    	
+    public MessageTool(String prefix,String messageKey){
+    	this(prefix,messageKey,null,null);
+    }
+    public MessageTool(String prefix,String messageKey,String messageAppendKey,String messagesAppendKey){
+    	bundle = MessageResources.getResourceBundle(prefix);
+    	this.messageKey = messageKey;
+    	if(messageAppendKey!=null){
+    		this.messagePrefix = ResourceBundleUtil.getString(bundle,messageAppendKey + ".header","");
+    		this.messageSuffix = ResourceBundleUtil.getString(bundle,messageAppendKey + ".footer","");
+    	}
+    	if(messagesAppendKey!=null){
+    		this.messagesPrefix = ResourceBundleUtil.getString(bundle,messagesAppendKey + ".header","");
+    		this.messagesSuffix = ResourceBundleUtil.getString(bundle,messagesAppendKey + ".footer","");
+    	}
     }
     public void setRequest(HttpServletRequest request){
     	this.request = request;
     }
     public boolean hasMessage(String key){
-    	Map msgs = (Map) request.getAttribute(MESSAGE_KEY);
+    	Map msgs = (Map) request.getAttribute(messageKey);
     	if(msgs==null){
     		return false;
     	}
     	Message msg = (Message) msgs.get(key);
-    	return msg != null;
+    	return msg != null;    	
     }
-    
-    private String getMessageString(String key){
-    	Map msgs = (Map) request.getAttribute(MESSAGE_KEY);
+    private String getString(String key){
+    	Map msgs = (Map) request.getAttribute(messageKey);
     	if(msgs==null){
     		return null;
     	}
@@ -63,34 +80,30 @@ public class MessageTool {
     	return message;
     }
     public InsertAsIs getMessage(String key){
-    	String message = getMessageString(key);
+    	String message = getString(key);
     	return (message!=null)?new InsertAsIs(message):null;
     }
     @SuppressWarnings("unchecked")
-	public InsertAsIs getErrors(){
+	public InsertAsIs getMessages(){
     	StringBuffer buff = new StringBuffer();
-    	Map<String,Message> msgs = (Map) request.getAttribute(MESSAGE_KEY);
+    	Map<String,Message> msgs = (Map) request.getAttribute(ERROR_KEY);
     	if(msgs == null || msgs.size()==0){
     		return null;
     	}
-    	String header = ResourceBundleUtil.getString(bundle,"errors.header","");
-    	String hooter = ResourceBundleUtil.getString(bundle,"errors.footer","");
     	for (String key : msgs.keySet()) {
-			buff.append(getErrorString(key));
+			buff.append(getMessageString(key));
 		}
-    	return new InsertAsIs(header + buff.toString() +hooter);
+    	return new InsertAsIs(messagesPrefix + buff.toString() +messagesSuffix);
     }
-    private String getErrorString(String key){
-    	String message = getMessageString(key);
+    private String getMessageString(String key){
+    	String message = getString(key);
     	if(message==null){
     		return  null;
     	}
-    	String header = ResourceBundleUtil.getString(bundle,"error.header","");
-    	String hooter = ResourceBundleUtil.getString(bundle,"error.footer","");
-    	return header+message+hooter;
+    	return messagePrefix+message+messageSuffix;
     }
     public InsertAsIs getError(String key){
-    	String message = getErrorString(key);
+    	String message = getMessageString(key);
     	return (message!=null)?new InsertAsIs(message):null;
     }
 }

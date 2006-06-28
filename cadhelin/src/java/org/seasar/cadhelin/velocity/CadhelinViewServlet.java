@@ -146,6 +146,9 @@ class SeasarContext extends ChainedContext{
 		if(container.hasComponentDef(key)){
 			return container.getComponent(key);
 		}
+		if(!container.hasComponentDef("sessionManager")){
+			return null;			
+		}
 		Object sessionManager = container.getComponent("sessionManager");
 		if(sessionManager!=null && 
 				sessionManagerBeanDesc.hasPropertyDesc(key)){
