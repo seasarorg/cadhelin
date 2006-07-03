@@ -17,6 +17,8 @@ package org.seasar.cadhelin;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -24,6 +26,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.util.RedirectSession;
@@ -54,6 +62,27 @@ public class ControllerServlet extends HttpServlet {
 		String url = contextPath + urlPrefix + metadata.convertToURL(method,arguments);
 		return url;
 	}
+	protected HttpServletRequest createHttpRequest(HttpServletRequest request) throws FileUploadException{
+		ServletRequestContext context = new ServletRequestContext(request);
+		if(FileUploadBase.isMultipartContent(context)){
+			MultipartRequestWrapper wrapper = new MultipartRequestWrapper(request);
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			List list = upload.parseRequest(context);
+			Iterator iter = list.iterator();
+			while(iter.hasNext()){
+				FileItem item = (FileItem) iter.next();
+				if(item.isFormField()){
+					wrapper.setParameter(item.getFieldName(),item.getString());
+				}else{
+					wrapper.addFileItem(item);
+				}
+			}
+			return wrapper;
+		}else{
+			return request;			
+		}
+	}
 	@Override
 	protected void service(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
@@ -67,7 +96,18 @@ public class ControllerServlet extends HttpServlet {
 		ControllerMetadata metadata =
 			controllerMetadataFactory.getControllerMetadata(info.getControllerName());
 		if(metadata!=null){
-			metadata.service(controllerContext,request,response);			
+			try{
+				request = createHttpRequest(request);
+				metadata.service(controllerContext,request,response);
+			} catch (FileUploadException e) {
+				LOG.error("",e);
+				throw new RuntimeException(e);
+			}finally{
+				if (request instanceof MultipartRequestWrapper) {
+					MultipartRequestWrapper wrapper = (MultipartRequestWrapper) request;
+					wrapper.closeFileItems();
+				}
+			}
 		}else{
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}

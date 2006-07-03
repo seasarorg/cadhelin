@@ -147,11 +147,12 @@ public class ActionMetadata {
 		StringBuffer buff = new StringBuffer();
 		buff.append(actionName);
 		if(arguments.length>0){
-			buff.append("?");
 			boolean first = true;
 			for(int i=0;i<arguments.length;i++){
 				if(arguments[i]!=null){
-					if(!first){
+					if(first){
+						buff.append("?");
+					}else{
 						buff.append("&");
 					}
 					buff.append(parameterNames[i]);
