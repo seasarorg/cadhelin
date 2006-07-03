@@ -7,7 +7,7 @@
 	+
 	$!msg.getMessage('rhs')
 	<input type="text" name="rhs" value="$rhs"/>
-	= $ret
+	= $add
 	<input type="submit" value="add"/>
 </form>
 </body>
