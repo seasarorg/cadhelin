@@ -34,6 +34,7 @@ public abstract class AbstractConverter implements Converter {
 	public Object[] getConverterKey() {
 		return converterKeys;
 	}
+	@SuppressWarnings("unchecked")
 	public void validate(Object value,Map<String,Message> messages){
 		for (Validator validater : validaters) {
 			validater.validate(parameterName,value,messages);
