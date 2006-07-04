@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- don't edit start -->
+<head>
+<title>Seasar - DI Container with AOP - </title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link href="seasar_b.css" type="text/css" rel="stylesheet" media="screen" />
+<link href="seasar_p.css" type="text/css" rel="stylesheet" media="print" />
+<script src="seasar_b.js" type="text/JavaScript" language="JavaScript"></script>
+</head>
+<body onload="preload('ja')">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="left"><tr>
+<td align="left" valign="top" width="780"><table width="780" border="0" cellspacing="0" cellpadding="0" class="white">
+<tr><td colspan="7"><img height="5" width="780" src="images/top01_b.gif" alt=""></td></tr>
+<tr><td><img height="117" width="235" src="images/top02_b.gif" alt="Seasar"></td>
+<td colspan="3"><img height="117" width="289" src="images/top03.gif" alt="DI Container with AOP"></td>
+<td colspan="3"><img height="117" width="256" src="images/spacer.gif" alt=""></td>
+</tr><tr><td rowspan="2"><img src="images/top04.gif" alt="" height="49" width="235"></td>
+<td><a href="http://www.seasar.org/index.html"><img src="images/menu01_b_ja.gif" height="30" width="78" border="0" alt="" id="menu01" onmouseover="swap(1)" onmouseout="restore(1)"></a></td>
+<td><a href="http://www.seasar.org/projects.html"><img src="images/menu02_b_ja.gif" height="30" width="101" border="0" alt="" id="menu02" onmouseover="swap(2)" onmouseout="restore(2)"></a></td>
+<td><a href="http://www.seasar.org/products.html"><img src="images/menu03_b_ja.gif" height="30" width="110" border="0" alt="" id="menu03" onmouseover="swap(3)" onmouseout="restore(3)"></a></td>
+<td><a href="http://www.seasar.org/resources.html"><img src="images/menu04_b_ja.gif" height="30" width="113" border="0" alt="" id="menu04" onmouseover="swap(4)" onmouseout="restore(4)"></a></td>
+<td><img src="images/menu05_b_ja.gif" height="30" width="109" border="0" alt="" id="menu05" onmouseover="swap(5)" onmouseout="restore(5)"></td>
+<td><img height="30" width="34" src="images/menu06.gif" alt=""></td></tr><tr>
+<td colspan="6"><img height="19" width="545" src="images/spacer.gif" alt=""></td></tr></table>
+<table  width="780" border="0" cellspacing="0" cellpadding="0" class="white">
+<tr align="left" valign="top"><td width="14"><img height="14" width="14" src="images/spacer.gif" alt=""></td><td width="752" class="main">
+<!-- don't edit end -->
+<!-- document start -->
+<ul>
+<li><a href="#setup">cadhelinセットアップ</a></li>
+<li><a href="#mapping">URLとActionのマッピング</a></li>
+<li><a href="#controller">コントローラ</a></li>
+<li><a href="#action">アクション</a></li>
+<li><a href="#rendering">レンダリング</a></li>
+</ul>
+
+<h2><a name="setup">セットアップ</a></h2>
+<p>cadhelinはJDK1.5以上が必要です。</p>
+<p>blankプロジェクトがcadhelin-blank-x.x.x.zipとして用意されているので、ダウンロードして解凍してください。できたcadhelin-blankディレクトリをEclipseで
+「ファイル→インポート→既存のプロジェクトをワークスペースへ」してインポートしてください。
+サンプルは、
+<a href="http://jakarta.apache.org/tomcat/">Tomcat5</a>、
+<a href="http://www.sysdeo.com/eclipse/tomcatPlugin.html">Tomcat Plugin</a>を使うことを前提にしています。もし、
+まだインストールしていない場合は、インストールしておいてください。</p>
+<p>Tomcatを起動し、ブラウザでhttp://localhost:8080/cadhelin-blank/do/hello/hellowにアクセスすると、Hellow worldと表示されればセットアップ成功です。</p>
+
+<h2><a name="mappin">URLとActionのマッピング</a></h2>
+<p>リクエストURLがhttp://localhost:8080/cadhelin-blank/do/hello/hellowのような場合、cadhelinはhelloコントローラのhellowアクションを呼び出します</p>
+<!-- controller -->
+<h2><a name="#controller">コントローラ</a></h2>
+<p>cadhelinはまずはじめにS2Containerに登録されたコンポーネントをすべて走査し、コンポーネント名が"Controller"で終わるコンポーネントを、"Controller"をのけた
+名前で登録します。</p>
+<p>cadhelin-blankの場合、S2Containerサーブレットによってはじめに読み込まれるcadhelin.diconに</p>
+<pre>
+&lt;component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister"&gt;
+　　&lt;initMethod name="addClassPattern"&gt;
+　　　　&lt;arg&gt;"examples"&lt;/arg>
+　　　　&lt;arg&gt;".*ControllerImpl"&lt;/arg&gt;
+  &lt;/initMethod&gt;
+&lt;/component&gt;
+</pre>
+<p>のような記述がありますので、exampleパッケージ以下のクラス名が、ControllerImplで終わるクラスが、クラス名からImplを削除したコンポーネント名で登録されます。
+(詳しくは<a href="http://s2container.seasar.org/ja/DIContainer.html#ComponentAutoRegister">コンポーネントの自動登録</a>をご覧ください)</p>
+<p>cadhelin-blankのばあいexamples.hellow.HelloControllerImplクラスがhelloControllerと言う名前でS2Containerに登録されますので、
+examples.hellow.HellowControllerImplがhelloコントローラとして登録されます。</p>
+<p>また、Controllerクラスにはorg.seasar.cadhelin.ControllerInterceptorを適用しなければなりませんがcadhelin.diconにおいて自動登録のせっていがされていますので、
+ほとんどの場合気にする必要はないでしょう。</p>
+<!-- action -->
+<h2><a name="#action">アクション</a></h2>
+<p>つぎに、cadhelinは、コントローラクラスのメソッドを走査し、showではじまるメソッドをGETリクエストを処理するアクション、
+doで始まるメソッドをPOSTリクエストを処理するアクションとして登録します。</p>
+<p>アクション名はメソッド名からdoやshowを削除し、先頭文字を小文字にしたもの使われます。この例ではshowHellow()メソッドがhellowアクションとして登録されます。</p>
+<p>メソッドにDefaultアノテーションが設定されている場合、アクション名が指定されていなければDefaultアノテーションが設定されているメソッドが呼び出されます。</p>
+
+<p>メソッドを実行した結果は、アクション名でリクエスト変数として登録されます。</p>
+
+<h2><a name="#rendering">レンダリング</a></h2>
+<p>最後に/WEB-INF/vm/コントローラ名/アクション名.vmのVelocityテンプレートが呼び出されます。
+showHellow()メソッドの返り値が、hellowという名前でrequest変数に登録されていますので
+hellow.vmの$hellowが"Hellow　world"と変換されて表示されます。</p>
+<!-- document end -->
+<!-- don't edit start -->
+</td>
+<td width="14"><img height="14" width="14" src="images/spacer.gif" alt=""></td>
+</tr><tr>
+<td width="14"><img height="30" width="14" src="images/spacer.gif" alt=""></td>
+<td width="766"><img height="30" width="592" src="images/spacer.gif" alt=""></td>
+</tr><tr>
+<td width="14"><img height="14" width="14" src="images/spacer.gif" alt=""></td>
+<td width="766" class="copyright">&copy; Copyright The Seasar Foundation and the others 2004-2005, all rights reserved.</td>
+</tr></table>
+<td class="backright" align="left" valign="top">&nbsp;</td></tr><tr>
+<td class="backunder" align="left"  valign="top" width="780" height="16">&nbsp;</td>
+<td class="backcorner" align="left" valign="top" height="16">&nbsp;</td>
+</tr></table></body>
+<!-- don't edit end -->
+</html>
