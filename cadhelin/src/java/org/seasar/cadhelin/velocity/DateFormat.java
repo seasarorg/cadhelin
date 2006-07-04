@@ -9,6 +9,9 @@ public class DateFormat {
 		this.format = new SimpleDateFormat(format);
 	}
 	public String format(Object date){
+		if(date==null){
+			return null;
+		}
 		if (date instanceof Date) {
 			return format.format((Date) date);
 		}

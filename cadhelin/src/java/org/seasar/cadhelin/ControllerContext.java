@@ -16,11 +16,15 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,6 +41,7 @@ public class ControllerContext {
 	public static ControllerContext getContext(){
 		return context.get();
 	}
+	private String viewName;
 	private S2Container container;
 	private RequestInfo info;
 	private boolean redirected = false;
@@ -63,6 +68,12 @@ public class ControllerContext {
 		this.info = 
 			new RequestInfo(request.getPathInfo());
 	}
+	public void setViewName(String viewName) {
+		this.viewName = viewName;
+	}
+	public String getViewName() {
+		return viewName;
+	}
 	public String getActionName(){
 		return info.getActionName();
 	}
@@ -82,6 +93,26 @@ public class ControllerContext {
 			replace("${controllerName}",info.getControllerName()).
 			replace("${actionName}",actionName);
 	}
+	public String getCookie(String key){
+		Cookie[] cookies = request.getCookies();
+		for (int i = 0; i < cookies.length; i++) {
+			if(cookies[i].getName().equals(key)){
+				try {
+					return URLDecoder.decode(cookies[i].getValue(),"UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return null;
+	}
+	public void setCookie(String key,String value){
+		try {
+			response.addCookie(new Cookie(key,(value!=null)?URLEncoder.encode(value,"UTF-8"):null));
+		} catch (UnsupportedEncodingException e) {
+		}
+	}
+	
 	public void setFirstAction(){
 		firstAction = false;
 	}
@@ -175,6 +206,12 @@ public class ControllerContext {
 			return container.getComponent("sessionManager");
 		}
 		return null;
+	}
+	public Writer createWriter(String contentType) throws IOException{
+		redirected = true;
+		response.setContentType( contentType );
+		return response.getWriter();
+		
 	}
 	public Writer createWriter(String fileName,String contentType) throws IOException{
 		redirected = true;

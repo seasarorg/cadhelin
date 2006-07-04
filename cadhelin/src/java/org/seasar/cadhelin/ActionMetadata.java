@@ -111,6 +111,9 @@ public class ActionMetadata {
 			if(context.isRedirected()){
 				return;
 			}
+			if(context.getViewName()!=null){
+				render = context.getViewName();
+			}
 			String url = context.getViewURL(render);
 			String redirectUrl = request.getRequestURI();
 			if(request.getQueryString()!=null){

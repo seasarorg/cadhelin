@@ -20,6 +20,9 @@
 	        <arg>".*ControllerImpl"</arg>
 	    </initMethod>
 	</component>
+	<component class="org.seasar.cadhelin.filter.AuthorizationFilter">
+		<property name="redirectUrl">"/cadhelin/do/logon/logonForm"</property>
+	</component>
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 		<arg>"messages"</arg>
 		<arg>@org.seasar.cadhelin.MessageTool@MESSAGE_KEY</arg>
@@ -34,8 +37,5 @@
 	<component name="dateFormat" class="org.seasar.cadhelin.velocity.DateFormat">
 		<arg>"yyyy-MM-dd"</arg>
 	</component>
-	<component class="org.seasar.cadhelin.filter.AuthorizationFilter">
-		<property name="redirectUrl">"/cadhelin/do/logon/logonForm"</property>
-	</component>
-	
+	<component name="cookieTool" class="org.seasar.cadhelin.CookieTool" instance="request"/>
 </components>
