@@ -46,16 +46,16 @@ public class AddControllerImpl {
 	}
 }
 </pre>
-<p></p>
+<p>また、/WEB-INF/vm/add/add.vmに以下のような内容を記入してください</p>
 <pre>
 &lt;html&gt;
 &lt;head&gt;&lt;title&gt;add&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;form action="" method="GET"&gt;
-	$!msg.getMessage('lhs')
+	$!errors.getMessage('lhs')
 	&lt;input type="text" name="lhs" value="$lhs"/&gt;
 	+
-	$!msg.getMessage('rhs')
+	$!errors.getMessage('rhs')
 	&lt;input type="text" name="rhs" value="$rhs"/&gt;
 	= &lt;span id="add"&gt;$add&lt;/span&gt;
 	&lt;input type="submit" value="add"/&gt;
@@ -63,7 +63,8 @@ public class AddControllerImpl {
 &lt;/body&gt;
 &lt;/html&gt;
 </pre>
-<p>ブラウザでhttp://localhost:8080/cadhelin-blank/do/add/addにアクセスすると以下のような画面が表示されます</p>
+<p><a href="setup.html">セットアップ</a>で説明したように、コントローラ名がadd、アクション名がaddになりますので、
+ブラウザでhttp://localhost:8080/cadhelin-blank/do/add/addにアクセスすると以下のような画面が表示されます</p>
 <div style="border: 1px solid #7e7e7e;padding:5px;">
 	error.integer.lhs.required
 	<input type="text" name="lhs" value="$lhs"/>
@@ -73,7 +74,8 @@ public class AddControllerImpl {
 	= <span id="add">$add</span>
 	<input type="submit" value="add"/>
 </div>
-
+<p>パラメータlhsとrhsがHTTPパラメータとして渡されなかったので、
+エラーが発生しshowAddメソッドが実行されずにadd.vmのレンダリングが実行されました。</p>
 
 <p>ここで、$lhsや$rhsを適当な数値に置き換えてaddボタンを押すと以下のような結果になります。</p>
 <div style="border: 1px solid #7e7e7e;padding:5px;">
@@ -88,6 +90,84 @@ public class AddControllerImpl {
 <p>ここで、HTTPのパラメータから、引数の変換を行っているのはorg.seasar.cadhelin.converter以下に存在するConverterクラスです。
 引数の型から、Converterクラスが適切に割り当てられますが、1つの型に複数のConverterクラスが存在するような場合はConverterを指定することも可能です。
 また、自分で独自のConverterクラスを作成することもできます。</p>
+<h2><a name="parameter">デフォルト値とRequired指定</a></h2>
+showAddメソッドを以下のように変更してください。
+<pre>
+public int showAdd(
+	@Param(required=false)int lhs,
+	@Param(defaultVal="1")int rhs){
+	return lhs + rhs;
+}
+</pre>
+
+<p>先ほどと同様にhttp://localhost:8080/cadhelin-blank/do/add/addにアクセスすると以下のような結果が表示されます。</p>
+
+<div style="border: 1px solid #7e7e7e;padding:5px;">
+	<input type="text" name="lhs" value="0"/>
+	+
+	
+	<input type="text" name="rhs" value="1"/>
+	= <span id="add">1</span>
+	<input type="submit" value="add"/>
+</div>
+<p>@Paramアノテーションのrequiredをfalseに設定することにより、HTTPパラメータが存在しないときでも、エラーが発生しなくなります。
+また、defaultValを設定することにより、HTTPパラメータが存在しないときのデフォルト値を設定することができます。</p>
+
+<h2>バリデーションの設定とエラーメッセージ</h2>
+showAddメソッドを以下のように変更してください。
+<pre>
+public int showAdd(
+	@Param(required=false,
+		validate=@Validate(value=IntRange.class,args="max=0"))int lhs,
+	@Param(defaultVal="1",
+		validate=@Validate(value=IntRange.class,args="min=0"))int rhs){
+	return lhs + rhs;
+}
+</pre>
+
+<p>http://localhost:8080/cadhelin-blank/do/add/add?lhs=1&rhs=-1にアクセスすると以下のような結果が表示されます。</p>
+
+<div style="border: 1px solid #7e7e7e;padding:5px;">
+	error.integer.outofrange.lhs
+	<input type="text" name="lhs" value="1"/>
+	+
+	error.integer.outofrange.rhs
+	<input type="text" name="rhs" value="-1"/>
+	= <span id="add">$add</span>
+	<input type="submit" value="add"/>
+</div>
+<p>Validateアノテーションで指定されたバリデーションに失敗したため、
+showAddメソッドが実行されずにadd.vmのレンダリングが実行されました。
+valueにはorg.seasar.cadhelin.Validatorインタフェースを実装しているクラスを指定できます。
+cadhelinではいくつかのバリデータを用意していますが、自分で実装することもできます。
+argsにはValidatorに設定するプロパティを"プロパティ名=値"の形式で指定します。複数指定することもできます。
+</p>
+<p>
+errorsはエラーメッセージを表示するための補助コンポーネントです。
+クラスパス上にmessages.propertiesが存在していれば、キーからエラーメッセージを検索し表示します。
+messages.propertiesが存在しないか、キーからエラーメッセージを検索できなかった場合、キーをそのまま表示します。
+/WEB-INF/srcにmessages.propertiesを作成し、以下のように記述してください。</p>
+
+</p>
+<pre>
+error.integer.outofrange.lhs=inupt integer value more than ${min}
+error.integer.outofrange.rhs=inupt integer value less than ${max}
+error.header=&lt;li&gt;
+error.hooter=&lt;/li&gt;
+errors.header = &lt;BR&gt;&lt;FONT class='configError'&gt;&lt;STRONG&gt; * An input error occurred. Please confirm the following items.&lt;/STRONG&gt;&lt;/FONT&gt;&lt;UL type='disc'&gt;&lt;FONT class='configErrorComment'&gt;
+errors.footer = &lt;/FONT&gt;&lt;/UL&gt;
+</pre>
+<p>http://localhost:8080/cadhelin-blank/do/add/add?lhs=1&rhs=-1にアクセスすると以下のような結果が表示されます。</p>
+
+<div style="border: 1px solid #7e7e7e;padding:5px;">
+	inupt integer value more than 0
+	<input type="text" name="lhs" value="1"/>
+	+
+	inupt integer value less than 0
+	<input type="text" name="rhs" value="-1"/>
+	= <span id="add">$add</span>
+	<input type="submit" value="add"/>
+</div>
 
 <!-- document end -->
 <!-- don't edit start -->
