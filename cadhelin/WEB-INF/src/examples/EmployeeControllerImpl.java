@@ -17,6 +17,7 @@ package examples;
 
 import java.util.Collection;
 
+import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.annotation.ResultName;
 
 public class EmployeeControllerImpl {
@@ -29,9 +30,11 @@ public class EmployeeControllerImpl {
 		return empdao.findAll();
 	}
 	
-	public void showAdd(){
+	@Render("Employee")
+	@ResultName("employee")
+	public Employee showAdd(){
+		return new Employee();
 	}
-	
 	public void doAdd(Employee employee){
 		empdao.addEmployee(employee);
 		showIndex();
@@ -41,6 +44,7 @@ public class EmployeeControllerImpl {
 		showIndex();
 	}
 
+	@Render("Employee")
 	@ResultName("employee")
 	public Employee showUpdate(int empno){
 		return empdao.getEmployee(empno);

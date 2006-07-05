@@ -19,14 +19,16 @@ import java.util.Date;
 
 public class Employee {
 	private int empno;
+	private int deptno;
 	private String name;
 	private Date date;
 	public Employee(){
 	}
-	public Employee(int empno, String name, Date hireDate) {
+	public Employee(int empno, String name, Date hireDate,int deptno) {
 		this.empno = empno;
 		this.name = name;
 		this.date = hireDate;
+		this.deptno = deptno;
 	}
 	public int getEmpno() {
 		return empno;
@@ -46,5 +48,10 @@ public class Employee {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+	public int getDeptno() {
+		return deptno;
+	}
+	public void setDeptno(int deptno) {
+		this.deptno = deptno;
+	}
 }

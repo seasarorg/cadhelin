@@ -20,10 +20,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class EmployeeDaoImpl implements EmployeeDao {
+	private DepartmentDao departmentDao;
 	HashMap <Integer,Employee> employees 
 		= new HashMap<Integer,Employee>();
-	public EmployeeDaoImpl() {
-		employees.put(employees.size()+1,new Employee(1,"test",new Date()));
+	public EmployeeDaoImpl(DepartmentDao departmentDao) {
+		this.departmentDao = departmentDao;
+		addEmployee(new Employee(0,"test",new Date(),1));
 	}
 	public Collection<Employee> findAll() {
 		return employees.values();
@@ -34,6 +36,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 	}
 
 	public void addEmployee(Employee employee) {
+		employee.setEmpno(employees.size()+1);
 		employees.put(employee.getEmpno(),employee);
 	}
 

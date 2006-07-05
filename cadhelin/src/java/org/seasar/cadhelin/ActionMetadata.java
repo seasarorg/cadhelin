@@ -76,6 +76,7 @@ public class ActionMetadata {
 			return;			
 		}
 		request.setAttribute("this",controller);
+		request.setAttribute("actionName",actionName);
 		Object[] argumants = new Object[converters.length];
 		int i = 0;
 		Map<String,Message> message = new HashMap<String,Message>();

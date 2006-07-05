@@ -8,4 +8,5 @@
 		instance="session"/>
 	<component class="examples.EmployeeDaoImpl"/>
 	<component class="examples.UserManagerImpl"/>
+	<component name="departmentDao" class="examples.DepartmentDaoImpl"/>
 </components>
