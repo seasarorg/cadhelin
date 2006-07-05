@@ -20,16 +20,42 @@ import java.util.Map;
 
 public class Message {
 	private String key;
-	private Map<String,String> arguments = new HashMap<String,String>();
+	private Map<String,Object> arguments;
 	
 	public Message(String key){
 		this.key = key;
 	}
-	public Message(String key,Map<String,String> arguments){
+	public Message(String key,Object arg1){
+		this.key = key;
+		arguments = new HashMap<String,Object>();
+		arguments.put("1",arg1);
+	}
+	public Message(String key,Object arg1,Object arg2){
+		this.key = key;
+		arguments = new HashMap<String,Object>();
+		arguments.put("1",arg1);
+		arguments.put("2",arg2);
+	}
+	public Message(String key,Object arg1,Object arg2,Object arg3){
+		this.key = key;
+		arguments = new HashMap<String,Object>();
+		arguments.put("1",arg1);
+		arguments.put("2",arg2);
+		arguments.put("3",arg3);
+	}
+	public Message(String key,Object arg1,Object arg2,Object arg3,Object arg4){
+		this.key = key;
+		arguments = new HashMap<String,Object>();
+		arguments.put("1",arg1);
+		arguments.put("2",arg2);
+		arguments.put("3",arg3);
+		arguments.put("4",arg4);
+	}
+	public Message(String key,Map<String,Object> arguments){
 		this.key = key;
 		this.arguments = arguments;
 	}
-	public Map<String, String> getArguments() {
+	public Map<String, Object> getArguments() {
 		return arguments;
 	}
 	public String getMessage(){
