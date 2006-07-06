@@ -27,5 +27,5 @@ public @interface Param {
 	String name() default "";
 	String defaultVal() default "";
 	Validate[] validate() default {};
-	boolean required() default true;
+	boolean required() default false;
 }
