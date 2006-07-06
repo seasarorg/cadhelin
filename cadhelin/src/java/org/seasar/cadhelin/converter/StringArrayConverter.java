@@ -24,8 +24,7 @@ import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
 
 public class StringArrayConverter extends AbstractConverter {
-	private static final String ERROR_KEY_REQUIRED = "error.converter.stringarray.required"; 
-	private boolean required = true;
+	private static final String ERROR_KEY_REQUIRED = "error.converter.stringarray.required";
 	public StringArrayConverter() {
 		super(new Object[]{String[].class});
 	}

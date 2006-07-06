@@ -17,7 +17,9 @@ package org.seasar.cadhelin.converter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,17 +28,20 @@ import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
 
-public class DateConverter extends AbstractConverter {
+public class DateBeanConverter extends AbstractConverter {
+	private static final String YEAR_SUFFIX = "_year";
+	private static final String MONTH_SUFFIX = "_month";
+	private static final String DATE_SUFFIX = "_date";
 	private static final String ERROR_KEY_DATE_REQUIRED = "error.converter.date.required";
 	private static final String ERROR_KEY_DATE_FORMAT = "error.converter.date.format";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	public DateConverter() {
-		super(new Object[]{"date",Date.class});
+	public DateBeanConverter() {
+		super(new Object[]{"dateBean",});
 	}
 	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
-		DateConverter converter = null;
+		DateBeanConverter converter = null;
 		try {
-			converter = (DateConverter) clone();
+			converter = (DateBeanConverter) clone();
 			converter.parameterName = parameterName;
 			if(validater!=null){
 				converter.required = validater.required();				
@@ -50,20 +55,27 @@ public class DateConverter extends AbstractConverter {
 	public Object convert(
 			HttpServletRequest request, 
 			Map<String,Message> messages) {
-		String str = request.getParameter(parameterName);
-		if(str==null || str.length()==0){
+		String year = request.getParameter(parameterName+YEAR_SUFFIX);
+		String month = request.getParameter(parameterName+MONTH_SUFFIX);
+		String date = request.getParameter(parameterName + DATE_SUFFIX);
+		if(	year==null 		 ||	month==null 	 	|| date==null ||
+			year.length()==0 ||	month.length()==0	|| date.length()==0){
 			if(required){
 				messages.put(parameterName,new Message(ERROR_KEY_DATE_REQUIRED+"."+parameterName));
 			}
 			return null;
 		}
 		try {
-			Date date = sdf.parse(str);
-			validate(date,messages);
-			return date;
+			Date d = sdf.parse(year+"-"+month+"-"+date);
+			validate(d,messages);
+			return d;
 		} catch (ParseException e1) {
 			messages.put(parameterName,new Message(ERROR_KEY_DATE_FORMAT+"."+parameterName));
-			return str;
+			HashMap<String,String> map = new HashMap<String,String>();
+			map.put("year",year);
+			map.put("month",month);
+			map.put("date",date);
+			return map;
 		}
 	};
 

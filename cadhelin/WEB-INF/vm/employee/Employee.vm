@@ -28,7 +28,21 @@ $!msg.getErrors()
 			</tr>
 			<tr>
 				<td>date</td>
-				<td><input type="text" name="date" value="$!dateFormat.format($employee.date)"/> $!msg.getError('date')</td>
+				<td>
+				$dateFormat.format($!employee.date) 
+					Year:
+					<select name="date_year">
+						$dateUtils.getYearOption(2005,2030,$!employee.date)
+					</select>
+					Month:
+					<select name="date_month">
+						$dateUtils.getMonthOption($!employee.date)
+					</select>
+					Date:
+					<select name="date_date">
+						$dateUtils.getDateOption($!employee.date)
+					</select>
+						<option value="2000"></option></select> $!msg.getError('date')</td>
 			</tr>
 			<tr>
 				<td></td>

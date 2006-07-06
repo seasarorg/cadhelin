@@ -18,8 +18,10 @@ package org.seasar.cadhelin;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -43,6 +45,7 @@ public class ActionMetadata {
 	private String[] parameterNames;
 	private Converter[] converters;
 	private String render = null;
+	private boolean reternMap = false;
 
 	public ActionMetadata(
 			HttpMethod httpMethod,
@@ -66,6 +69,7 @@ public class ActionMetadata {
 		if(render2!=null && render2.value().length()>0){
 			render = render2.value();
 		}
+		reternMap = Map.class.isAssignableFrom(method.getReturnType());
 	}
 	protected void service(
 			ControllerContext context,
@@ -109,6 +113,12 @@ public class ActionMetadata {
 				return;
 			}
 			request.setAttribute(resultName,ret);
+			if(reternMap){
+				Map retMap = (Map) ret;
+				for (Entry entry : (Collection<Entry>)retMap.entrySet()) {
+					request.setAttribute(entry.getKey().toString(),entry.getValue());
+				}
+			}
 			if(context.isRedirected()){
 				return;
 			}
@@ -154,15 +164,31 @@ public class ActionMetadata {
 			boolean first = true;
 			for(int i=0;i<arguments.length;i++){
 				if(arguments[i]!=null){
-					if(first){
-						buff.append("?");
+					if (arguments[i] instanceof Object[]) {
+						Object[] array = (Object[]) arguments[i];
+						for (Object object : array) {
+							if(first){
+								buff.append("?");
+							}else{
+								buff.append("&");
+							}
+							buff.append(parameterNames[i]);
+							buff.append("=");
+							buff.append(object.toString());
+							first = false;
+							
+						}
 					}else{
-						buff.append("&");
+						if(first){
+							buff.append("?");
+						}else{
+							buff.append("&");
+						}
+						buff.append(parameterNames[i]);
+						buff.append("=");
+						buff.append(arguments[i].toString());
+						first = false;						
 					}
-					buff.append(parameterNames[i]);
-					buff.append("=");
-					buff.append(arguments[i].toString());
-					first = false;
 				}
 			}
 			

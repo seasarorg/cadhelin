@@ -21,7 +21,6 @@
 #end
 </tbody>
 </table>
-#set($args = [])
 <a href="$link.employee.add()">Add Employee</a>
 </body>
 </html>

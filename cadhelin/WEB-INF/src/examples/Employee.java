@@ -17,11 +17,13 @@ package examples;
 
 import java.util.Date;
 
+import org.seasar.cadhelin.Param;
+
 public class Employee {
 	private int empno;
 	private int deptno;
 	private String name;
-	private Date date;
+	private Date date = new Date();
 	public Employee(){
 	}
 	public Employee(int empno, String name, Date hireDate,int deptno) {
@@ -45,6 +47,7 @@ public class Employee {
 	public Date getDate() {
 		return date;
 	}
+	@Param(name="dateBean")
 	public void setDate(Date date) {
 		this.date = date;
 	}

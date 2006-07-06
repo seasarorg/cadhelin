@@ -58,10 +58,11 @@ public class ControllerMetadata {
 		}
 		ActionMetadata metadatum = getActionMetadata(metadata,request.getMethod());
 		if(metadatum==null){
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);			
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		}else{
+			FilterContextImpl filter = new FilterContextImpl(filters,context,metadatum);
+			filter.doFilter(request,response);			
 		}
-		FilterContextImpl filter = new FilterContextImpl(filters,context,metadatum);
-		filter.doFilter(request,response);
 	}
 	private ActionMetadata getActionMetadata(ActionMetadata[] metadata,String method){
 		if(metadata==null || metadata.length==0){

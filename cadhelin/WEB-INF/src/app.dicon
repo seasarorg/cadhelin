@@ -9,4 +9,5 @@
 	<component class="examples.EmployeeDaoImpl"/>
 	<component class="examples.UserManagerImpl"/>
 	<component name="departmentDao" class="examples.DepartmentDaoImpl"/>
+	<component name="dateUtils" class="org.seasar.cadhelin.util.DateUtils"/>
 </components>

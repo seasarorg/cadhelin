@@ -28,7 +28,6 @@ import org.seasar.cadhelin.util.StringUtil;
 public class IntConverter extends AbstractConverter {
 	private String errorMessageKey;
 	private String defaultValue;
-	private boolean required = true;
 	private Map<String,String> messageArguments = 
 		new HashMap<String,String>();
 	public IntConverter() {

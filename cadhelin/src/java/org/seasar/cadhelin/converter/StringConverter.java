@@ -24,8 +24,7 @@ import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
 
 public class StringConverter extends AbstractConverter {
-	private static final String ERROR_KEY_REQUIRED = "error.converter.string.required"; 
-	private boolean required = true;
+	private static final String ERROR_KEY_REQUIRED = "error.converter.string.required";
 	private boolean trim = false;
 	public StringConverter() {
 		super(new Object[]{String.class});

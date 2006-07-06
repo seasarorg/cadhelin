@@ -29,8 +29,7 @@ import org.seasar.cadhelin.Param;
 
 public class FileItemConverter extends AbstractConverter {
 	private static final Log LOG = LogFactory.getLog(FileItemConverter.class);
-	private static final String ERROR_KEY_REQUIRED = "error.converter.fileitem.required"; 
-	private boolean required = true;
+	private static final String ERROR_KEY_REQUIRED = "error.converter.fileitem.required";
 	public FileItemConverter() {
 		super(new Object[]{FileItem.class});
 	}

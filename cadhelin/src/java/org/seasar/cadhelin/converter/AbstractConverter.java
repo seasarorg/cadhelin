@@ -26,6 +26,8 @@ import org.seasar.cadhelin.Validator;
 public abstract class AbstractConverter implements Converter {
 	protected List<Validator> validaters = 
 		new ArrayList<Validator>();
+	protected boolean required = false;
+
 	protected String parameterName;
 	protected Object[] converterKeys;
 	public AbstractConverter(Object[] converterKeys){
