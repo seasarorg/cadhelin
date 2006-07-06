@@ -38,12 +38,14 @@ public class RedirectSession {
 	public static void setAttribute(HttpSession session,String key,Object value){
 		RedirectSession first = 
 			(RedirectSession) session.getAttribute(firstKey);
-		first.values.put(key,value);
+		if(first!=null){
+			first.values.put(key,value);			
+		}
 	}
 	public static Object getAttribute(HttpSession session,String key){
 		RedirectSession second = 
 			(RedirectSession) session.getAttribute(secondKey);
-		return second.values.get(key);
+		return (second!=null)?second.values.get(key):null;			
 	}
 	public static void copyToRequest(HttpServletRequest request){
 		RedirectSession second = (RedirectSession) request.getSession().getAttribute(secondKey);
