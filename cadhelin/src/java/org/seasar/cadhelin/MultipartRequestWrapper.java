@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -125,8 +126,18 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
         }
         return value;
     }
-    public void addFileItem(FileItem fileItem){
-    	fileItems.put(fileItem.getFieldName(),fileItem);
+    public void setFileItems(List items){
+    	Iterator iter = items.iterator();
+    	while(iter.hasNext()){
+    		FileItem item = (FileItem) iter.next();
+    		fileItems.put(item.getFieldName(),item);
+    		if(item.isFormField()){
+    			setParameter(item.getFieldName(),item.getString());
+    		}
+    	}
+    }
+    public Collection<FileItem> getFileItems(){
+    	return fileItems.values();
     }
     public FileItem getFileItem(String name){
     	return fileItems.get(name);

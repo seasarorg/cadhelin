@@ -69,15 +69,7 @@ public class ControllerServlet extends HttpServlet {
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			List list = upload.parseRequest(context);
-			Iterator iter = list.iterator();
-			while(iter.hasNext()){
-				FileItem item = (FileItem) iter.next();
-				if(item.isFormField()){
-					wrapper.setParameter(item.getFieldName(),item.getString());
-				}else{
-					wrapper.addFileItem(item);
-				}
-			}
+			wrapper.setFileItems(list);
 			return wrapper;
 		}else{
 			return request;			
@@ -87,29 +79,29 @@ public class ControllerServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
 		RedirectSession.move(request.getSession());
-		ControllerContext controllerContext = 
-			new ControllerContext(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
-		ControllerContext.setContext(
-				controllerContext);
-		request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
-		RequestInfo info = new RequestInfo(request.getPathInfo());
-		ControllerMetadata metadata =
-			controllerMetadataFactory.getControllerMetadata(info.getControllerName());
-		if(metadata!=null){
-			try{
-				request = createHttpRequest(request);
-				metadata.service(controllerContext,request,response);
-			} catch (FileUploadException e) {
-				LOG.error("",e);
-				throw new RuntimeException(e);
-			}finally{
-				if (request instanceof MultipartRequestWrapper) {
-					MultipartRequestWrapper wrapper = (MultipartRequestWrapper) request;
-					wrapper.closeFileItems();
-				}
+		try{
+			request = createHttpRequest(request);
+			ControllerContext controllerContext = 
+				new ControllerContext(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
+			ControllerContext.setContext(
+					controllerContext);
+			request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
+			RequestInfo info = new RequestInfo(request.getPathInfo());
+			ControllerMetadata metadata =
+				controllerMetadataFactory.getControllerMetadata(info.getControllerName());
+			if(metadata!=null){
+				metadata.service(controllerContext,request,response);				
+			}else{
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);				
 			}
-		}else{
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} catch (FileUploadException e) {
+			LOG.error("",e);
+			throw new RuntimeException(e);
+		}finally{
+			if (request instanceof MultipartRequestWrapper) {
+				MultipartRequestWrapper wrapper = (MultipartRequestWrapper) request;
+				wrapper.closeFileItems();
+			}
 		}
 	}
 }
