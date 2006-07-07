@@ -113,7 +113,7 @@ public class ActionMetadata {
 				return;
 			}
 			request.setAttribute(resultName,ret);
-			if(reternMap){
+			if(reternMap && ret != null){
 				Map retMap = (Map) ret;
 				for (Entry entry : (Collection<Entry>)retMap.entrySet()) {
 					request.setAttribute(entry.getKey().toString(),entry.getValue());

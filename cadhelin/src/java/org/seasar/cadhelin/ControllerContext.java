@@ -122,6 +122,9 @@ public class ControllerContext {
 	public void setRedirected(boolean redirected) {
 		this.redirected = redirected;
 	}
+	public void setResponseHeader(String key,String value){
+		response.setHeader(key,value);
+	}
 	public boolean isFirstAction() {
 		return firstAction;
 	}
