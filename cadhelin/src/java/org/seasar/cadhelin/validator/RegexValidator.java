@@ -24,8 +24,8 @@ import org.seasar.cadhelin.Validator;
 
 public class RegexValidator implements Validator<String> {
 	private String errorMessageKey = "error.string.regex";
-	private Map<String,String> messageArguments = 
-		new HashMap<String,String>();
+	private Map<String,Object> messageArguments = 
+		new HashMap<String,Object>();
 	
 	private Pattern pattern;
 	public RegexValidator() {
@@ -47,7 +47,7 @@ public class RegexValidator implements Validator<String> {
 		}
 		return false;
 	}
-	public void setMessageArguments(Map<String, String> messageArguments) {
+	public void setMessageArguments(Map<String, Object> messageArguments) {
 		this.messageArguments = messageArguments;
 	}
 

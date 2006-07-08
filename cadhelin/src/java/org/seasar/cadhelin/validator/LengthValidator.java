@@ -23,8 +23,8 @@ import org.seasar.cadhelin.Validator;
 
 public class LengthValidator implements Validator<String> {
 	private String errorMessageKey = "error.string.outoflength.";
-	private Map<String,String> messageArguments = 
-		new HashMap<String,String>();
+	private Map<String,Object> messageArguments = 
+		new HashMap<String,Object>();
 	
 	private Integer min;
 	private Integer max;
@@ -51,7 +51,7 @@ public class LengthValidator implements Validator<String> {
 		}
 		return false;
 	}
-	public void setMessageArguments(Map<String, String> messageArguments) {
+	public void setMessageArguments(Map<String, Object> messageArguments) {
 		this.messageArguments = messageArguments;
 	}
 

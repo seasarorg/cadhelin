@@ -28,8 +28,8 @@ import org.seasar.cadhelin.util.StringUtil;
 public class FloatConverter extends AbstractConverter {
 	private String errorMessageKey;
 	private String defaultValue;
-	private Map<String,String> messageArguments = 
-		new HashMap<String,String>();
+	private Map<String,Object> messageArguments = 
+		new HashMap<String,Object>();
 	public FloatConverter() {
 		super(new Object[]{float.class,Float.class});
 	}

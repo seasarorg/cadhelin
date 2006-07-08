@@ -17,5 +17,12 @@ package org.seasar.cadhelin;
 
 public enum HttpMethod {
 	POST,
-	GET
+	GET;
+
+	public boolean isPost() {
+		return this==POST;
+	}
+	public boolean isGet() {
+		return this==GET;
+	}
 }

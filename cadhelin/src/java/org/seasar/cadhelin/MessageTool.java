@@ -80,7 +80,7 @@ public class MessageTool {
     	return message;
     }
     public InsertAsIs getMessage(String key){
-    	String message = getString(key);
+    	String message = getMessageString(key);
     	return (message!=null)?new InsertAsIs(message):null;
     }
     @SuppressWarnings("unchecked")
@@ -101,9 +101,5 @@ public class MessageTool {
     		return  null;
     	}
     	return messagePrefix+message+messageSuffix;
-    }
-    public InsertAsIs getError(String key){
-    	String message = getMessageString(key);
-    	return (message!=null)?new InsertAsIs(message):null;
     }
 }

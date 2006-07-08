@@ -1,1 +1,2 @@
 "${test}".replace("${test}","replaced")
+new java.util.Date().getDate()(int) 6(int) 4

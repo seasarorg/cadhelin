@@ -48,7 +48,8 @@ public class IntArrayConverter extends AbstractConverter {
 			Map<String,Message> message) {
 		String[] strs = request.getParameterValues(parameterName);
 		if((strs == null || strs.length == 0) && required){
-			message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName));
+			message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName
+					,messageArguments));
 			return null;
 		}
 		Integer[] ints = new Integer[strs.length];

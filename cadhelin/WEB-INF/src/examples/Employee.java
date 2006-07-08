@@ -41,6 +41,7 @@ public class Employee {
 	public String getName() {
 		return name;
 	}
+	@Param(required=true)
 	public void setName(String name) {
 		this.name = name;
 	}

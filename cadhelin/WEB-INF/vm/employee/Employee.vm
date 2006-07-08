@@ -1,10 +1,9 @@
 <html>
 <head><title>$actionName Employee</title></head>
 <body>
-$!msg.getErrors()
+$!errors.getMessages()
 
 <form action="$actionName" method="POST">
-<input type="hidden" name="cadhelin_redirect_to" value="$cadhelin_redirect_to">
 <input type="hidden" name="empno" value="$!employee.empno"/>
 	<table>
 		<tbody>
@@ -29,7 +28,6 @@ $!msg.getErrors()
 			<tr>
 				<td>date</td>
 				<td>
-				$dateFormat.format($!employee.date) 
 					Year:
 					<select name="date_year">
 						$dateUtils.getYearOption(2005,2030,$!employee.date)

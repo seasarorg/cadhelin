@@ -39,6 +39,7 @@ public class ActionMetadata {
 	private String redirectParameterName = "cadhelin_redirect_to";
 	private String resultName;
 	private String actionName;
+	private String controllerName;
 	private Object controller;
 	private String role;
 	private Method method;
@@ -49,6 +50,7 @@ public class ActionMetadata {
 
 	public ActionMetadata(
 			HttpMethod httpMethod,
+			String controllerName,
 			String actionName,
 			String resultName,
 			String role,
@@ -57,6 +59,7 @@ public class ActionMetadata {
 			String[] parameterNames,
 			Converter[] converters) {
 		this.httpMethod = httpMethod;
+		this.controllerName = controllerName;
 		this.actionName = actionName;
 		this.resultName = resultName;
 		this.role = role;
@@ -71,6 +74,17 @@ public class ActionMetadata {
 		}
 		reternMap = Map.class.isAssignableFrom(method.getReturnType());
 	}
+	public Object[] convertToParameter(HttpServletRequest request,Map<String,Message> error){
+		Object[] argumants = new Object[converters.length];
+		int i = 0;
+		for (Converter con : converters) {
+			Object arg = con.convert(request,error);
+			argumants[i] = arg;
+			request.setAttribute(parameterNames[i],arg);
+			i++;
+		}
+		return argumants;
+	}
 	protected void service(
 			ControllerContext context,
 			HttpServletRequest request, 
@@ -81,20 +95,15 @@ public class ActionMetadata {
 		}
 		request.setAttribute("this",controller);
 		request.setAttribute("actionName",actionName);
-		Object[] argumants = new Object[converters.length];
-		int i = 0;
-		Map<String,Message> message = new HashMap<String,Message>();
+		Map<String,Message> error = new HashMap<String,Message>();
 		//convert
+		Object[] argumants = convertToParameter(request,error);
 		Map<String,Object> values = new HashMap<String,Object>();
-		for (Converter con : converters) {
-			Object arg = con.convert(request,message);
-			argumants[i] = arg;
-			request.setAttribute(parameterNames[i],arg);
-			values.put(parameterNames[i],arg);
-			i++;
+		for(int i=0;i<argumants.length;i++){
+			values.put(parameterNames[i],argumants[i]);
 		}
-		if(message.size()>0){
-			widthError(context,request,response,message,values);
+		if(error.size()>0){
+			widthError(context,request,response,error,values);
 			return;
 		}
 		try {
@@ -105,11 +114,11 @@ public class ActionMetadata {
 				LOG.error("exception",e);
 				RedirectSession.setAttribute(
 						request.getSession(),"exception",e.getTargetException());
-				widthError(context,request,response,message,values);
+				widthError(context,request,response,error,values);
 				return;
 			}
 			if(context.getErrorCount()>0){
-				widthError(context,request,response,message,values);				
+				widthError(context,request,response,error,values);				
 				return;
 			}
 			request.setAttribute(resultName,ret);
@@ -142,16 +151,23 @@ public class ActionMetadata {
 			ControllerContext context,
 			HttpServletRequest request, 
 			HttpServletResponse response, 
-			Map<String,Message> message, 
+			Map<String,Message> error, 
 			Map<String,Object> m) throws IOException, ServletException {
 		String redirectUrl = request.getParameter(redirectParameterName);
+		if(redirectUrl == null && httpMethod.isPost()){
+			//もしリダイレクト先がなくPOSTメソッドならGETにリダイレクトする
+			ActionMetadata action = context.getAction(this.controllerName,this.actionName,"GET");
+			Object[] arguments = action.convertToParameter(request,new HashMap<String,Message>());
+			redirectUrl = action.convertToURL(arguments);
+		}
 		if(redirectUrl!=null){
 			RedirectSession.setAttribute(request.getSession(),m);
-			RedirectSession.setAttribute(request.getSession(),MessageTool.MESSAGE_KEY,message);
-			response.sendRedirect(redirectUrl);
+			context.addError(error);
+			context.setRedirect(redirectUrl);
 		}else{
+			//リダイレクト先がなければそのままレンダリングを行う
 			String url = context.getViewURL(actionName);
-			context.addMessage(message);
+			context.addMessage(error);
 			request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
 			dispatcher.forward(request,response);

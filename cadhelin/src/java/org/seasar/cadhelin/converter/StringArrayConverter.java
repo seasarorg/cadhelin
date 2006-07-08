@@ -48,7 +48,8 @@ public class StringArrayConverter extends AbstractConverter {
 			Map<String,Message> message) {
 		String[] str = request.getParameterValues(parameterName);
 		if((str == null || str.length == 0) && required){
-			message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName));
+			message.put(parameterName,new Message(
+					ERROR_KEY_REQUIRED +"." + parameterName,messageArguments));
 			return null;
 		}
 		validate(str,message);

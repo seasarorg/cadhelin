@@ -55,7 +55,7 @@ public class FileItemConverter extends AbstractConverter {
 			MultipartRequestWrapper wrapper = (MultipartRequestWrapper) request;
 			FileItem fileItem = wrapper.getFileItem(parameterName);
 			if((fileItem ==null)&& required){
-				message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName));
+				message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName,messageArguments));
 				return null;
 			}
 			validate(fileItem,message);

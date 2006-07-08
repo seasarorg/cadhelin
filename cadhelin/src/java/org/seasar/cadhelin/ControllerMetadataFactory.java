@@ -102,7 +102,7 @@ public class ControllerMetadataFactory {
 		Method[] methods = beanClass.getDeclaredMethods();
 		for(Method method : methods){
 			if((method.getModifiers() & Modifier.PUBLIC) > 0){
-				ActionMetadata actionMetadata = createActionMetadata(beanDesc,controller, method, role);
+				ActionMetadata actionMetadata = createActionMetadata(beanDesc,name,controller, method, role);
 				if(actionMetadata!=null){
 					metadata.addActionMetadata(actionMetadata.getName(),actionMetadata);					
 					Default def = method.getAnnotation(Default.class);
@@ -116,6 +116,7 @@ public class ControllerMetadataFactory {
 	}
 	protected ActionMetadata createActionMetadata(
 			BeanDesc beanDesc,
+			String controllerName,
 			Object controller,
 			Method method,
 			String defaultRole){
@@ -146,7 +147,7 @@ public class ControllerMetadataFactory {
 			resultName = rna.value();
 		}
 		Converter[] converters = factory.createConverters(method,parameterNames);
-		return new ActionMetadata(httpMethod,actionName,resultName,role,controller,method,parameterNames,converters);
+		return new ActionMetadata(httpMethod,controllerName,actionName,resultName,role,controller,method,parameterNames,converters);
 	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
 		return controllers.get(controllerName);

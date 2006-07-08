@@ -18,6 +18,6 @@ package org.seasar.cadhelin;
 import java.util.Map;
 
 public interface Validator<T> {
-	public void setMessageArguments(Map<String, String> messageArguments);
+	public void setMessageArguments(Map<String, Object> messageArguments);
 	boolean validate(String name,T value,Map<String,Message> errors);
 }

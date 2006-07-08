@@ -199,6 +199,9 @@ public class ControllerContext {
 	}
 	public void setRedirect(String redirectUrl) {
 		try {
+			RedirectSession.setAttribute(request.getSession(),
+					MessageTool.ERROR_KEY,
+					request.getAttribute(MessageTool.ERROR_KEY));
 			response.sendRedirect(redirectUrl);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

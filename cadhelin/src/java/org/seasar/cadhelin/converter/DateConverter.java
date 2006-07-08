@@ -53,7 +53,7 @@ public class DateConverter extends AbstractConverter {
 		String str = request.getParameter(parameterName);
 		if(str==null || str.length()==0){
 			if(required){
-				messages.put(parameterName,new Message(ERROR_KEY_DATE_REQUIRED+"."+parameterName));
+				messages.put(parameterName,new Message(ERROR_KEY_DATE_REQUIRED+"."+parameterName,messageArguments));
 			}
 			return null;
 		}
@@ -62,7 +62,7 @@ public class DateConverter extends AbstractConverter {
 			validate(date,messages);
 			return date;
 		} catch (ParseException e1) {
-			messages.put(parameterName,new Message(ERROR_KEY_DATE_FORMAT+"."+parameterName));
+			messages.put(parameterName,new Message(ERROR_KEY_DATE_FORMAT+"."+parameterName,messageArguments));
 			return str;
 		}
 	};

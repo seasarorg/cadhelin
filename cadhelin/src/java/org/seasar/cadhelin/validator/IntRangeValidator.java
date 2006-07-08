@@ -25,9 +25,9 @@ public class IntRangeValidator implements Validator<Integer>{
 	private String errorMessageKey = "error.integer.outofrange.";
 	private Integer min;
 	private Integer max;
-	private Map<String,String> messageArguments = 
-		new HashMap<String,String>();
-	public void setMessageArguments(Map<String, String> messageArguments) {
+	private Map<String,Object> messageArguments = 
+		new HashMap<String,Object>();
+	public void setMessageArguments(Map<String, Object> messageArguments) {
 		this.messageArguments = messageArguments;
 	}
 	public IntRangeValidator(){

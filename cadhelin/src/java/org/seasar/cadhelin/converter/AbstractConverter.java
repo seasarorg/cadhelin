@@ -16,6 +16,7 @@
 package org.seasar.cadhelin.converter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
 
 public abstract class AbstractConverter implements Converter {
+	protected Map<String,Object> messageArguments = new HashMap<String,Object>();
 	protected List<Validator> validaters = 
 		new ArrayList<Validator>();
 	protected boolean required = false;
@@ -32,6 +34,9 @@ public abstract class AbstractConverter implements Converter {
 	protected Object[] converterKeys;
 	public AbstractConverter(Object[] converterKeys){
 		this.converterKeys = converterKeys;
+	}
+	public Map<String, Object> getMessageArguments() {
+		return messageArguments;
 	}
 	public Object[] getConverterKey() {
 		return converterKeys;

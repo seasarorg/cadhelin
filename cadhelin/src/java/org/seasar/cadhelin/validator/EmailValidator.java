@@ -25,9 +25,9 @@ import org.seasar.cadhelin.Validator;
 
 public class EmailValidator implements Validator<String> {
 	private String errorMessageKey = "error.string.email.";
-	private Map<String,String> messageArguments = 
-		new HashMap<String,String>();
-	public void setMessageArguments(Map<String, String> messageArguments) {
+	private Map<String,Object> messageArguments = 
+		new HashMap<String,Object>();
+	public void setMessageArguments(Map<String, Object> messageArguments) {
 		this.messageArguments = messageArguments;
 	}
 	public EmailValidator() {

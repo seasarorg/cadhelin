@@ -28,8 +28,8 @@ import org.seasar.cadhelin.util.StringUtil;
 public class DoubleConverter extends AbstractConverter {
 	private String errorMessageKey;
 	private String defaultValue;
-	private Map<String,String> messageArguments = 
-		new HashMap<String,String>();
+	private Map<String,Object> messageArguments = 
+		new HashMap<String,Object>();
 	public DoubleConverter() {
 		super(new Object[]{double.class,Double.class});
 	}

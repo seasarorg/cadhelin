@@ -61,7 +61,7 @@ public class DateBeanConverter extends AbstractConverter {
 		if(	year==null 		 ||	month==null 	 	|| date==null ||
 			year.length()==0 ||	month.length()==0	|| date.length()==0){
 			if(required){
-				messages.put(parameterName,new Message(ERROR_KEY_DATE_REQUIRED+"."+parameterName));
+				messages.put(parameterName,new Message(ERROR_KEY_DATE_REQUIRED+"."+parameterName,messageArguments));
 			}
 			return null;
 		}
@@ -70,7 +70,7 @@ public class DateBeanConverter extends AbstractConverter {
 			validate(d,messages);
 			return d;
 		} catch (ParseException e1) {
-			messages.put(parameterName,new Message(ERROR_KEY_DATE_FORMAT+"."+parameterName));
+			messages.put(parameterName,new Message(ERROR_KEY_DATE_FORMAT+"."+parameterName,messageArguments));
 			HashMap<String,String> map = new HashMap<String,String>();
 			map.put("year",year);
 			map.put("month",month);
