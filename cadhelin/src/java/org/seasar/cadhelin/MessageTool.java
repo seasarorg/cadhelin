@@ -79,6 +79,10 @@ public class MessageTool {
     	}
     	return message;
     }
+    public InsertAsIs getMsgs(String key){
+    	String message = getMessageString(key);
+    	return (message!=null)?new InsertAsIs(message):null;
+    }
     public InsertAsIs getMessage(String key){
     	String message = getMessageString(key);
     	return (message!=null)?new InsertAsIs(message):null;

@@ -47,9 +47,11 @@ public class IntegerArrayConverter extends AbstractConverter {
 			HttpServletRequest request, 
 			Map<String,Message> message) {
 		String[] strs = request.getParameterValues(parameterName);
-		if((strs == null || strs.length == 0) && required){
-			message.put(parameterName,new Message(
-					ERROR_KEY_REQUIRED +"." + parameterName,messageArguments));
+		if((strs == null || strs.length == 0)){
+			if( required){
+				message.put(parameterName,new Message(
+						ERROR_KEY_REQUIRED +"." + parameterName,messageArguments));
+			}
 			return null;
 		}
 		int[] ints = new int[strs.length];
