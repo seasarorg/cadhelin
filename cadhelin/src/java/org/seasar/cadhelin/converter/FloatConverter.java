@@ -22,29 +22,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.util.StringUtil;
 
 public class FloatConverter extends AbstractConverter {
-	private String errorMessageKey;
+	private String errorMessageKey = "error.converter.float";
 	private String defaultValue;
 	private Map<String,Object> messageArguments = 
 		new HashMap<String,Object>();
 	public FloatConverter() {
 		super(new Object[]{float.class,Float.class});
 	}
-	public FloatConverter(Object[] keys,String parameterName,Param param){
-		super(keys);
-		this.parameterName = parameterName;
-		this.errorMessageKey = "error.float." + parameterName;
-		if(param != null){
-			this.defaultValue = param.defaultVal();
-			required = param.required();
-		}
-		
-	}
-	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
-		return new FloatConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new FloatConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 

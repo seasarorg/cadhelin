@@ -22,29 +22,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.util.StringUtil;
 
 public class IntConverter extends AbstractConverter {
-	private String errorMessageKey;
+	private String errorMessageKey = "error.integer";
 	private String defaultValue;
 	private Map<String,Object> messageArguments = 
 		new HashMap<String,Object>();
 	public IntConverter() {
 		super(new Object[]{int.class,Integer.class});
 	}
-	public IntConverter(Object[] keys,String parameterName,Param param){
-		super(keys);
-		this.parameterName = parameterName;
-		this.errorMessageKey = "error.integer." + parameterName;
-		if(param != null){
-			this.defaultValue = param.defaultVal();
-			required = param.required();
-		}
-		
-	}
-	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
-		return new IntConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new IntConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 
@@ -58,6 +47,9 @@ public class IntConverter extends AbstractConverter {
 				messages.put(parameterName,
 						new Message(errorMessageKey+".required",
 								messageArguments));
+			}
+			if(parameterType.isPrimitive()){
+				return new Integer(0);
 			}
 			return null;
 		}

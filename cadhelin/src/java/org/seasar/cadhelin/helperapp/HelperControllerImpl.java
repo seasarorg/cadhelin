@@ -1,5 +1,8 @@
 package org.seasar.cadhelin.helperapp;
 
+import java.beans.XMLEncoder;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.ServletContext;
@@ -32,6 +35,19 @@ public class HelperControllerImpl {
 		
 		Converter converter = action.getConverters()[paramNum-1];
 		return converter;
+	}
+	public void showConvertor(String controllerName,String methodName,String actionName,int paramNum){
+		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
+		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
+		
+		Converter converter = action.getConverters()[paramNum-1];
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		XMLEncoder encoder = new XMLEncoder(os);
+		encoder.writeObject(converter);
+		encoder.close();
+		String string = new String(os.toByteArray());
+		System.err.print(string);
+		showParameterConvertor(controllerName,methodName,actionName,paramNum);
 	}
 	public void doParameterConvertor(String controllerName,String methodName,String actionName,int paramNum,boolean required){
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);

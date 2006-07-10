@@ -21,26 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 
 public class StringArrayConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.stringarray.required";
 	public StringArrayConverter() {
 		super(new Object[]{String[].class});
 	}
-	public StringArrayConverter(Object[] keys,String parameterName,Param validater){
-		super(keys);
-		this.parameterName = parameterName;
-		if(validater!=null){
-			required = validater.required();
-
-		}
-	}
-	public Converter createInstance(
-			String parameterName, 
-			Class targetClass, 
-			Param validater) {
-		return new StringArrayConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new StringArrayConverter();
 	}
 	
 	public Object convert(

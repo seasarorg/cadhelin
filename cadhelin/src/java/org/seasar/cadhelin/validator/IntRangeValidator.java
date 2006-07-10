@@ -35,10 +35,15 @@ public class IntRangeValidator implements Validator<Integer>{
 	public void setMin(Integer min) {
 		this.min = min;
 	}
+	public Integer getMin() {
+		return min;
+	}
 	public void setMax(Integer max) {
 		this.max = max;
 	}
-
+	public Integer getMax() {
+		return max;
+	}
 	public boolean validate(String name,Integer value, Map<String, Message> errors) {
 		if (value instanceof Number) {
 			Number number = (Number) value;

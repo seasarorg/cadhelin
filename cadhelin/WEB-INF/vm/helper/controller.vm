@@ -1,6 +1,10 @@
 <html>
 	<head>
 		<title>Controller($controller.name)</title>
+<style type="text/css">
+  table td { background-color: #F0F0F0; }
+  table th { background-color: #F0FFF0; }
+</style>
 	</head>
 	<body>
 		<h1>Controller($controller.name)</h1>
@@ -20,6 +24,12 @@
 			<td>
 			#foreach($converter in $actionMetadatum.converters)
 				<a href="$link.helper.parameterConvertor($controllerName,$actionMetadatum.httpMethod,$actionMetadatum.name,$velocityCount)">
+					$converter.parameterType $converter.parameterName</a><br/>
+			#end
+			</td>
+			<td>
+			#foreach($converter in $actionMetadatum.converters)
+				<a href="$link.helper.convertor($controllerName,$actionMetadatum.httpMethod,$actionMetadatum.name,$velocityCount)">
 					$converter.parameterType $converter.parameterName</a><br/>
 			#end
 			</td>

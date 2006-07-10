@@ -22,6 +22,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
@@ -29,8 +31,10 @@ import org.seasar.cadhelin.util.AnnotationUtil;
 import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.PropertyDesc;
 import org.seasar.framework.beans.factory.BeanDescFactory;
+import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
 public class BeanConverter extends AbstractConverter {
+	private static Log LOG = LogFactory.getLog(BeanConverter.class);
 	private ConverterFactory converterFactory;
 	private BeanDesc beanDesc;
 	private Converter[] converters;
@@ -38,15 +42,13 @@ public class BeanConverter extends AbstractConverter {
 	private Constructor constructor;
 	public BeanConverter(){
 		super(new Object[]{Object.class});
+		this.converterFactory = 
+			(ConverterFactory) SingletonS2ContainerFactory.getContainer().getComponent(ConverterFactory.class);
 	}
-	public BeanConverter(
-			ConverterFactory converterFactory,
-			String parameterName,
-			Class targetClass,
-			Param validater){
-		super(new Object[]{Object.class});
-		this.converterFactory = converterFactory;
-		beanDesc = BeanDescFactory.getBeanDesc(targetClass);
+	@Override
+	public void setParameterType(Class parameterType) {
+		this.parameterType = parameterType;
+		beanDesc = BeanDescFactory.getBeanDesc(parameterType);
 		constructor = beanDesc.getSuitableConstructor(new Class[0]);
 		int size = beanDesc.getPropertyDescSize();
 		ArrayList<Converter> cl = new ArrayList<Converter>();
@@ -61,6 +63,11 @@ public class BeanConverter extends AbstractConverter {
 			Param param = AnnotationUtil.getPropertyAnnotation(pd,Param.class);
 			Converter converter = this.converterFactory.findConverter(pd.getPropertyName(),pd.getPropertyType(),param);
 			if(converter!=null){
+				converter.setParameterName(pd.getPropertyName());
+				converter.setParameterType(pd.getPropertyType());
+				if(param!=null){
+					converter.setRequired(param.required());					
+				}
 				this.converterFactory.setUpValidater(converter,param);
 				pl.add(pd);
 				cl.add(converter);
@@ -72,11 +79,8 @@ public class BeanConverter extends AbstractConverter {
 	public void setConverterFactory(ConverterFactory converterFactory) {
 		this.converterFactory = converterFactory;
 	}
-	public Converter createInstance(
-			String parameterName, 
-			Class targetClass, 
-			Param validater) {
-		return new BeanConverter(converterFactory,parameterName,targetClass,validater);
+	public Converter createInstance() {
+		return new BeanConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 
@@ -104,8 +108,12 @@ public class BeanConverter extends AbstractConverter {
 			}
 			return bean;
 		} catch (Exception e) {
+			LOG.error("", e);
 			throw new RuntimeException(e);
 		}
 	};
-
+	@Override
+	public Converter[] getChildConvertors() {
+		return converters;
+	}
 }

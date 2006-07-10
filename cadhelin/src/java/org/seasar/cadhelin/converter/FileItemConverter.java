@@ -25,7 +25,6 @@ import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.MultipartRequestWrapper;
-import org.seasar.cadhelin.Param;
 
 public class FileItemConverter extends AbstractConverter {
 	private static final Log LOG = LogFactory.getLog(FileItemConverter.class);
@@ -33,19 +32,8 @@ public class FileItemConverter extends AbstractConverter {
 	public FileItemConverter() {
 		super(new Object[]{FileItem.class});
 	}
-	public FileItemConverter(Object[] keys,String parameterName,Param validater){
-		super(keys);
-		this.parameterName = parameterName;
-		if(validater!=null){
-			required = validater.required();
-
-		}
-	}
-	public Converter createInstance(
-			String parameterName, 
-			Class targetClass, 
-			Param validater) {
-		return new FileItemConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new FileItemConverter();
 	}
 	
 	public Object convert(

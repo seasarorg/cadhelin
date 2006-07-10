@@ -1,10 +1,19 @@
 <html>
 	<head>
 		<title>Controller List</title>
+<style type="text/css">
+  table td { background-color: #F0F0F0; }
+  table th { background-color: #F0FFF0; }
+</style>
 	</head>
 	<body>
 		<h1>Controller List</h1>
 		<table>
+		<tr>
+			<th>Controller Name</th>
+			<th>GET Action</th>
+			<th>POST Action</th>
+		</tr>
 		#foreach($contr in $controllers)
 		<tr>
 			<td><a href="$link.helper.controller($contr.name)">$contr.name</a></td>

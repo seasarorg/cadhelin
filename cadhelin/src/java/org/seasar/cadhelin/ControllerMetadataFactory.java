@@ -60,13 +60,6 @@ public class ControllerMetadataFactory {
 	public ControllerMetadataFactory(S2Container container) {
 		factory = 
 			(ConverterFactoryImpl) container.getComponent(ConverterFactoryImpl.class);
-		if(container.hasComponentDef("sessionManager")){
-			ComponentDef componentDef = container.getComponentDef("sessionManager");
-			factory.addConverter(
-					new SessionManagerConverter(
-							container,
-							new Object[]{componentDef.getComponentClass()}));
-		}
 		Object[] f = container.findComponents(ActionFilter.class);
 		this.filters = new ActionFilter[f.length];
 		System.arraycopy(f,0,filters,0,filters.length);

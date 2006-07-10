@@ -21,26 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 
 public class IntArrayConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.intarray.required";
 	public IntArrayConverter() {
-		super(new Object[]{Integer[].class});
+		super(new Object[]{int[].class});
 	}
-	public IntArrayConverter(Object[] keys,String parameterName,Param validater){
-		super(keys);
-		this.parameterName = parameterName;
-		if(validater!=null){
-			required = validater.required();
-
-		}
-	}
-	public Converter createInstance(
-			String parameterName, 
-			Class targetClass, 
-			Param validater) {
-		return new IntArrayConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new IntArrayConverter();
 	}
 	
 	public Object convert(
@@ -54,11 +42,11 @@ public class IntArrayConverter extends AbstractConverter {
 			}
 			return null;
 		}
-		Integer[] ints = new Integer[strs.length];
+		int[] ints = new int[strs.length];
 		int i=0;
 		for (String str : strs) {
 			try {
-				ints[i] = Integer.valueOf(str);
+				ints[i] = Integer.parseInt(str);
 			} catch (NumberFormatException e) {
 			}
 			i++;

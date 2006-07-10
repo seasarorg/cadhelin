@@ -21,18 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 
 public class BooleanConverter extends AbstractConverter {
 	public BooleanConverter() {
 		super(new Object[]{boolean.class,Boolean.class});
 	}
-	public BooleanConverter(Object[] keys,String parameterName,Param validater){
-		super(keys);
-		this.parameterName = parameterName;
-	}
-	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
-		return new BooleanConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new BooleanConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 

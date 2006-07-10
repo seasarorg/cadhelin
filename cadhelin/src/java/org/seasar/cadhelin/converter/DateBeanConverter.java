@@ -17,7 +17,6 @@ package org.seasar.cadhelin.converter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 
 public class DateBeanConverter extends AbstractConverter {
 	private static final String YEAR_SUFFIX = "_year";
@@ -38,18 +36,8 @@ public class DateBeanConverter extends AbstractConverter {
 	public DateBeanConverter() {
 		super(new Object[]{"dateBean",});
 	}
-	public Converter createInstance(String parameterName, Class targetClass, Param validater) {
-		DateBeanConverter converter = null;
-		try {
-			converter = (DateBeanConverter) clone();
-			converter.parameterName = parameterName;
-			if(validater!=null){
-				converter.required = validater.required();				
-			}
-			return converter;
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
+	public Converter createInstance() {
+		return new DateBeanConverter();
 	}
 
 	public Object convert(

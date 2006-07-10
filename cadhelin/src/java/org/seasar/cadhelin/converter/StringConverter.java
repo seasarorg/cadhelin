@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.util.StringUtil;
 
 public class StringConverter extends AbstractConverter {
@@ -30,19 +29,8 @@ public class StringConverter extends AbstractConverter {
 	public StringConverter() {
 		super(new Object[]{String.class});
 	}
-	public StringConverter(Object[] keys,String parameterName,Param validater){
-		super(keys);
-		this.parameterName = parameterName;
-		if(validater!=null){
-			required = validater.required();
-
-		}
-	}
-	public Converter createInstance(
-			String parameterName, 
-			Class targetClass, 
-			Param validater) {
-		return new StringConverter(converterKeys,parameterName,validater);
+	public Converter createInstance() {
+		return new StringConverter();
 	}
 	
 	public Object convert(
