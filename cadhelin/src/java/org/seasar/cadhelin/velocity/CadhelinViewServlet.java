@@ -94,7 +94,7 @@ public class CadhelinViewServlet extends VelocityViewServlet {
         // Try reading an overriding Velocity configuration
         try
         {
-            ExtendedProperties p = loadConfiguration();
+            ExtendedProperties p = loadConfiguration(config);
             velocity.setExtendedProperties(p);
         }
         catch(Exception e)
