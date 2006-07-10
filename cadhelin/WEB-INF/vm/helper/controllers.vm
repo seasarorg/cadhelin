@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<title>Controller List</title>
+	</head>
+	<body>
+		<h1>Controller List</h1>
+		<table>
+		#foreach($contr in $controllers)
+		<tr>
+			<td><a href="$link.helper.controller($contr.name)">$contr.name</a></td>
+		</tr>
+		#end
+		</table>
+	</body>
+</html>

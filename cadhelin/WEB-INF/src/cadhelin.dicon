@@ -20,6 +20,21 @@
 	        <arg>".*ControllerImpl"</arg>
 	    </initMethod>
 	</component>
+	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
+		<initMethod name="addClassPattern">
+			<arg>"org.seasar.cadhelin.helperapp"</arg>
+			<arg>".*ControllerImpl"</arg>
+		</initMethod>
+	</component>
+	<component
+	  class="org.seasar.framework.container.autoregister.AspectAutoRegister">
+	    <property name="interceptor">ca</property>
+	    <property name="pointcut">"show.*,do.*"</property>
+	    <initMethod name="addClassPattern">
+	        <arg>"org.seasar.cadhelin.helperapp"</arg>
+	        <arg>".*ControllerImpl"</arg>
+	    </initMethod>
+	</component>
 	<component class="org.seasar.cadhelin.filter.AuthorizationFilter">
 		<property name="redirectUrl">"/cadhelin/do/logon/logonForm"</property>
 	</component>

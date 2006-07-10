@@ -6,8 +6,8 @@
 	<component name="sessionManager" 
 		class="examples.SessionManager"
 		instance="session"/>
-	<component class="examples.EmployeeDaoImpl"/>
+	<component class="examples.employee.EmployeeDaoImpl"/>
 	<component class="examples.UserManagerImpl"/>
-	<component name="departmentDao" class="examples.DepartmentDaoImpl"/>
+	<component name="departmentDao" class="examples.employee.DepartmentDaoImpl"/>
 	<component name="dateUtils" class="org.seasar.cadhelin.util.DateUtils"/>
 </components>

@@ -74,6 +74,9 @@ public class ActionMetadata {
 		}
 		reternMap = Map.class.isAssignableFrom(method.getReturnType());
 	}
+	public Converter[] getConverters(){
+		return converters;
+	}
 	public Object[] convertToParameter(HttpServletRequest request,Map<String,Message> error){
 		Object[] argumants = new Object[converters.length];
 		int i = 0;

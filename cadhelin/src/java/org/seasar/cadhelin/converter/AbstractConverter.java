@@ -29,8 +29,26 @@ public abstract class AbstractConverter implements Converter {
 	protected List<Validator> validaters = 
 		new ArrayList<Validator>();
 	protected boolean required = false;
-
+	public boolean isRequired() {
+		return required;
+	}
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
 	protected String parameterName;
+	public String getParameterName() {
+		return parameterName;
+	}
+	public void setParameterName(String parameterName) {
+		this.parameterName = parameterName;
+	}
+	protected Class parameterType;
+	public Class getParameterType() {
+		return parameterType;
+	}
+	public void setParameterType(Class parameterType) {
+		this.parameterType = parameterType;
+	}
 	protected Object[] converterKeys;
 	public AbstractConverter(Object[] converterKeys){
 		this.converterKeys = converterKeys;

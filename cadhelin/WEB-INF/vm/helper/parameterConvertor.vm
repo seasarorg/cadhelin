@@ -1,0 +1,20 @@
+<html>
+	<head><title>Parameter($parameterConvertor.parameterName)</title></head>
+	<body>
+	<form action="parameterConvertor" method="POST">
+		<input type="hidden" name="controllerName" value="$controllerName">
+		<input type="hidden" name="methodName" value="$methodName">
+		<input type="hidden" name="actionName" value="$actionName">
+		<input type="hidden" name="paramNum" value="$paramNum">
+		<dl>
+			<dt>Parameter Name</dt>
+			<dd>$parameterConvertor.parameterName</dd>
+			<dt>Parameter Type</dt>
+			<dd>$parameterConvertor.parameterType</dd>
+			<dt>Required</dt>
+			<dd><input type="checkbox" name="required" value="true" #if($parameterConvertor.required)checked#end/> </dd>
+		</dl>
+	<input type="submit" value="update">
+	</form>
+	</body>
+</html>

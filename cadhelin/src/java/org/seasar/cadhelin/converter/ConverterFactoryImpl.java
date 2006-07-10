@@ -97,6 +97,8 @@ public class ConverterFactoryImpl implements ConverterFactory {
 		for(int i=0;i<parameterTypes.length;i++){
 			Param param = findParam(annot[i]);
 			Converter converter = findConverter(parameterNames[i],parameterTypes[i],param);
+			converter.setParameterType(parameterTypes[i]);
+			converter.setParameterName(parameterNames[i]);
 			converter.getMessageArguments().put("name",parameterNames[i]);
 			setUpValidater(converter,param);
 			converters[i] = converter;

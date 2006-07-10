@@ -26,6 +26,15 @@ public interface Converter extends Cloneable{
 			String parameterName,
 			Class targetClass,
 			Param validater);
+	public boolean isRequired();
+	public void setRequired(boolean required);
+
+	public String getParameterName();
+	public void setParameterName(String parameterName);
+	
+	public Class getParameterType();
+	public void setParameterType(Class parameterType);
+	
 	/**
 	 * Converter‚ÌKey
 	 * @return

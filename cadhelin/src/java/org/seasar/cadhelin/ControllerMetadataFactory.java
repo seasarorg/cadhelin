@@ -17,6 +17,7 @@ package org.seasar.cadhelin;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -152,7 +153,9 @@ public class ControllerMetadataFactory {
 	public ControllerMetadata getControllerMetadata(String controllerName) {
 		return controllers.get(controllerName);
 	}
-
+	public Collection<ControllerMetadata> getControllerMetadata(){
+		return controllers.values();
+	}
 	public ControllerMetadata getControllerMetadata(Class clazz) {
 		while(clazz != null){
 			ControllerMetadata controllerMetadata = classMap.get(clazz);

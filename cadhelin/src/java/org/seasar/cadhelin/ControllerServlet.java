@@ -44,6 +44,7 @@ public class ControllerServlet extends HttpServlet {
 	private String viewUrlPattern  = "/${controllerName}/${actionName}.vm";
 	private S2Container container;
 	private ControllerMetadataFactory controllerMetadataFactory;
+	public static final String CONTROLLER_METADATA_NAME = "org.seasar.cadhelin.controllermetadata";
 	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -54,6 +55,7 @@ public class ControllerServlet extends HttpServlet {
 		}
 		container = SingletonS2ContainerFactory.getContainer();
 		controllerMetadataFactory = new ControllerMetadataFactory(container);
+		config.getServletContext().setAttribute(CONTROLLER_METADATA_NAME,controllerMetadataFactory);
 		if(container.hasComponentDef("sessionManager")){
 		}
 	}

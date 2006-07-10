@@ -17,6 +17,7 @@ package org.seasar.cadhelin;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,9 @@ public class ControllerMetadata {
 			filter.doFilter(request,response);			
 		}
 	}
+	public String getName() {
+		return name;
+	}
 	private ActionMetadata getActionMetadata(ActionMetadata[] metadata,String method){
 		if(metadata==null || metadata.length==0){
 			return null;
@@ -74,6 +78,9 @@ public class ControllerMetadata {
 			}
 		}
 		return null;
+	}
+	public Collection<ActionMetadata[]> getActionMetadata(){
+		return actions.values();
 	}
 	public String convertToURL(Method method, Object[] arguments) {
 		ActionMetadata metadata = actionByMethods.get(method);

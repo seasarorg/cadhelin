@@ -28,6 +28,7 @@ public class SessionManagerConverter extends AbstractConverter {
 		super(key);
 		this.container = container;
 	}
+	
 	public Converter createInstance(String parameterName, Class targetClass,
 			Param validater) {
 		try {
