@@ -41,7 +41,7 @@ import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 public class ControllerServlet extends HttpServlet {
 	private static Log LOG = LogFactory.getLog(ControllerServlet.class);
 	private String urlPrefix = "/do/";
-	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
+	private String viewUrlPattern  = "/${controllerName}/${actionName}.vm";
 	private S2Container container;
 	private ControllerMetadataFactory controllerMetadataFactory;
 	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
