@@ -1,4 +1,4 @@
-package examples;
+package examples.employee;
 
 import java.util.Collection;
 

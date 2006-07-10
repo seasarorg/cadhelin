@@ -13,14 +13,22 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package examples;
+package examples.add;
 
-import java.util.Collection;
+import org.seasar.cadhelin.Param;
+import org.seasar.cadhelin.annotation.Default;
+import org.seasar.cadhelin.annotation.Validate;
+import org.seasar.cadhelin.validator.IntRangeValidator;
 
-public interface EmployeeDao {
-	public Collection<Employee> findAll();
-	public Employee getEmployee(int empno);
-	public void addEmployee(Employee employee);
-	public void updateEmployee(Employee employee);
-	public void deleteEmployee(int empno);
+public class AddControllerImpl {
+	@Default
+	public int showAdd(
+			@Param(
+				defaultVal="0",
+				validate=@Validate(value=IntRangeValidator.class,args="min=0"))int lhs,
+			@Param(
+				defaultVal="0",
+				validate=@Validate(value=IntRangeValidator.class,args="max=0"))int rhs){
+		return lhs + rhs;
+	}
 }

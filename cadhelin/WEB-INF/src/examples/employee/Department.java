@@ -1,4 +1,4 @@
-package examples;
+package examples.employee;
 
 public class Department {
 	private int deptno;

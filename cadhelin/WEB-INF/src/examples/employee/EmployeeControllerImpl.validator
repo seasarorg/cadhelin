@@ -1,0 +1,8 @@
+<convator>
+	<class name="examples.employee.Employee">
+		<property name="name" required="true">
+			<validator name="LengthValidator" min="2"/>
+		</property>
+	</class>
+	<method
+</convator>
