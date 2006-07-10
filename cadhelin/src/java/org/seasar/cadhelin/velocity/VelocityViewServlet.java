@@ -120,7 +120,10 @@ public class VelocityViewServlet extends HttpServlet
 
     /* The engine used to process templates. */
     private VelocityEngine velocity = null;
-
+    
+    private boolean isDebugging = false;
+    
+    private String propsFile;
     /**
      * The default content type.  When necessary, includes the
      * character set to use when encoding textual output.
@@ -151,10 +154,18 @@ public class VelocityViewServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
+        propsFile = findInitParameter(config, INIT_PROPS_KEY);
 
         // do whatever we have to do to init Velocity
-        initVelocity(config);
-
+        initVelocity();
+        String str = config.getInitParameter("debug");
+        try {
+			if(str != null && Boolean.parseBoolean(str)){
+				isDebugging = true;
+			}
+		} catch (RuntimeException e) {
+		}
+        
         // we can get these now that velocity is initialized
         defaultContentType = 
             (String)getVelocityProperty(CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
@@ -257,7 +268,7 @@ public class VelocityViewServlet extends HttpServlet
      *
      * @param config servlet configuration parameters
      */
-    protected void initVelocity(ServletConfig config) throws ServletException
+    protected void initVelocity() throws ServletException
     {
         velocity = new VelocityEngine();
         setVelocityEngine(velocity);
@@ -280,7 +291,7 @@ public class VelocityViewServlet extends HttpServlet
         // Try reading an overriding Velocity configuration
         try
         {
-            ExtendedProperties p = loadConfiguration(config);
+            ExtendedProperties p = loadConfiguration();
             velocity.setExtendedProperties(p);
         }
         catch(Exception e)
@@ -349,11 +360,10 @@ public class VelocityViewServlet extends HttpServlet
      *          to initialize the Velocity runtime.
      *  @throws IOException I/O problem accessing the specified file, if specified.
      */
-    protected ExtendedProperties loadConfiguration(ServletConfig config)
+    protected ExtendedProperties loadConfiguration()
         throws IOException
     {
         // grab the path to the custom props file (if any)
-        String propsFile = findInitParameter(config, INIT_PROPS_KEY);
         
         ExtendedProperties p = new ExtendedProperties();
         if (propsFile != null)
@@ -402,6 +412,9 @@ public class VelocityViewServlet extends HttpServlet
                              HttpServletResponse response)
          throws ServletException, IOException
     {
+    	if(isDebugging){
+    		initVelocity();
+    	}
         Context context = null;
         try
         {

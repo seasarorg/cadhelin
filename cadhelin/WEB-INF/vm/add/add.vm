@@ -1,6 +1,7 @@
 <html>
 <head><title>add</title></head>
 <body>
+#test('add')
 <form action="">
 	$!msg.getMessage('lhs')
 	<input type="text" name="lhs" value="$lhs"/>

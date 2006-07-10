@@ -1,0 +1,3 @@
+#macro(test $test)
+hellow $test !!
+#end

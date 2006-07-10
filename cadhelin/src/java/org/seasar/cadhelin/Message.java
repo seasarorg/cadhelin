@@ -25,6 +25,11 @@ public class Message {
 	public Message(String key){
 		this.key = key;
 	}
+	public Message(String key,Object arg1){
+		this.key = key;
+		arguments = new HashMap<String,Object>();
+		arguments.put("1",arg1);
+	}
 	public Message(String key,Object arg1,Object arg2){
 		this.key = key;
 		arguments = new HashMap<String,Object>();
