@@ -69,6 +69,12 @@ public abstract class AbstractConverter implements Converter {
 	public void addValidater(Validator validater){
 		validaters.add(validater);
 	}
+	public void setValidators(Validator[] vals){
+		validaters.clear();
+		for (Validator validator : vals) {
+			validaters.add(validator);
+		}
+	}
 	public Validator[] getValidators() {
 		return validaters.toArray(new Validator[validaters.size()]);
 	}

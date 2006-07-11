@@ -169,7 +169,11 @@ public class ActionMetadata {
 			context.setRedirect(redirectUrl);
 		}else{
 			//リダイレクト先がなければそのままレンダリングを行う
-			String url = context.getViewURL(actionName);
+			String renderName = this.render;
+			if(context.getViewName()!=null){
+				renderName = context.getViewName();
+			}
+			String url = context.getViewURL(renderName);
 			context.addMessage(error);
 			request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url);

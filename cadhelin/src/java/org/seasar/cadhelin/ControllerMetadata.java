@@ -96,6 +96,11 @@ public class ControllerMetadata {
 		if(metadata!=null){
 			return name+"/"+metadata.convertToURL(arguments);			
 		}
+		metadata = 
+			getActionMetadata(actions.get(actionName),"POST");
+		if(metadata!=null){
+			return name+"/"+metadata.convertToURL(arguments);			
+		}
 		log.warn("cannot find ActionMetadata by " + actionName);
 		return null;
 	}
