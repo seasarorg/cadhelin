@@ -11,39 +11,43 @@
 		<input type="hidden" name="methodName" value="$methodName">
 		<input type="hidden" name="actionName" value="$actionName">
 		<input type="hidden" name="paramNum" value="$paramNum">
-		<dl>
-			<dt>Parameter Name</dt>
-			<dd>$parameterConvertor.parameterName</dd>
-			<dt>Parameter Type</dt>
-			<dd>$parameterConvertor.parameterType</dd>
-			<dt>Required</dt>
-			<dd><input type="checkbox" name="required" value="true" #if($parameterConvertor.required)checked#end/> </dd>
-		</dl>
+		<table>
+			<tr>
+				<th>Parameter Name</th><th>Parameter Type</th><th>Required</th>
+			</tr>
+			<tr>
+				<td>$parameterConvertor.parameterName</td>
+				<td>$parameterConvertor.parameterType</td>
+				<td><input type="checkbox" name="${parameterConvertor.parameterName}_required" value="true" #if($parameterConvertor.required)checked#end/></td>
+			</tr>
+		</table>
 		<table>
 		#foreach($metadata in $parameterConvertor.validatorMetadata)
 			<tr><td>$metadata.validatorName</td><td>$metadata.shortDescription</td></tr>
 			#foreach($pm in $metadata.propertyMetadatas)
 			#if($pm.isReadWritable())
-			<tr><td>$pm.name</td><td>$pm.shortDescription</td><td><input type="test" name="$pm.name" value="$!pm.value"</td></tr>
+			<tr><td>$pm.name</td><td>$pm.shortDescription</td><td><input type="test" name="${parameterConvertor.parameterName}_${metadata.validatorName}_${pm.name}" value="$!pm.value"/></td></tr>
 			#end
 			#end
 		#end
 		</table>
 		#foreach($convetor in $parameterConvertor.childConvertors)
-		<dl>
-			<dt>Parameter Name</dt>
-			<dd>$convetor.parameterName</dd>
-			<dt>Parameter Type</dt>
-			<dd>$convetor.parameterType</dd>
-			<dt>Required</dt>
-			<dd><input type="checkbox" name="required" value="true" #if($convetor.required)checked#end/> </dd>
-		</dl>
+		<table>
+			<tr>
+				<th>Parameter Name</th><th>Parameter Type</th><th>Required</th>
+			</tr>
+			<tr>
+				<td>$convetor.parameterName</td>
+				<td>$convetor.parameterType</td>
+				<td><input type="checkbox" name="${convetor.parameterName}_required" value="true" #if($convetor.required)checked#end/></td>
+			</tr>
+		</table>
 		<table>
 		#foreach($metadata in $convetor.validatorMetadata)
 			<tr><td>$metadata.validatorName</td><td>$metadata.shortDescription</td></tr>
 			#foreach($pm in $metadata.propertyMetadatas)
 			#if($pm.isReadWritable())
-			<tr><td>$pm.name</td><td>$pm.shortDescription</td><td><input type="test" name="$pm.name" value="$!pm.value"</td></tr>
+			<tr><td>$pm.name</td><td>$pm.shortDescription</td><td><input type="test" name="$pm.name" value="$!pm.value"/></td></tr>
 			#end
 			#end
 		#end

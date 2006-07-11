@@ -27,4 +27,15 @@ public class PropertyMetadata {
 			throw new RuntimeException(e);
 		}
 	}
+	public void setValue(String[] string) {
+		try {
+			if(string==null || string.length<1){
+				pd.getWriteMethod().invoke(validator,new Object[]{null});
+			}else{
+				pd.getWriteMethod().invoke(validator,new Object[]{Integer.valueOf(string[0])});			
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
