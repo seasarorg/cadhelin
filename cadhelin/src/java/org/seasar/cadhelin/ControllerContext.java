@@ -16,6 +16,7 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Method;
@@ -224,6 +225,19 @@ public class ControllerContext {
 		response.setContentType( contentType );
 		response.setHeader( "Content-disposition", "attachment; filename=\"" + fileName + '\"' );
 		return response.getWriter();
+		
+	}
+	public OutputStream createOutputStream(String contentType) throws IOException{
+		redirected = true;
+		response.setContentType( contentType );
+		return response.getOutputStream();
+		
+	}
+	public OutputStream createOutputStream(String fileName,String contentType) throws IOException{
+		redirected = true;
+		response.setContentType( contentType );
+		response.setHeader( "Content-disposition", "attachment; filename=\"" + fileName + '\"' );
+		return response.getOutputStream();
 		
 	}
 	public void invalidateSession(){
