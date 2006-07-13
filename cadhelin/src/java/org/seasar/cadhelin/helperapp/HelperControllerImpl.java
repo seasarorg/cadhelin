@@ -2,10 +2,8 @@ package org.seasar.cadhelin.helperapp;
 
 import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -19,7 +17,6 @@ import org.seasar.cadhelin.ControllerMetadataFactory;
 import org.seasar.cadhelin.ControllerServlet;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.PropertyMetadata;
-import org.seasar.cadhelin.Validator;
 import org.seasar.cadhelin.ValidatorMetadata;
 import org.seasar.cadhelin.annotation.Default;
 
@@ -36,25 +33,17 @@ public class HelperControllerImpl {
 	public ControllerMetadata showController(String controllerName){
 		return getControllerMetadataFactory().getControllerMetadata(controllerName);
 	}
+	public void doSaveConverters(String controllerName){
+		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
+		controllerMetadata.saveConverterSettings();
+		showController(controllerName);
+	}
 	public Converter showParameterConvertor(String controllerName,String methodName,String actionName,int paramNum){
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
 		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
 		
 		Converter converter = action.getConverters()[paramNum-1];
 		return converter;
-	}
-	public void showConvertor(String controllerName,String methodName,String actionName,int paramNum){
-		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-		
-		Converter converter = action.getConverters()[paramNum-1];
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		XMLEncoder encoder = new XMLEncoder(os);
-		encoder.writeObject(converter);
-		encoder.close();
-		String string = new String(os.toByteArray());
-		System.err.print(string);
-		showParameterConvertor(controllerName,methodName,actionName,paramNum);
 	}
 	public void doParameterConvertor(String controllerName,String methodName,String actionName,int paramNum){
 		

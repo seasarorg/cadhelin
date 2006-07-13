@@ -17,7 +17,7 @@
 			</tr>
 			<tr>
 				<td>$parameterConvertor.parameterName</td>
-				<td>$parameterConvertor.parameterType</td>
+				<td>$parameterConvertor.parameterType.name</td>
 				<td><input type="checkbox" name="${parameterConvertor.parameterName}_required" value="true" #if($parameterConvertor.required)checked#end/></td>
 			</tr>
 		</table>
@@ -38,7 +38,7 @@
 			</tr>
 			<tr>
 				<td>$convetor.parameterName</td>
-				<td>$convetor.parameterType</td>
+				<td>$convetor.parameterType.name</td>
 				<td><input type="checkbox" name="${convetor.parameterName}_required" value="true" #if($convetor.required)checked#end/></td>
 			</tr>
 		</table>

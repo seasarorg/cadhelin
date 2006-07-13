@@ -18,24 +18,27 @@
 		#foreach($actionMetadata in $controller.getActionMetadata())
 			#foreach($actionMetadatum in $actionMetadata)
 		<tr>
-			<td>$actionMetadatum.name</td>
+			<td>
+				#if($actionMetadatum.isGetAndNoParam())
+				<a href="$link.getLink($controller.name,$actionMetadatum.name,$null)">$actionMetadatum.name</a>
+				#else
+				$actionMetadatum.name
+				#end</td>
 			<td>$actionMetadatum.httpMethod</td>
 			<td>$actionMetadatum.method.name</td>
 			<td>
 			#foreach($converter in $actionMetadatum.converters)
 				<a href="$link.helper.parameterConvertor($controllerName,$actionMetadatum.httpMethod,$actionMetadatum.name,$velocityCount)">
-					$converter.parameterType $converter.parameterName</a><br/>
-			#end
-			</td>
-			<td>
-			#foreach($converter in $actionMetadatum.converters)
-				<a href="$link.helper.convertor($controllerName,$actionMetadatum.httpMethod,$actionMetadatum.name,$velocityCount)">
-					$converter.parameterType $converter.parameterName</a><br/>
+					$converter.parameterType.name $converter.parameterName</a><br/>
 			#end
 			</td>
 		</tr>
 			#end
 		#end
 		</table>
+		<form action="saveConverters" method="POST">
+			<input type="hidden" name="controllerName" value="$controllerName"/>
+			<input type="submit" value="save"/>
+		</form>
 	</body>
 </html>

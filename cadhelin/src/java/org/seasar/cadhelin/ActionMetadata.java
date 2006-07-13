@@ -243,4 +243,7 @@ public class ActionMetadata {
 	public Method getMethod() {
 		return method;
 	}
+	public boolean isGetAndNoParam(){
+		return httpMethod.isGet() && converters.length == 0;
+	}
 }

@@ -15,6 +15,9 @@
  */
 package org.seasar.cadhelin;
 
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -32,6 +35,7 @@ import org.seasar.framework.container.ComponentDef;
 
 public class ControllerMetadata {
 	Log log = LogFactory.getLog(this.getClass());
+	private Class controllerCalss;
 	private String name;
 	private Map<String,ActionMetadata[]> actions = 
 		new HashMap<String,ActionMetadata[]>();
@@ -44,6 +48,7 @@ public class ControllerMetadata {
 			ComponentDef componentDef,
 			ActionFilter[] filters){
 		this.name = name;
+		controllerCalss = componentDef.getComponentClass();
 		this.filters = filters;
 	}
 	protected void service(
@@ -121,5 +126,28 @@ public class ControllerMetadata {
 	}
 	public void setDefaultActionName(String defaultActionName) {
 		this.defaultActionName = defaultActionName;
+	}
+	public void saveConverterSettings(){
+		String path = controllerCalss.getProtectionDomain().getCodeSource().getLocation().getPath();
+		File file = new File(path.replace(".class", ".converters"));
+		FileOutputStream os = null;
+		try{
+			os = new FileOutputStream(file);
+			XMLEncoder encoder = new XMLEncoder(os);
+			encoder.writeObject(getConverters());
+			encoder.close();
+		}catch (IOException e) {
+		}
+	}
+	public Map<String,Converter[]> getConverters(){
+		Map<String,Converter[]> map = 
+			new HashMap<String,Converter[]>();
+		Collection<ActionMetadata[]> am = actions.values();
+		for (ActionMetadata[] metadatas : am) {
+			for (ActionMetadata metadata : metadatas) {
+				map.put(metadata.getMethod().getName(), metadata.getConverters());
+			}
+		}
+		return map;
 	}
 }

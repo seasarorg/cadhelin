@@ -36,6 +36,9 @@ public class LinkTool extends AbstractMap{
 		this.request = request;
 	}
 	public String getLink(String controllerName,String actionName,Object[] arguments){
+		if(arguments==null){
+			arguments = new Object[0];
+		}
 		ControllerContext context =
 			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		return context.getUrl(controllerName,actionName,arguments);

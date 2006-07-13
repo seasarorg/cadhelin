@@ -15,6 +15,12 @@
  */
 package org.seasar.cadhelin;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -32,6 +38,7 @@ import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.factory.BeanDescFactory;
 import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
+import org.seasar.framework.util.InputStreamUtil;
 
 public class ControllerMetadataFactory {
 	protected Map<String,ControllerMetadata> controllers 
@@ -84,11 +91,31 @@ public class ControllerMetadataFactory {
 			}
 		}		
 	}
+	protected Map<String,Converter[]> loadConverterSettings(Class controllerClass){
+		String path = controllerClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+		File file = new File(path.replace(".class", ".converters"));
+		if(!file.exists()){
+			return null;
+		}
+		FileInputStream is = null;
+		Map<String,Converter[]> map = null;
+		try{
+			is = new FileInputStream(file);
+			XMLDecoder decoder = new XMLDecoder(is);
+			map = (Map<String, Converter[]>) decoder.readObject();
+			decoder.close();
+		}catch (IOException e) {
+		}finally{
+			InputStreamUtil.close(is);
+		}
+		return map;
+	}
 	protected ControllerMetadata createControllerMetadata(
 			String name,
 			ComponentDef componentDef){
 		Object controller = componentDef.getComponent();
 		ControllerMetadata metadata = new ControllerMetadata(name,componentDef,filters);
+		Map<String, Converter[]> converterMap = loadConverterSettings(componentDef.getComponentClass());
 		BeanDesc beanDesc = BeanDescFactory.getBeanDesc(componentDef.getComponentClass());
 		Class<?> beanClass = beanDesc.getBeanClass();
 		Role r = (Role) beanClass.getAnnotation(Role.class);
@@ -96,7 +123,8 @@ public class ControllerMetadataFactory {
 		Method[] methods = beanClass.getDeclaredMethods();
 		for(Method method : methods){
 			if((method.getModifiers() & Modifier.PUBLIC) > 0){
-				ActionMetadata actionMetadata = createActionMetadata(beanDesc,name,controller, method, role);
+				ActionMetadata actionMetadata = 
+					createActionMetadata(beanDesc,name,controller, method, role,converterMap);
 				if(actionMetadata!=null){
 					metadata.addActionMetadata(actionMetadata.getName(),actionMetadata);					
 					Default def = method.getAnnotation(Default.class);
@@ -113,7 +141,8 @@ public class ControllerMetadataFactory {
 			String controllerName,
 			Object controller,
 			Method method,
-			String defaultRole){
+			String defaultRole,
+			Map<String, Converter[]> converterMap){
 		HttpMethod httpMethod = null;
 		String actionName = null;
 		for (String prefix : getActionPrefix) {
@@ -140,7 +169,12 @@ public class ControllerMetadataFactory {
 		if(rna!=null){
 			resultName = rna.value();
 		}
-		Converter[] converters = factory.createConverters(method,parameterNames);
+		Converter[] converters = null;
+		if(converterMap!=null && converterMap.containsKey(method.getName())){
+			converters = converterMap.get(method.getName());
+		}else{
+			converters = factory.createConverters(method,parameterNames);
+		}
 		return new ActionMetadata(httpMethod,controllerName,actionName,resultName,role,controller,method,parameterNames,converters);
 	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
