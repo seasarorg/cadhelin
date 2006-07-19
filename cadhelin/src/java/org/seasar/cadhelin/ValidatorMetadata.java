@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ValidatorMetadata {
+	private Class validatorClass;
 	private BeanInfo validatorBeanInfo;
 	private PropertyMetadata[] propertyMetadatas;
 	public ValidatorMetadata(Validator validator){
 		try {
-			validatorBeanInfo = Introspector.getBeanInfo(validator.getClass());
+			this.validatorClass = validator.getClass();
+			validatorBeanInfo = Introspector.getBeanInfo(validatorClass);
 		} catch (IntrospectionException e) {
 			e.printStackTrace();
 		}
@@ -21,6 +23,13 @@ public class ValidatorMetadata {
 			list.add(new PropertyMetadata(validator,descriptor));
 		}
 		propertyMetadatas = list.toArray(new PropertyMetadata[list.size()]);
+	}
+	public Validator createValidator(){
+		try {
+			return (Validator) validatorClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	public String getValidatorName(){
 		return validatorBeanInfo.getBeanDescriptor().getName();

@@ -77,6 +77,28 @@ public class ActionMetadata {
 	public Converter[] getConverters(){
 		return converters;
 	}
+	public Converter getConverter(String parameterName){
+		for (Converter converter : converters) {
+			if(converter.getParameterName().equals(parameterName)){
+				return converter;
+			}else{
+				Converter c = getConverter(parameterName,converter);
+				if(c!=null){
+					return c;
+				}
+			}
+		}
+		return null;
+	}
+	private Converter getConverter(String parameterName,Converter converter){
+		Converter[] convertors = converter.getChildConvertors();
+		for (Converter child : convertors) {
+			if(child.getParameterName().equals(parameterName)){
+				return child;
+			}
+		}
+		return null;
+	}
 	public Object[] convertToParameter(HttpServletRequest request,Map<String,Message> error){
 		Object[] argumants = new Object[converters.length];
 		int i = 0;

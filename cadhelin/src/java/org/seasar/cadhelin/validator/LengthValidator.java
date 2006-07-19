@@ -35,7 +35,12 @@ public class LengthValidator implements Validator<String> {
 	public Integer getMax() {
 		return max;
 	}
-
+	public void setMin(Integer min) {
+		this.min = min;
+	}
+	public void setMax(Integer max) {
+		this.max = max;
+	}
 	public boolean validate(String name, String value,
 			Map<String, Message> errors) {
 		if (value instanceof String) {

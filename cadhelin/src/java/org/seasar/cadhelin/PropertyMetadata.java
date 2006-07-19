@@ -2,6 +2,8 @@ package org.seasar.cadhelin;
 
 import java.beans.PropertyDescriptor;
 
+import org.seasar.cadhelin.util.StringUtil;
+
 public class PropertyMetadata {
 	private Validator validator;
 	private PropertyDescriptor pd;
@@ -29,13 +31,12 @@ public class PropertyMetadata {
 	}
 	public void setValue(String[] string) {
 		try {
-			if(string==null || string.length<1){
+			if(string==null || string.length<1 || StringUtil.isNullOrEmpty(string[0])){
 				pd.getWriteMethod().invoke(validator,new Object[]{null});
 			}else{
 				pd.getWriteMethod().invoke(validator,new Object[]{Integer.valueOf(string[0])});			
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }

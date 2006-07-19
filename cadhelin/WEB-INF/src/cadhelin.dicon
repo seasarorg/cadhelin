@@ -3,6 +3,7 @@
     "http://www.seasar.org/dtd/components23.dtd">
 <components>
 	<include path="ConverterFactory.dicon"/>
+	<include path="ValidatorFactory.dicon"/>
 	<include path="app.dicon"/>
 	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />
 	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">

@@ -1,44 +1,44 @@
 package org.seasar.cadhelin;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ValidatorFactoryImpl {
-	private static Map <Class,Class> primitiveConverter = new HashMap<Class, Class>();
-	static{
-		primitiveConverter.put(int.class, Integer.class);
-		primitiveConverter.put(long.class, Long.class);
-		primitiveConverter.put(char.class, Character.class);
-		primitiveConverter.put(short.class, Short.class);
-		primitiveConverter.put(double.class, Double.class);
-		primitiveConverter.put(float.class, Float.class);
-		primitiveConverter.put(boolean.class, Boolean.class);
+import org.seasar.cadhelin.util.ClassUtil;
+
+public class ValidatorFactoryImpl implements ValidatorFactory {
+	private Map<Class,List<ValidatorMetadata>> map = 
+		new HashMap<Class,List<ValidatorMetadata>>();
+	public ValidatorFactoryImpl() {
+		System.out.println("test");
 	}
-	private Map<Class,List<Validator>> map = 
-		new HashMap<Class,List<Validator>>();
-	public void setValidators(Validator[] validators){
-		for (Validator validator : validators) {
-			Type[] types = validator.getClass().getGenericInterfaces();
-			for (Type type : types) {
-				List<Validator> list = map.get(type.getClass());
-				if(list == null){
-					list = new ArrayList<Validator>();
-					map.put(type.getClass(), list);
+	public void addValidators(Object[] objects){
+		try{
+			for (Object val : objects) {
+				Validator validator = (Validator) val;
+				Class keyClass = 
+					ClassUtil.getParameterizedClass(validator.getClass(),Validator.class);
+				List<ValidatorMetadata> vals = map.get(keyClass);
+				if(vals==null){
+					vals = new ArrayList<ValidatorMetadata>();
+					map.put(keyClass,vals);
 				}
-				list.add(validator);
-			}
+				vals.add(new ValidatorMetadata(validator));
+			}			
+		}catch (Throwable e) {
+			e.printStackTrace();
 		}
 	}
-	public List<Validator> getValidators(Class clazz){
-		if(clazz.isPrimitive()){
-			clazz = primitiveConverter.get(clazz); 
+	public List<ValidatorMetadata> getValidatorsFor(Class clazz){
+		List<ValidatorMetadata> vals = new ArrayList<ValidatorMetadata>();
+		Class c = ClassUtil.convertPrimitiveToWrapper(clazz);
+		while(!c.equals(Object.class)){
+			if(map.containsKey(c)){
+				vals.addAll(map.get(c));
+			}
+			c = c.getSuperclass();
 		}
-		while(!map.containsKey(clazz)){
-			clazz = clazz.getSuperclass();
-		}
-		return map.get(clazz);
+		return vals;
 	}
 }

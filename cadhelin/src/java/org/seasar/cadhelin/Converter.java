@@ -51,4 +51,5 @@ public interface Converter extends Cloneable{
 	public Validator[] getValidators();
 	public ValidatorMetadata[] getValidatorMetadata();
 	public Converter[] getChildConvertors();
+	public void removeValidator(int i);
 }

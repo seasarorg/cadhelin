@@ -75,6 +75,12 @@ public abstract class AbstractConverter implements Converter {
 			validaters.add(validator);
 		}
 	}
+	public void removeValidator(int i) {
+		if(i<0 || validaters.size()<=i){
+			return;
+		}
+		validaters.remove(i);
+	}
 	public Validator[] getValidators() {
 		return validaters.toArray(new Validator[validaters.size()]);
 	}

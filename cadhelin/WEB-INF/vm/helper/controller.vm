@@ -36,9 +36,9 @@
 			#end
 		#end
 		</table>
-		<form action="saveConverters" method="POST">
-			<input type="hidden" name="controllerName" value="$controllerName"/>
-			<input type="submit" value="save"/>
+		<form action="$link.helper.saveController()" method="POST">
+			<input type="hidden" name="controllerName" value="$controllerName">
+			<input type="submit" value="Save Controller Settings">
 		</form>
 	</body>
 </html>
