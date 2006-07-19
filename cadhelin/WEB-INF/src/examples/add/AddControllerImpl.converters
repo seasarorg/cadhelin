@@ -12,16 +12,9 @@
       <void property="parameterType"> 
        <class>int</class> 
       </void> 
+      <void id="ValidatorArray0" property="validators"/> 
       <void property="validators"> 
-       <array class="org.seasar.cadhelin.Validator" length="1"> 
-        <void index="0"> 
-         <object class="org.seasar.cadhelin.validator.IntRangeValidator"> 
-          <void property="max"> 
-           <int>10</int> 
-          </void> 
-         </object> 
-        </void> 
-       </array> 
+       <object idref="ValidatorArray0"/> 
       </void> 
      </object> 
     </void> 
@@ -33,16 +26,9 @@
       <void property="parameterType"> 
        <class>int</class> 
       </void> 
+      <void id="ValidatorArray1" property="validators"/> 
       <void property="validators"> 
-       <array class="org.seasar.cadhelin.Validator" length="1"> 
-        <void index="0"> 
-         <object class="org.seasar.cadhelin.validator.IntRangeValidator"> 
-          <void property="max"> 
-           <int>0</int> 
-          </void> 
-         </object> 
-        </void> 
-       </array> 
+       <object idref="ValidatorArray1"/> 
       </void> 
      </object> 
     </void> 

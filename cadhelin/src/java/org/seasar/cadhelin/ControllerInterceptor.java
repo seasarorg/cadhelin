@@ -25,22 +25,26 @@ public class ControllerInterceptor extends AbstractInterceptor {
 
 	public Object invoke(MethodInvocation method) throws Throwable {
 		ControllerContext context = ControllerContext.getContext();
-		ControllerContext controllerContext = context;
-		if(controllerContext.isFirstAction()){
-			controllerContext.setFirstAction();
-			return method.proceed();
-		}else{
-			//redirect
-			HttpServletRequest request = controllerContext.getRequest();
-			Class class1 = method.getThis().getClass();
-			String url = controllerContext.getUrl(class1.getSuperclass(),
-					method.getMethod(),method.getArguments());
-			RedirectSession.setAttribute(request.getSession(),
-					MessageTool.MESSAGE_KEY,request.getAttribute(MessageTool.MESSAGE_KEY));			
-			context.getResponse().sendRedirect(url);
-			context.setRedirected(true);
+		//もしリクエスト中で2回目に呼び出されたActionメソッドで
+		if(!context.isFirstAction()){
+			ControllerMetadata controllerMetadata = context.getControllerMetadata(method.getMethod().getDeclaringClass());
+			ActionMetadata actionMetadata =
+				controllerMetadata.getAction(method.getMethod());
+			//かつGETのActionメソッドならリダイレクトする
+			if(actionMetadata.getHttpMethod().isGet()){
+				String url = context.getUrl(method.getThis().getClass(),
+						method.getMethod(),method.getArguments());
+				HttpServletRequest request = context.getRequest();
+				RedirectSession.setAttribute(request.getSession(),
+						MessageTool.MESSAGE_KEY,request.getAttribute(MessageTool.MESSAGE_KEY));				
+				context.getResponse().sendRedirect(url);
+				context.setRedirected(true);
+				return null;
+			}
 		}
-		return null;
+		//そうでなければ普通に実行
+		context.setFirstAction();
+		return method.proceed();
 	}
 
 }

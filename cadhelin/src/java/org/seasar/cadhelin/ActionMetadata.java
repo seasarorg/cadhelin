@@ -16,8 +16,10 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -219,7 +221,7 @@ public class ActionMetadata {
 							}
 							buff.append(parameterNames[i]);
 							buff.append("=");
-							buff.append(object.toString());
+							buff.append(encodeURL(arguments.toString()));
 							first = false;
 							
 						}
@@ -231,7 +233,7 @@ public class ActionMetadata {
 						}
 						buff.append(parameterNames[i]);
 						buff.append("=");
-						buff.append(arguments[i].toString());
+						buff.append(encodeURL(arguments[i].toString()));
 						first = false;						
 					}
 				}
@@ -240,6 +242,14 @@ public class ActionMetadata {
 		}
 		return buff.toString();
 	}
+    public String encodeURL(String url){
+    	try {
+			return URLEncoder.encode(url,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return url;
+		}
+    }
+
 	public String getRole() {
 		return role;
 	}

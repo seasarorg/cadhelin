@@ -8,6 +8,9 @@
 	</head>
 	<body>
 		<h1>Controller($controller.name)</h1>
+		<div id="navigation">
+			<a href="$link.helper.controllers()">Controller List</a>
+		</div>
 		<table>
 			<tr>
 				<th>Action Name</th>

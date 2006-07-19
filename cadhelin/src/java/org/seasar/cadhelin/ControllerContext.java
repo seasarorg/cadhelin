@@ -243,4 +243,7 @@ public class ControllerContext {
 	public void invalidateSession(){
 		request.getSession().invalidate();
 	}
+	public ControllerMetadata getControllerMetadata(Class controllerClass) {
+		return controllerMetadataFactory.getControllerMetadata(controllerClass);
+	}
 }

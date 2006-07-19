@@ -23,6 +23,11 @@ function deleteValidator(id){
 </script>
 	</head>
 	<body>
+	<h1>Converter of $actionName - $parameterConvertor.parameterName</h1>
+	<div id="navigation">
+		<a href="$link.helper.controllers()">Controller List</a> &gt;&gt;
+		<a href="$link.helper.controller($controllerName)">Action List</a>
+	</div>
 	<form action="parameterConvertor" method="POST">
 		<input type="hidden" name="controllerName" value="$controllerName">
 		<input type="hidden" name="methodName" value="$methodName">
@@ -31,9 +36,13 @@ function deleteValidator(id){
 		<input type="hidden" id="validator">
 		<table>
 			<tr>
-				<th>Parameter Name</th><th>Parameter Type</th><th>Required</th>
+				<th>Converter Name</th>				
+				<th>Parameter Name</th>
+				<th>Parameter Type</th>
+				<th>Required</th>
 			</tr>
 			<tr>
+				<td>$parameterConvertor.class.name</td>
 				<td>$parameterConvertor.parameterName</td>
 				<td>$parameterConvertor.parameterType.name</td>
 				<td><input type="checkbox" name="${parameterConvertor.parameterName}_required" value="true" #if($parameterConvertor.required)checked#end/></td>
@@ -54,6 +63,7 @@ function deleteValidator(id){
 		#end
 		</table>
 		<select id="validator_$parameterConvertor.parameterName">
+			<option>----</option>
 		#foreach($validator in $validatorFactory.getValidatorsFor($parameterConvertor.parameterType))
 			<option value="${parameterConvertor.parameterName}_$velocityCount">$validator.validatorName</option>
 		#end
@@ -87,6 +97,7 @@ function deleteValidator(id){
 			#set($validator = $validatorFactory.getValidatorsFor($convetor.parameterType))
 			#if($validator && $validator.size() > 0)
 			<select id="validator_$convetor.parameterName">
+				<option>----</option>
 				#foreach($validator in $validatorFactory.getValidatorsFor($convetor.parameterType))
 					<option value="${convetor.parameterName}_$velocityCount">$validator.validatorName</option>
 				#end

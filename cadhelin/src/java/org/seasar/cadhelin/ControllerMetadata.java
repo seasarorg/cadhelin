@@ -145,4 +145,7 @@ public class ControllerMetadata {
 		}
 		return map;
 	}
+	public ActionMetadata getAction(Method method) {
+		return actionByMethods.get(method);
+	}
 }

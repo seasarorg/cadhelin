@@ -37,7 +37,10 @@ public class EmployeeControllerImpl {
 	}
 	public void doAdd(Employee employee){
 		empdao.addEmployee(employee);
-		showIndex();
+		doTest();
+	}
+	public void doTest(){
+		showIndex();		
 	}
 	public void showDelete(int empno){
 		empdao.deleteEmployee(empno);
