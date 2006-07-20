@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.seasar.cadhelin.annotation.Default;
+import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.ResultName;
 import org.seasar.cadhelin.annotation.Role;
 import org.seasar.cadhelin.impl.ConverterFactoryImpl;
@@ -144,6 +145,7 @@ public class ControllerMetadataFactory {
 			Map<String, Converter[]> converterMap){
 		HttpMethod httpMethod = null;
 		String actionName = null;
+		//指定されたPrefix(一般的にはshow)で始まるMethodであればPrefixをのぞいてアクション名とする
 		for (String prefix : getActionPrefix) {
 			if(method.getName().startsWith(prefix)){
 				httpMethod = HttpMethod.GET;
@@ -155,6 +157,11 @@ public class ControllerMetadataFactory {
 				httpMethod = HttpMethod.POST;
 				actionName = method.getName().substring(prefix.length());
 			}
+		}
+		//Dispatchアノテーションが指定されていればaction名を変更
+		Dispatch dispatch = method.getAnnotation(Dispatch.class);
+		if(dispatch!=null){
+			actionName = dispatch.actionName();
 		}
 		if(actionName==null){
 			return null;
@@ -174,7 +181,7 @@ public class ControllerMetadataFactory {
 		}else{
 			converters = factory.createConverters(method,parameterNames);
 		}
-		return new ActionMetadata(httpMethod,controllerName,actionName,resultName,role,controller,method,parameterNames,converters);
+		return new ActionMetadata(httpMethod,controllerName,actionName,resultName,dispatch,role,controller,method,parameterNames,converters);
 	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
 		return controllers.get(controllerName);

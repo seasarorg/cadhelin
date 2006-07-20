@@ -21,14 +21,13 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.impl.FilterContextImpl;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.StringUtil;
@@ -63,7 +62,7 @@ public class ControllerMetadata {
 		}else{
 			metadata = actions.get(defaultActionName);
 		}
-		ActionMetadata metadatum = getActionMetadata(metadata,request.getMethod());
+		ActionMetadata metadatum = getActionMetadata(request,metadata,request.getMethod());
 		if(metadatum==null){
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}else{
@@ -73,6 +72,29 @@ public class ControllerMetadata {
 	}
 	public String getName() {
 		return name;
+	}
+	private ActionMetadata getActionMetadata(HttpServletRequest request,ActionMetadata[] metadata,String method){
+		if(metadata==null || metadata.length==0){
+			return null;
+		}
+		for (ActionMetadata metadatum : metadata) {
+			if(metadatum.getHttpMethod().name().equals(method) && 
+					metadatum.getDispatch()!=null){
+				Dispatch dispatch = metadatum.getDispatch();
+				String key = dispatch.key();
+				String parameter = request.getParameter(key);
+				if(parameter!=null){
+					return metadatum;					
+				}
+			}
+		}
+		for (ActionMetadata metadatum : metadata) {
+			if(metadatum.getHttpMethod().name().equals(method)&&
+					metadatum.getDispatch()==null){
+				return metadatum;
+			}
+		}
+		return null;
 	}
 	private ActionMetadata getActionMetadata(ActionMetadata[] metadata,String method){
 		if(metadata==null || metadata.length==0){

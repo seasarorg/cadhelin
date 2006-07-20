@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
@@ -45,6 +46,7 @@ public class ActionMetadata {
 	private String controllerName;
 	private Object controller;
 	private String role;
+	private Dispatch dispatch;
 	private Method method;
 	private String[] parameterNames;
 	private Converter[] converters;
@@ -56,7 +58,7 @@ public class ActionMetadata {
 			String controllerName,
 			String actionName,
 			String resultName,
-			String role,
+			Dispatch dispatch, String role,
 			Object controller,
 			Method method,
 			String[] parameterNames,
@@ -65,6 +67,7 @@ public class ActionMetadata {
 		this.controllerName = controllerName;
 		this.actionName = actionName;
 		this.resultName = resultName;
+		this.dispatch = dispatch;
 		this.role = role;
 		this.controller = controller;
 		this.method = method;
@@ -76,6 +79,9 @@ public class ActionMetadata {
 			render = render2.value();
 		}
 		reternMap = Map.class.isAssignableFrom(method.getReturnType());
+	}
+	public Dispatch getDispatch() {
+		return dispatch;
 	}
 	public Converter[] getConverters(){
 		return converters;

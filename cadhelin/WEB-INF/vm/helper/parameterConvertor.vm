@@ -9,12 +9,12 @@
 function $(arg) {
 	return document.getElementById(arg);
 }
-function addValidator(id){
+function setAddValidator(id){
 	var sel = $(id);
 	$('validator').name  = 'validator';
 	$('validator').value = sel.options[sel.selectedIndex].value;
 }
-function deleteValidator(id){
+function setDeleteValidator(id){
 	$('validator').name  = 'validator';
 	$('validator').value = id;
 }
@@ -53,7 +53,7 @@ function deleteValidator(id){
 			<tr>
 				<td>$metadata.validatorName</td>
 				<td>$metadata.shortDescription</td>
-				<td><input type="submit" name="cmd" value="Delete Validator" onClick="deleteValidator('${parameterConvertor.parameterName}_${velocityCount}');"></td>
+				<td><input type="submit" name="deleteValidator" value="Delete Validator" onClick="setDeleteValidator('${parameterConvertor.parameterName}_${velocityCount}');"></td>
 			</tr>
 			#foreach($pm in $metadata.propertyMetadatas)
 			#if($pm.isReadWritable())
@@ -68,7 +68,7 @@ function deleteValidator(id){
 			<option value="${parameterConvertor.parameterName}_$velocityCount">$validator.validatorName</option>
 		#end
 		</select>
-		<input type="submit" name="cmd" value="Add Validator" onClick="addValidator('validator_$parameterConvertor.parameterName');">
+		<input type="submit" name="addValidator" value="Add Validator" onClick="setAddValidator('validator_$parameterConvertor.parameterName');">
 		#foreach($convetor in $parameterConvertor.childConvertors)
 			<table>
 				<tr>
@@ -85,7 +85,7 @@ function deleteValidator(id){
 				<tr>
 					<td>$metadata.validatorName</td>
 					<td>$metadata.shortDescription</td>
-					<td><input type="submit" name="cmd" value="Delete Validator" onClick="deleteValidator('${parameterConvertor.parameterName}_${velocityCount}');"></td>
+					<td><input type="submit" name="deleteValidator" value="Delete Validator" onClick="setDeleteValidator('${parameterConvertor.parameterName}_${velocityCount}');"></td>
 				</tr>
 				#foreach($pm in $metadata.propertyMetadatas)
 					#if($pm.isReadWritable())
@@ -102,7 +102,7 @@ function deleteValidator(id){
 					<option value="${convetor.parameterName}_$velocityCount">$validator.validatorName</option>
 				#end
 			</select>
-			<input type="submit" name="cmd" value="Add Validator" onClick="addValidator('validator_$convetor.parameterName');">
+			<input type="submit" name="addValidator" value="Add Validator" onClick="setAddValidator('validator_$convetor.parameterName');">
 			#end
 		#end
 	<input type="submit" value="update">

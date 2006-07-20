@@ -24,6 +24,7 @@ import org.seasar.cadhelin.PropertyMetadata;
 import org.seasar.cadhelin.ValidatorFactory;
 import org.seasar.cadhelin.ValidatorMetadata;
 import org.seasar.cadhelin.annotation.Default;
+import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.util.StringUtil;
 
 public class HelperControllerImpl {
@@ -81,21 +82,32 @@ public class HelperControllerImpl {
 		System.err.print(string);
 		showParameterConvertor(controllerName,methodName,actionName,paramNum);
 	}
-	public void doParameterConvertor(String controllerName,String methodName,String actionName,int paramNum,String cmd,String validator){
+	@Dispatch(actionName="parameterConvertor",key="addValidator")
+	public void doAddValidator(String controllerName,String methodName,String actionName,int paramNum,String validator){
+		if(!StringUtil.isNullOrEmpty(validator)){
+			String[] strs = validator.split("_");
+			ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
+			ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
+			Converter converter = action.getConverter(strs[0]);
+			List<ValidatorMetadata> validators = validatorFactory.getValidatorsFor(converter.getParameterType());
+			converter.addValidater(validators.get(Integer.parseInt(strs[1]) - 1).createValidator());
+		}
+		showParameterConvertor(controllerName,methodName,actionName,paramNum);
+	}
+	@Dispatch(actionName="parameterConvertor",key="deleteValidator")
+	public void doDeleteValidator(String controllerName,String methodName,String actionName,int paramNum,String validator){
+		if(!StringUtil.isNullOrEmpty(validator)){
+			String[] strs = validator.split("_");
+			ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
+			ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
+			Converter converter = action.getConverter(strs[0]);
+			converter.removeValidator(Integer.parseInt(strs[1]) - 1);
+		}
+		showParameterConvertor(controllerName,methodName,actionName,paramNum);
+	}
+	public void doParameterConvertor(String controllerName,String methodName,String actionName,int paramNum){
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
 		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-		if(!StringUtil.isNullOrEmpty(validator)){
-			if("Add Validator".equals(cmd)){
-				String[] strs = validator.split("_");
-				Converter converter = action.getConverter(strs[0]);
-				List<ValidatorMetadata> validators = validatorFactory.getValidatorsFor(converter.getParameterType());
-				converter.addValidater(validators.get(Integer.parseInt(strs[1]) - 1).createValidator());				
-			}else if("Delete Validator".equals(cmd)){
-				String[] strs = validator.split("_");
-				Converter converter = action.getConverter(strs[0]);
-				converter.removeValidator(Integer.parseInt(strs[1]) - 1);
-			}
-		}
 		Converter[] converters = action.getConverters();
 		Converter converter = converters[paramNum-1];
 		String prefix = converter.getParameterName()+"_";

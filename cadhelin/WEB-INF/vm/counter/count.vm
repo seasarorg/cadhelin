@@ -1,0 +1,12 @@
+<html>
+	<head>
+	<title>Count Session</title>
+	</head>
+	<body>
+	<form action="count" method="POST">
+	<p>$count</p>
+	<input type="submit" name="inc" value="Increment">
+	<input type="submit" name="dec" value="Decrement">
+	</form>
+	</body>
+</html>

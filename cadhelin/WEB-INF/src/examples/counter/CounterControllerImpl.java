@@ -13,17 +13,31 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package examples;
+package examples.counter;
 
 import org.seasar.cadhelin.ControllerContext;
+import org.seasar.cadhelin.annotation.Dispatch;
+
+import examples.SessionManager;
 
 
 public class CounterControllerImpl {
-	public int showAdd(){
+	public void showCount(){
+	}
+	@Dispatch(actionName="count",key="inc")
+	public void doInc(){
 		SessionManager sessionManager = 
 			(SessionManager) ControllerContext.getContext().getSessionManager();
 		int count = sessionManager.getCount();
 		sessionManager.setCount(count+1);
-		return count;
+		showCount();
+	}
+	@Dispatch(actionName="count",key="dec")
+	public void doDec(){
+		SessionManager sessionManager = 
+			(SessionManager) ControllerContext.getContext().getSessionManager();
+		int count = sessionManager.getCount();
+		sessionManager.setCount(count-1);
+		showCount();
 	}
 }
