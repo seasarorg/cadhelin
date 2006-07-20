@@ -10,4 +10,5 @@
 	<component class="examples.UserManagerImpl"/>
 	<component name="departmentDao" class="examples.employee.DepartmentDaoImpl"/>
 	<component name="dateUtils" class="org.seasar.cadhelin.util.DateUtils"/>
+	<component name="exceptionHandler" class="examples.ExceptionHandlerImpl"/>
 </components>

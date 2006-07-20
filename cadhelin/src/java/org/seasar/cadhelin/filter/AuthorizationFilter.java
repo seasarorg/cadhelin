@@ -39,7 +39,7 @@ public class AuthorizationFilter implements ActionFilter {
 	public void doFilter(
 			FilterContext context, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws Throwable {
 		Object sessionManager = request.getSession().getAttribute("sessionManager");
 		ActionMetadata actionMetadata = context.getActionMetadata();
 		boolean authorized = authorizationManager.authorized(sessionManager,actionMetadata.getRole());

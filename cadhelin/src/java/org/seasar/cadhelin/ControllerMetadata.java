@@ -16,20 +16,21 @@
 package org.seasar.cadhelin;
 
 import java.beans.XMLEncoder;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.impl.FilterContextImpl;
+import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.framework.container.ComponentDef;
 
@@ -52,9 +53,9 @@ public class ControllerMetadata {
 		this.filters = filters;
 	}
 	protected void service(
-			ControllerContext context,
+			InternalControllerContext context,
 			HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws Throwable {
 		String actionName = context.getActionName();
 		ActionMetadata[] metadata = null;
 		if(!StringUtil.isNullOrEmpty(actionName)){
@@ -108,6 +109,22 @@ public class ControllerMetadata {
 		}
 		log.warn("cannot find ActionMetadata by " + actionName);
 		return null;
+	}
+	public int getPostActionCount(){
+		return getActionCount(HttpMethod.POST);
+	}
+	public int getGetActionCount(){
+		return getActionCount(HttpMethod.GET);
+	}
+	private int getActionCount(HttpMethod method){
+		int count = 0;
+		Collection<ActionMetadata> actions = actionByMethods.values();
+		for (ActionMetadata metadata : actions) {
+			if(method.equals(metadata.getHttpMethod())){
+				count++;
+			}
+		}
+		return count;
 	}
 	public ActionMetadata getAction(String actionName,String method) {
 		return getActionMetadata(actions.get(actionName),method);

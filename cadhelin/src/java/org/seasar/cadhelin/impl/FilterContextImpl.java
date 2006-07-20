@@ -17,7 +17,6 @@ package org.seasar.cadhelin.impl;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,19 +28,19 @@ import org.seasar.cadhelin.FilterContext;
 public class FilterContextImpl implements FilterContext {
 	private int filterIndex = 0;
 	private ActionFilter[] filters;
-	private ControllerContext controllerContext;
+	private InternalControllerContext controllerContext;
 	private ActionMetadata actionMetadata;
 	
 	public FilterContextImpl(
 			ActionFilter[] filters,
-			ControllerContext controllerContext,
+			InternalControllerContext controllerContext,
 			ActionMetadata actionMetadata) {
 		this.filters = filters;
 		this.controllerContext = controllerContext;
 		this.actionMetadata = actionMetadata;
 	}
 
-	public void doFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doFilter(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		if(filterIndex < filters.length){
 			ActionFilter filter = filters[filterIndex++];
 			filter.doFilter(this,request,response);

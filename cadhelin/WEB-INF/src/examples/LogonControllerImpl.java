@@ -18,7 +18,6 @@ package examples;
 import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.annotation.ResultName;
-import org.seasar.cadhelin.impl.ControllerContextImpl;
 
 public class LogonControllerImpl {
 	UserManager userManager;
@@ -32,7 +31,7 @@ public class LogonControllerImpl {
 		User user = userManager.authenticate(userName,password);
 		if(user==null){
 			ControllerContext context = 
-				ControllerContextImpl.getContext();
+				ControllerContext.getContext();
 			context.addMessage("logon",new Message("error.logon"));
 			logonForm();
 			return null;

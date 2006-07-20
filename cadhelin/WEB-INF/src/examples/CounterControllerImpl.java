@@ -15,9 +15,13 @@
  */
 package examples;
 
+import org.seasar.cadhelin.ControllerContext;
+
 
 public class CounterControllerImpl {
-	public int add(SessionManager sessionManager){
+	public int showAdd(){
+		SessionManager sessionManager = 
+			(SessionManager) ControllerContext.getContext().getSessionManager();
 		int count = sessionManager.getCount();
 		sessionManager.setCount(count+1);
 		return count;

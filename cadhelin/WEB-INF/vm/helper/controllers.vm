@@ -17,6 +17,8 @@
 		#foreach($contr in $controllers)
 		<tr>
 			<td><a href="$link.helper.controller($contr.name)">$contr.name</a></td>
+			<td>$contr.getActionCount</td>
+			<td>$contr.postActionCount</td>
 		</tr>
 		#end
 		</table>

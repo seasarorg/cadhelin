@@ -15,13 +15,13 @@
  */
 package org.seasar.cadhelin.velocity;
 
-import org.seasar.cadhelin.ControllerContext;
+import org.seasar.cadhelin.impl.InternalControllerContext;
 
 public class LinkMetadata {
-	private ControllerContext context;
+	private InternalControllerContext context;
 	private String controllerName;
 	
-	public LinkMetadata(ControllerContext context, String controllerName) {
+	public LinkMetadata(InternalControllerContext context, String controllerName) {
 		this.context = context;
 		this.controllerName = controllerName;
 	}

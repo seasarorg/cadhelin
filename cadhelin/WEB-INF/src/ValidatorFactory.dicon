@@ -16,7 +16,7 @@
 	    </initMethod>
 	</component>
 	<component name="validatorFactory"
-	  class="org.seasar.cadhelin.ValidatorFactoryImpl">
+	  class="org.seasar.cadhelin.impl.ValidatorFactoryImpl">
 	  <initMethod name="addValidators">
 	  	<arg>container.findComponents(@org.seasar.cadhelin.Validator@class)</arg>
 	  </initMethod>

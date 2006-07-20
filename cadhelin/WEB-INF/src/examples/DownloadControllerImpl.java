@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.seasar.cadhelin.ControllerContext;
-import org.seasar.cadhelin.impl.ControllerContextImpl;
 
 public class DownloadControllerImpl {
 	public void showDownload() throws IOException{
-		ControllerContext context = ControllerContextImpl.getContext();
+		ControllerContext context = ControllerContext.getContext();
 		Writer writer = null;
 		try {
 			writer = context.createWriter("download.txt","text/plain");

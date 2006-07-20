@@ -24,6 +24,7 @@ import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.AuthorizationManager;
 import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerServlet;
+import org.seasar.cadhelin.impl.InternalControllerContext;
 
 public class LinkTool extends AbstractMap{
 	private AuthorizationManager authorizationManager;
@@ -39,13 +40,13 @@ public class LinkTool extends AbstractMap{
 		if(arguments==null){
 			arguments = new Object[0];
 		}
-		ControllerContext context =
-			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
+		InternalControllerContext context =
+			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		return context.getUrl(controllerName,actionName,arguments);
 	}
 	public boolean authorized(String controllerName,String actionName){
-		ControllerContext context =
-			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
+		InternalControllerContext context =
+			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		ActionMetadata action = context.getAction(controllerName,actionName,"GET");
 		if(authorizationManager == null || action==null){
 			return false;
@@ -57,8 +58,8 @@ public class LinkTool extends AbstractMap{
 		return null;
 	}
 	public Object get(Object key) {
-		ControllerContext context =
-			(ControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
+		InternalControllerContext context =
+			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
 		return new LinkMetadata(context,(String)key);
 	}
     public String setRelative(String uri)

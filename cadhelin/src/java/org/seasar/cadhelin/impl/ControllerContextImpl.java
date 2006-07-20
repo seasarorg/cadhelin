@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.seasar.cadhelin.ActionMetadata;
-import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerMetadata;
 import org.seasar.cadhelin.ControllerMetadataFactory;
 import org.seasar.cadhelin.Message;
@@ -39,19 +38,11 @@ import org.seasar.cadhelin.RequestInfo;
 import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.container.S2Container;
 
-public class ControllerContextImpl implements ControllerContext {
-	private static ThreadLocal<ControllerContextImpl> context = 
-		new ThreadLocal<ControllerContextImpl>();
-	
-	public static void setContext(ControllerContextImpl ctx){
-		context.set(ctx);
-	}
-	public static ControllerContext getContext(){
-		return context.get();
-	}
+public class ControllerContextImpl extends InternalControllerContext {
+	private String controllerName;
+	private String actionName;
 	private String viewName;
 	private S2Container container;
-	private RequestInfo info;
 	private boolean redirected = false;
 	private boolean firstAction = true;
 	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
@@ -73,58 +64,39 @@ public class ControllerContextImpl implements ControllerContext {
 		this.response = response;
 		this.urlPrefix = urlPrefix;
 		this.viewUrlPattern = viewUrlPattern;
-		this.info = 
+		RequestInfo info = 
 			new RequestInfo(request.getPathInfo());
+		this.controllerName = info.getControllerName();
+		this.actionName = info.getActionName();
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#setViewName(java.lang.String)
-	 */
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getViewName()
-	 */
 	public String getViewName() {
 		return viewName;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getActionName()
-	 */
 	public String getActionName(){
-		return info.getActionName();
+		return actionName;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getControllerName()
-	 */
+	public void setControllerName(String controllerName) {
+		this.controllerName = controllerName;
+	}
 	public String getControllerName(){
-		return info.getControllerName();
+		return controllerName;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getUrl(java.lang.String, java.lang.String, java.lang.Object[])
-	 */
 	public String getUrl(String controllerName,String actionName,Object[] arguments){
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
 		return request.getContextPath() + urlPrefix  + metadata.convertToURL(actionName,arguments);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getUrl(java.lang.Class, java.lang.reflect.Method, java.lang.Object[])
-	 */
 	public String getUrl(Class clazz,Method method,Object[] arguments){
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
 		return request.getContextPath() + urlPrefix  + metadata.convertToURL(method,arguments);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getViewURL(java.lang.String)
-	 */
-	public String getViewURL(String actionName){
+	public String getViewURL(){
 		return viewUrlPattern.
-			replace("${controllerName}",info.getControllerName()).
-			replace("${actionName}",actionName);
+			replace("${controllerName}",controllerName).
+			replace("${actionName}",viewName);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getCookie(java.lang.String)
-	 */
 	public String getCookie(String key){
 		Cookie[] cookies = request.getCookies();
 		for (int i = 0; i < cookies.length; i++) {
@@ -138,9 +110,6 @@ public class ControllerContextImpl implements ControllerContext {
 		}
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#setCookie(java.lang.String, java.lang.String)
-	 */
 	public void setCookie(String key,String value){
 		try {
 			response.addCookie(new Cookie(key,(value!=null)?URLEncoder.encode(value,"UTF-8"):null));
@@ -148,39 +117,21 @@ public class ControllerContextImpl implements ControllerContext {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#setFirstAction()
-	 */
 	public void setFirstAction(){
 		firstAction = false;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#isRedirected()
-	 */
 	public boolean isRedirected(){
 		return redirected;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#setRedirected(boolean)
-	 */
 	public void setRedirected(boolean redirected) {
 		this.redirected = redirected;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#setResponseHeader(java.lang.String, java.lang.String)
-	 */
 	public void setResponseHeader(String key,String value){
 		response.setHeader(key,value);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#isFirstAction()
-	 */
 	public boolean isFirstAction() {
 		return firstAction;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#sendMessage(java.lang.String, org.seasar.cadhelin.Message)
-	 */
 	@SuppressWarnings("unchecked")
 	public void sendMessage(String key,Message message){
 		Map<String, Message> attribute = (Map<String, Message>) RedirectSession.getAttribute(

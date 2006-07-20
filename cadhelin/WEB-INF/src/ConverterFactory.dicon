@@ -4,7 +4,7 @@
 <components namespace="converter">
 	<component class="org.seasar.framework.container.autoregister.ComponentAutoRegister">
 	    <initMethod name="addReferenceClass">
-	        <arg>@org.seasar.cadhelin.converter.ConverterFactory@class</arg>
+	        <arg>@org.seasar.cadhelin.ConverterFactory@class</arg>
 	    </initMethod>
 		<initMethod name="addClassPattern">
 			<arg>"org.seasar.cadhelin.converter"</arg>
@@ -16,7 +16,7 @@
 	    </initMethod>
 	</component>
 	<component
-	  class="org.seasar.cadhelin.converter.ConverterFactoryImpl">
+	  class="org.seasar.cadhelin.impl.ConverterFactoryImpl">
 	  <initMethod name="addConverters">
 	  	<arg>container.findComponents(@org.seasar.cadhelin.Converter@class)</arg>
 	  </initMethod>

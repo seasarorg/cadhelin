@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.annotation.Render;
+import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
 
 public class ActionMetadata {
@@ -113,13 +114,14 @@ public class ActionMetadata {
 		return argumants;
 	}
 	public void service(
-			ControllerContext context,
+			InternalControllerContext context,
 			HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws Throwable {
 		if(!request.getMethod().equals(httpMethod.name())){
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;			
 		}
+		context.setViewName(render);
 		request.setAttribute("this",controller);
 		request.setAttribute("actionName",actionName);
 		Map<String,Message> error = new HashMap<String,Message>();
@@ -133,49 +135,38 @@ public class ActionMetadata {
 			widthError(context,request,response,error,values);
 			return;
 		}
+		Object ret = null;
 		try {
-			Object ret = null;
-			try {
-				ret = method.invoke(controller,argumants);
-			} catch (InvocationTargetException e) {
-				LOG.error("exception",e);
-				RedirectSession.setAttribute(
-						request.getSession(),"exception",e.getTargetException());
-				widthError(context,request,response,error,values);
-				return;
-			}
-			if(context.getErrorCount()>0){
-				widthError(context,request,response,error,values);				
-				return;
-			}
-			request.setAttribute(resultName,ret);
-			if(reternMap && ret != null){
-				Map retMap = (Map) ret;
-				for (Entry entry : (Collection<Entry>)retMap.entrySet()) {
-					request.setAttribute(entry.getKey().toString(),entry.getValue());
-				}
-			}
-			if(context.isRedirected()){
-				return;
-			}
-			if(context.getViewName()!=null){
-				render = context.getViewName();
-			}
-			String url = context.getViewURL(render);
-			String redirectUrl = request.getRequestURI();
-			if(request.getQueryString()!=null){
-				redirectUrl += "?" + request.getQueryString();
-			}
-			request.setAttribute(redirectParameterName,redirectUrl);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-			RedirectSession.copyToRequest(request);
-			dispatcher.forward(request,response);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			ret = method.invoke(controller,argumants);
+		} catch (InvocationTargetException e) {
+			throw e.getTargetException();
 		}
+		if(context.getErrorCount()>0){
+			widthError(context,request,response,error,values);				
+			return;
+		}
+		request.setAttribute(resultName,ret);
+		if(reternMap && ret != null){
+			Map retMap = (Map) ret;
+			for (Entry entry : (Collection<Entry>)retMap.entrySet()) {
+				request.setAttribute(entry.getKey().toString(),entry.getValue());
+			}
+		}
+		if(context.isRedirected()){
+			return;
+		}
+		String url = context.getViewURL();
+		String redirectUrl = request.getRequestURI();
+		if(request.getQueryString()!=null){
+			redirectUrl += "?" + request.getQueryString();
+		}
+		request.setAttribute(redirectParameterName,redirectUrl);
+		RequestDispatcher dispatcher = request.getRequestDispatcher(url);
+		RedirectSession.copyToRequest(request);
+		dispatcher.forward(request,response);
 	}
 	private void widthError(
-			ControllerContext context,
+			InternalControllerContext context,
 			HttpServletRequest request, 
 			HttpServletResponse response, 
 			Map<String,Message> error, 
@@ -193,11 +184,7 @@ public class ActionMetadata {
 			context.setRedirect(redirectUrl);
 		}else{
 			//リダイレクト先がなければそのままレンダリングを行う
-			String renderName = this.render;
-			if(context.getViewName()!=null){
-				renderName = context.getViewName();
-			}
-			String url = context.getViewURL(renderName);
+			String url = context.getViewURL();
 			context.addMessage(error);
 			request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
