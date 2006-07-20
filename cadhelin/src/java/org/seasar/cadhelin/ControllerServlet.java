@@ -34,6 +34,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.seasar.cadhelin.impl.ControllerContextImpl;
 import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
@@ -83,9 +84,9 @@ public class ControllerServlet extends HttpServlet {
 		RedirectSession.move(request.getSession());
 		try{
 			request = createHttpRequest(request);
-			ControllerContext controllerContext = 
-				new ControllerContext(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
-			ControllerContext.setContext(
+			ControllerContextImpl controllerContext = 
+				new ControllerContextImpl(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
+			ControllerContextImpl.setContext(
 					controllerContext);
 			request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
 			RequestInfo info = new RequestInfo(request.getPathInfo());

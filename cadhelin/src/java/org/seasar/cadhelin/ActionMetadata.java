@@ -112,7 +112,7 @@ public class ActionMetadata {
 		}
 		return argumants;
 	}
-	protected void service(
+	public void service(
 			ControllerContext context,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {

@@ -1,10 +1,13 @@
-package org.seasar.cadhelin;
+package org.seasar.cadhelin.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.seasar.cadhelin.Validator;
+import org.seasar.cadhelin.ValidatorFactory;
+import org.seasar.cadhelin.ValidatorMetadata;
 import org.seasar.cadhelin.util.ClassUtil;
 
 public class ValidatorFactoryImpl implements ValidatorFactory {

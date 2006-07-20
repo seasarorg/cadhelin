@@ -18,13 +18,14 @@ package org.seasar.cadhelin;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.seasar.cadhelin.impl.ControllerContextImpl;
 import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.aop.interceptors.AbstractInterceptor;
 
 public class ControllerInterceptor extends AbstractInterceptor {
 
 	public Object invoke(MethodInvocation method) throws Throwable {
-		ControllerContext context = ControllerContext.getContext();
+		ControllerContext context = ControllerContextImpl.getContext();
 		//もしリクエスト中で2回目に呼び出されたActionメソッドで
 		if(!context.isFirstAction()){
 			ControllerMetadata controllerMetadata = context.getControllerMetadata(method.getMethod().getDeclaringClass());

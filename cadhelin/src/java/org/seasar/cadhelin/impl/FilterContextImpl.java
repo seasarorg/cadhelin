@@ -13,13 +13,18 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.seasar.cadhelin;
+package org.seasar.cadhelin.impl;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.seasar.cadhelin.ActionFilter;
+import org.seasar.cadhelin.ActionMetadata;
+import org.seasar.cadhelin.ControllerContext;
+import org.seasar.cadhelin.FilterContext;
 
 public class FilterContextImpl implements FilterContext {
 	private int filterIndex = 0;

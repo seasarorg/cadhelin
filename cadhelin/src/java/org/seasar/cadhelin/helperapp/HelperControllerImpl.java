@@ -15,7 +15,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.ActionMetadata;
-import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerMetadata;
 import org.seasar.cadhelin.ControllerMetadataFactory;
 import org.seasar.cadhelin.ControllerServlet;
@@ -24,6 +23,7 @@ import org.seasar.cadhelin.PropertyMetadata;
 import org.seasar.cadhelin.ValidatorFactory;
 import org.seasar.cadhelin.ValidatorMetadata;
 import org.seasar.cadhelin.annotation.Default;
+import org.seasar.cadhelin.impl.ControllerContextImpl;
 import org.seasar.cadhelin.util.StringUtil;
 
 public class HelperControllerImpl {
@@ -34,7 +34,7 @@ public class HelperControllerImpl {
 		this.validatorFactory = validatorFactory;
 	}
 	private ControllerMetadataFactory getControllerMetadataFactory(){
-		HttpServletRequest request = ControllerContext.getContext().getRequest();
+		HttpServletRequest request = ControllerContextImpl.getContext().getRequest();
 		ServletContext context = request.getSession().getServletContext();
 		return (ControllerMetadataFactory) context.getAttribute(ControllerServlet.CONTROLLER_METADATA_NAME);		
 	}
@@ -48,7 +48,7 @@ public class HelperControllerImpl {
 	@SuppressWarnings("deprecation")
 	public void doSaveController(String controllerName) throws IOException{
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-		ServletContext context = ControllerContext.getContext().getRequest().getSession().getServletContext();
+		ServletContext context = ControllerContextImpl.getContext().getRequest().getSession().getServletContext();
 		File rootPath = new File(context.getRealPath("/"),sourcePrefix);
 		String name = controllerMetadata.getControllerClass().getName().replaceAll("\\.","/");
 		File file = new File(rootPath,name+".converters");
@@ -129,7 +129,7 @@ public class HelperControllerImpl {
 	@SuppressWarnings("unchecked")
 	public Map<String,String[]> getString(String prefix){
 		Map<String,String[]> result = new HashMap<String,String[]>();
-		HttpServletRequest request = ControllerContext.getContext().getRequest();
+		HttpServletRequest request = ControllerContextImpl.getContext().getRequest();
 		Collection<Entry<String,String[]>> map = 
 			request.getParameterMap().entrySet();
 		for(Entry<String,String[]> entry : map){

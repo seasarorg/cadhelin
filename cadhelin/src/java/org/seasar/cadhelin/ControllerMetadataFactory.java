@@ -30,8 +30,7 @@ import java.util.Map;
 import org.seasar.cadhelin.annotation.Default;
 import org.seasar.cadhelin.annotation.ResultName;
 import org.seasar.cadhelin.annotation.Role;
-import org.seasar.cadhelin.converter.ConverterFactory;
-import org.seasar.cadhelin.converter.ConverterFactoryImpl;
+import org.seasar.cadhelin.impl.ConverterFactoryImpl;
 import org.seasar.cadhelin.util.AnnotationUtil;
 import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.framework.beans.BeanDesc;
@@ -66,7 +65,7 @@ public class ControllerMetadataFactory {
 	protected ConverterFactory factory;
 	public ControllerMetadataFactory(S2Container container) {
 		factory = 
-			(ConverterFactoryImpl) container.getComponent(ConverterFactoryImpl.class);
+			(ConverterFactory) container.getComponent(ConverterFactory.class);
 		Object[] f = container.findComponents(ActionFilter.class);
 		this.filters = new ActionFilter[f.length];
 		System.arraycopy(f,0,filters,0,filters.length);

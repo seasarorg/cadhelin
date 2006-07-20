@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import org.seasar.cadhelin.Converter;
+import org.seasar.cadhelin.ConverterFactory;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.extension.unit.S2TestCase;

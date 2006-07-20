@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.Converter;
+import org.seasar.cadhelin.ConverterFactory;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.util.AnnotationUtil;

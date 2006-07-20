@@ -13,12 +13,10 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.seasar.cadhelin.converter;
+package org.seasar.cadhelin;
 
 import java.lang.reflect.Method;
 
-import org.seasar.cadhelin.Converter;
-import org.seasar.cadhelin.Param;
 
 public interface ConverterFactory {
 	public Converter[] createConverters(Method method,String[] parameterNames);

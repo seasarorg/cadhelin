@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.seasar.cadhelin.converter;
+package org.seasar.cadhelin.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.Converter;
+import org.seasar.cadhelin.ConverterFactory;
 import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.Validator;
 import org.seasar.cadhelin.annotation.Validate;
