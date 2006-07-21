@@ -39,8 +39,8 @@ public class ControllerMetadata {
 	private String name;
 	private Map<String,ActionMetadata[]> actions = 
 		new HashMap<String,ActionMetadata[]>();
-	private Map<Method,ActionMetadata> actionByMethods = 
-		new HashMap<Method,ActionMetadata>();
+	private Map<String,ActionMetadata> actionByMethodName = 
+		new HashMap<String,ActionMetadata>();
 	private ActionFilter[] filters = new ActionFilter[0];
 	private String defaultActionName = null;
 	public ControllerMetadata(
@@ -96,40 +96,16 @@ public class ControllerMetadata {
 		}
 		return null;
 	}
-	private ActionMetadata getActionMetadata(ActionMetadata[] metadata,String method){
-		if(metadata==null || metadata.length==0){
-			return null;
-		}
-		for (ActionMetadata metadatum : metadata) {
-			if(metadatum.getHttpMethod().name().equals(method)){
-				return metadatum;
-			}
-		}
-		return null;
-	}
 	public Collection<ActionMetadata[]> getActionMetadata(){
 		return actions.values();
 	}
-	public String convertToURL(Method method, Object[] arguments) {
-		ActionMetadata metadata = actionByMethods.get(method);
-		if(metadata!=null){
-			return name+"/"+metadata.convertToURL(arguments);			
-		}
-		log.warn("cannot find ActionMetadata by " + method);
-		return null;
-	}
-	public String convertToURL(String actionName, Object[] arguments) {
+	public String convertToURL(String methodName, Object[] arguments) {
 		ActionMetadata metadata = 
-			getActionMetadata(actions.get(actionName),"GET");
+			actionByMethodName.get(methodName);
 		if(metadata!=null){
 			return name+"/"+metadata.convertToURL(arguments);			
 		}
-		metadata = 
-			getActionMetadata(actions.get(actionName),"POST");
-		if(metadata!=null){
-			return name+"/"+metadata.convertToURL(arguments);			
-		}
-		log.warn("cannot find ActionMetadata by " + actionName);
+		log.warn("cannot find ActionMetadata by " + methodName);
 		return null;
 	}
 	public int getPostActionCount(){
@@ -140,7 +116,7 @@ public class ControllerMetadata {
 	}
 	private int getActionCount(HttpMethod method){
 		int count = 0;
-		Collection<ActionMetadata> actions = actionByMethods.values();
+		Collection<ActionMetadata> actions = actionByMethodName.values();
 		for (ActionMetadata metadata : actions) {
 			if(method.equals(metadata.getHttpMethod())){
 				count++;
@@ -148,8 +124,8 @@ public class ControllerMetadata {
 		}
 		return count;
 	}
-	public ActionMetadata getAction(String actionName,String method) {
-		return getActionMetadata(actions.get(actionName),method);
+	public ActionMetadata getAction(String methodName) {
+		return actionByMethodName.get(methodName);
 	}
 	public void addActionMetadata(String name, ActionMetadata metadata) {
 		ActionMetadata[] metadatas = actions.get(name);
@@ -161,7 +137,7 @@ public class ControllerMetadata {
 			am[metadatas.length] = metadata;
 			actions.put(name,am);
 		}
-		actionByMethods.put(metadata.getMethod(), metadata);
+		actionByMethodName.put(metadata.getMethod().getName(), metadata);
 	}
 	public void setDefaultActionName(String defaultActionName) {
 		this.defaultActionName = defaultActionName;
@@ -185,7 +161,31 @@ public class ControllerMetadata {
 		}
 		return map;
 	}
+	public Map<String,ConverterMetadata[]> getConverterMetadata(){
+		Map<String,ConverterMetadata[]> map = 
+			new HashMap<String,ConverterMetadata[]>();
+		Collection<ActionMetadata[]> am = actions.values();
+		for (ActionMetadata[] metadatas : am) {
+			for (ActionMetadata metadata : metadatas) {
+				map.put(metadata.getMethod().getName(), metadata.getConverterMetadata());
+			}
+		}
+		return map;
+	}
 	public ActionMetadata getAction(Method method) {
-		return actionByMethods.get(method);
+		return actionByMethodName.get(method.getName());
+	}
+	public ActionMetadata getAction(String actionName, String httpMethodName) {
+		ActionMetadata[] metadata = actions.get(actionName);
+		if(metadata==null || metadata.length==0){
+			return null;
+		}
+		for (ActionMetadata metadatum : metadata) {
+			if(metadatum.getHttpMethod().name().equals(httpMethodName)&&
+					metadatum.getDispatch()==null){
+				return metadatum;
+			}
+		}
+		return null;
 	}
 }

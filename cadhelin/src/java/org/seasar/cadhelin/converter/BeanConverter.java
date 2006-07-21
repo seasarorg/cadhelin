@@ -80,9 +80,6 @@ public class BeanConverter extends AbstractConverter {
 	public void setConverterFactory(ConverterFactory converterFactory) {
 		this.converterFactory = converterFactory;
 	}
-	public Converter createInstance() {
-		return new BeanConverter();
-	}
 	public Object convert(
 			HttpServletRequest request, 
 			Map<String,Message> messages) {

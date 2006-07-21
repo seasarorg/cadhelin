@@ -65,7 +65,7 @@ public class ControllerServlet extends HttpServlet {
 	}
 	public String convertToURL(String contextPath,Class clazz,Method method,Object[] arguments){
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
-		String url = contextPath + urlPrefix + metadata.convertToURL(method,arguments);
+		String url = contextPath + urlPrefix + metadata.convertToURL(method.getName(),arguments);
 		return url;
 	}
 	protected HttpServletRequest createHttpRequest(HttpServletRequest request) throws FileUploadException{

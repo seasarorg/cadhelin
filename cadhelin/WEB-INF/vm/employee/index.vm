@@ -12,15 +12,15 @@
 	<td>$departmentDao.getDepartment($emp.deptno).name</td>
 	<td>
 		#if($link.authorized('employee','delete'))
-		<a href="$link.employee.delete($emp.empno)">delete</a>
+		<a href="$link.employee.showDelete($emp.empno)">delete</a>
 		#end
-		<a href="$link.employee.update($emp.empno)">update</a>
+		<a href="$link.employee.showUpdate($emp.empno)">update</a>
 	</td>
 	
 </tr>
 #end
 </tbody>
 </table>
-<a href="$link.employee.add()">Add Employee</a>
+<a href="$link.employee.showAdd()">Add Employee</a>
 </body>
 </html>

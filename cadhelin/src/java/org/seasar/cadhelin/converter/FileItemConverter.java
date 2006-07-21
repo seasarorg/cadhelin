@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.MultipartRequestWrapper;
 
@@ -31,9 +30,6 @@ public class FileItemConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.fileitem.required";
 	public FileItemConverter() {
 		super(new Object[]{FileItem.class});
-	}
-	public Converter createInstance() {
-		return new FileItemConverter();
 	}
 	
 	public Object convert(

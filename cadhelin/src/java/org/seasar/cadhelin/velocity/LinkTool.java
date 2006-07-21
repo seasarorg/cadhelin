@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.AuthorizationManager;
-import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerServlet;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 
@@ -33,30 +32,35 @@ public class LinkTool extends AbstractMap{
 	public LinkTool(AuthorizationManager authorizationManager) {
 		this.authorizationManager = authorizationManager;
 	}
+	
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-	public String getLink(String controllerName,String actionName,Object[] arguments){
+	
+	public String getLink(String controllerName,String methodName,Object[] arguments){
 		if(arguments==null){
 			arguments = new Object[0];
 		}
 		InternalControllerContext context =
 			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
-		return context.getUrl(controllerName,actionName,arguments);
+		return context.getUrlByMethodName(controllerName,methodName,arguments);
 	}
-	public boolean authorized(String controllerName,String actionName){
+	
+	public boolean authorized(String controllerName,String methodName){
 		InternalControllerContext context =
 			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
-		ActionMetadata action = context.getAction(controllerName,actionName,"GET");
+		ActionMetadata action = context.getAction(controllerName,methodName,"GET");
 		if(authorizationManager == null || action==null){
 			return false;
 		}
 		return authorizationManager.authorized(
 				request.getSession().getAttribute("sessionManager"),action.getRole());
 	}
+	
 	public Set entrySet() {
 		return null;
 	}
+	
 	public Object get(Object key) {
 		InternalControllerContext context =
 			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);

@@ -19,16 +19,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 
 public class StringArrayConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.stringarray.required";
 	public StringArrayConverter() {
 		super(new Object[]{String[].class});
-	}
-	public Converter createInstance() {
-		return new StringArrayConverter();
 	}
 	
 	public Object convert(

@@ -1,7 +1,5 @@
 package org.seasar.cadhelin.helperapp;
 
-import java.beans.XMLEncoder;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +18,7 @@ import org.seasar.cadhelin.ControllerMetadata;
 import org.seasar.cadhelin.ControllerMetadataFactory;
 import org.seasar.cadhelin.ControllerServlet;
 import org.seasar.cadhelin.Converter;
+import org.seasar.cadhelin.ConverterMetadata;
 import org.seasar.cadhelin.PropertyMetadata;
 import org.seasar.cadhelin.ValidatorFactory;
 import org.seasar.cadhelin.ValidatorMetadata;
@@ -30,9 +29,14 @@ import org.seasar.cadhelin.util.StringUtil;
 public class HelperControllerImpl {
 	private String sourcePrefix = "WEB-INF/src";
 	private ValidatorFactory validatorFactory;
-	
+	private Map<Class,Editor> editors = new HashMap<Class,Editor>();
 	public HelperControllerImpl(ValidatorFactory validatorFactory) {
 		this.validatorFactory = validatorFactory;
+		editors.put(Integer.class,new IntegerEditor());
+		editors.put(int.class,new IntegerEditor());
+		editors.put(String.class,new StringEditor());
+		editors.put(Boolean.class,new BooleanEditor());
+		editors.put(boolean.class,new BooleanEditor());
 	}
 	private ControllerMetadataFactory getControllerMetadataFactory(){
 		HttpServletRequest request = ControllerContext.getContext().getRequest();
@@ -46,7 +50,6 @@ public class HelperControllerImpl {
 	public ControllerMetadata showController(String controllerName){
 		return getControllerMetadataFactory().getControllerMetadata(controllerName);
 	}
-	@SuppressWarnings("deprecation")
 	public void doSaveController(String controllerName) throws IOException{
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
 		ServletContext context = ControllerContext.getContext().getRequest().getSession().getServletContext();
@@ -62,84 +65,76 @@ public class HelperControllerImpl {
 		}
 		showController(controllerName);
 	}
-	public Converter showParameterConvertor(String controllerName,String methodName,String actionName,int paramNum){
+	public ConverterMetadata showParameterConvertor(String controllerName,String methodName,int paramNum){
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-		
-		Converter converter = action.getConverters()[paramNum-1];
-		return converter;
-	}
-	public void showConvertor(String controllerName,String methodName,String actionName,int paramNum){
-		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-		
-		Converter converter = action.getConverters()[paramNum-1];
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		XMLEncoder encoder = new XMLEncoder(os);
-		encoder.writeObject(converter);
-		encoder.close();
-		String string = new String(os.toByteArray());
-		System.err.print(string);
-		showParameterConvertor(controllerName,methodName,actionName,paramNum);
+		ActionMetadata action = controllerMetadata.getAction(methodName);
+		ConverterMetadata metadata = action.getConverterMetadata()[paramNum-1];
+		return metadata;
 	}
 	@Dispatch(actionName="parameterConvertor",key="addValidator")
-	public void doAddValidator(String controllerName,String methodName,String actionName,int paramNum,String validator){
+	public void doAddValidator(String controllerName,String methodName,int paramNum,String validator){
 		if(!StringUtil.isNullOrEmpty(validator)){
 			String[] strs = validator.split("_");
-			ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-			ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-			Converter converter = action.getConverter(strs[0]);
-			List<ValidatorMetadata> validators = validatorFactory.getValidatorsFor(converter.getParameterType());
-			converter.addValidater(validators.get(Integer.parseInt(strs[1]) - 1).createValidator());
+			if(strs.length==2){
+				ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
+				ActionMetadata action = controllerMetadata.getAction(methodName);
+				Converter converter = action.getConverter(strs[0]);
+				List<ValidatorMetadata> validators = validatorFactory.getValidatorsFor(converter.getParameterType());
+				converter.addValidater(validators.get(Integer.parseInt(strs[1]) - 1).createValidator());				
+			}
 		}
-		showParameterConvertor(controllerName,methodName,actionName,paramNum);
+		showParameterConvertor(controllerName,methodName,paramNum);
 	}
 	@Dispatch(actionName="parameterConvertor",key="deleteValidator")
 	public void doDeleteValidator(String controllerName,String methodName,String actionName,int paramNum,String validator){
 		if(!StringUtil.isNullOrEmpty(validator)){
 			String[] strs = validator.split("_");
-			ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-			ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-			Converter converter = action.getConverter(strs[0]);
-			converter.removeValidator(Integer.parseInt(strs[1]) - 1);
+			if(strs.length==2){
+				ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
+				ActionMetadata action = controllerMetadata.getAction(methodName);
+				Converter converter = action.getConverter(strs[0]);
+				converter.removeValidator(Integer.parseInt(strs[1]) - 1);				
+			}
 		}
-		showParameterConvertor(controllerName,methodName,actionName,paramNum);
+		showParameterConvertor(controllerName,methodName,paramNum);
 	}
 	public void doParameterConvertor(String controllerName,String methodName,String actionName,int paramNum){
 		ControllerMetadata controllerMetadata = getControllerMetadataFactory().getControllerMetadata(controllerName);
-		ActionMetadata action = controllerMetadata.getAction(actionName,methodName);
-		Converter[] converters = action.getConverters();
-		Converter converter = converters[paramNum-1];
+		ActionMetadata action = controllerMetadata.getAction(methodName);
+		ConverterMetadata[] converters = action.getConverterMetadata();
+		ConverterMetadata converter = converters[paramNum-1];
+		setConverterProperties(converter);
+		showParameterConvertor(controllerName,methodName,paramNum);
+	}
+	public Object getEditor(PropertyMetadata pm,String options){
+		Editor editor = editors.get(pm.getPropertyType());
+		return editor.getEditor(pm,options);
+	}
+	private void setConverterProperties(ConverterMetadata converter){
 		String prefix = converter.getParameterName()+"_";
 		Map<String,String[]> request = getString(prefix);
-		if(request.containsKey("required")){
-			converter.setRequired(true);
-		}else{
-			converter.setRequired(false);			
-		}
+		setProterties(converter.getPropertyMetadatas(),request);
 		for (ValidatorMetadata val : converter.getValidatorMetadata()) {
 			String vp = prefix + val.getValidatorName() + "_";
 			request = getString(vp);
-			PropertyMetadata[] propertyMetadatas = val.getPropertyMetadatas();
-			for (PropertyMetadata pm : propertyMetadatas) {
-				if(pm.isReadWritable()){
-					pm.setValue(request.get(pm.getName()));					
-				}
+			setProterties(val.getPropertyMetadatas(),request);
+		}
+		for (ConverterMetadata child : converter.getChildConverterMetadata()) {
+			setConverterProperties(child);
+		}
+		
+	}
+	private void setProterties(PropertyMetadata[] propertyMetadatas,Map<String,String[]> request){
+		for (PropertyMetadata pm : propertyMetadatas) {
+			Editor editor = editors.get(pm.getPropertyType());
+			if(editor!=null){
+				editor.setValue(pm,request.get(pm.getName()));
 			}
 		}
-		for (Converter child : converter.getChildConvertors()) {
-			request = getString(child.getParameterName()+"_");
-			if(request.containsKey("required")){
-				child.setRequired(true);
-			}else{
-				child.setRequired(false);			
-			}
-			
-		}
-		showParameterConvertor(controllerName,methodName,actionName,paramNum);
+		
 	}
 	@SuppressWarnings("unchecked")
-	public Map<String,String[]> getString(String prefix){
+	private Map<String,String[]> getString(String prefix){
 		Map<String,String[]> result = new HashMap<String,String[]>();
 		HttpServletRequest request = ControllerContext.getContext().getRequest();
 		Collection<Entry<String,String[]>> map = 

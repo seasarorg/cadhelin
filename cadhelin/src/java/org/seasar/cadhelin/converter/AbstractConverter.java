@@ -23,7 +23,6 @@ import java.util.Map;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
-import org.seasar.cadhelin.ValidatorMetadata;
 
 public abstract class AbstractConverter implements Converter {
 	protected Map<String,Object> messageArguments = new HashMap<String,Object>();
@@ -83,14 +82,6 @@ public abstract class AbstractConverter implements Converter {
 	}
 	public Validator[] getValidators() {
 		return validaters.toArray(new Validator[validaters.size()]);
-	}
-	public ValidatorMetadata[] getValidatorMetadata() {
-		ValidatorMetadata[] meta = new ValidatorMetadata[validaters.size()];
-		int i=0;
-		for (Validator validator : validaters) {
-			meta[i++] = new ValidatorMetadata(validator);
-		}
-		return meta;
 	}
 	public Converter[] getChildConvertors() {
 		return new Converter[0];

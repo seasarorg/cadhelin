@@ -15,7 +15,7 @@
 	        <arg>"Abstract.*"</arg>
 	    </initMethod>
 	</component>
-	<component
+	<component name="converterFactory"
 	  class="org.seasar.cadhelin.impl.ConverterFactoryImpl">
 	  <initMethod name="addConverters">
 	  	<arg>container.findComponents(@org.seasar.cadhelin.Converter@class)</arg>

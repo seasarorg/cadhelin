@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface Converter extends Cloneable{
 	public Map<String,Object> getMessageArguments();
 	public void addValidater(Validator validater);
-	public Converter createInstance();
 	public boolean isRequired();
 	public void setRequired(boolean required);
 
@@ -49,7 +48,6 @@ public interface Converter extends Cloneable{
 			Map<String,Message> message);
 	
 	public Validator[] getValidators();
-	public ValidatorMetadata[] getValidatorMetadata();
 	public Converter[] getChildConvertors();
 	public void removeValidator(int i);
 }

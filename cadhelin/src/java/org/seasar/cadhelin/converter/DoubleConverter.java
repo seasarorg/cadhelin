@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.util.StringUtil;
 
@@ -31,9 +30,6 @@ public class DoubleConverter extends AbstractConverter {
 		new HashMap<String,Object>();
 	public DoubleConverter() {
 		super(new Object[]{double.class,Double.class});
-	}
-	public Converter createInstance() {
-		return new DoubleConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 

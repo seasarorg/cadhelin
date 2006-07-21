@@ -19,7 +19,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.util.StringUtil;
 
@@ -28,9 +27,6 @@ public class StringConverter extends AbstractConverter {
 	private boolean trim = false;
 	public StringConverter() {
 		super(new Object[]{String.class});
-	}
-	public Converter createInstance() {
-		return new StringConverter();
 	}
 	
 	public Object convert(

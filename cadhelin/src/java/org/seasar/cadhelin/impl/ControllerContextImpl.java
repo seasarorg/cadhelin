@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -84,13 +83,10 @@ public class ControllerContextImpl extends InternalControllerContext {
 	public String getControllerName(){
 		return controllerName;
 	}
-	public String getUrl(String controllerName,String actionName,Object[] arguments){
+	public String getUrlByMethodName(String controllerName,String methodName,Object[] arguments){
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
-		return request.getContextPath() + urlPrefix  + metadata.convertToURL(actionName,arguments);
-	}
-	public String getUrl(Class clazz,Method method,Object[] arguments){
-		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
-		return request.getContextPath() + urlPrefix  + metadata.convertToURL(method,arguments);
+		String url = metadata.convertToURL(methodName,arguments);
+		return (url!=null)?request.getContextPath() + urlPrefix  + url : null;
 	}
 	public String getViewURL(){
 		return viewUrlPattern.
@@ -144,9 +140,7 @@ public class ControllerContextImpl extends InternalControllerContext {
 		}
 		map.put(key,message);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#addMessage(java.lang.String, org.seasar.cadhelin.Message)
-	 */
+
 	@SuppressWarnings("unchecked")
 	public void addMessage(String key,Message message){
 		Map<String,Message> map = 
@@ -157,9 +151,7 @@ public class ControllerContextImpl extends InternalControllerContext {
 		}
 		map.put(key,message);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#addMessage(java.util.Map)
-	 */
+
 	@SuppressWarnings("unchecked")
 	public void addMessage(Map<String,Message> messages){
 		Map<String,Message> map = 
@@ -170,18 +162,14 @@ public class ControllerContextImpl extends InternalControllerContext {
 		}
 		map.putAll(messages);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getErrorCount()
-	 */
+
 	@SuppressWarnings("unchecked")
 	public int getErrorCount(){
 		Map<String,Message> map = 
 			(Map<String,Message>) request.getAttribute(MessageTool.ERROR_KEY);
 		return (map==null)?0:map.size();
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#addError(java.lang.String, org.seasar.cadhelin.Message)
-	 */
+
 	@SuppressWarnings("unchecked")
 	public void addError(String key,Message message){
 		Map<String,Message> map = 
@@ -192,9 +180,7 @@ public class ControllerContextImpl extends InternalControllerContext {
 		}
 		map.put(key,message);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#addError(java.util.Map)
-	 */
+
 	@SuppressWarnings("unchecked")
 	public void addError(Map<String,Message> messages){
 		Map<String,Message> map = 
@@ -205,29 +191,21 @@ public class ControllerContextImpl extends InternalControllerContext {
 		}
 		map.putAll(messages);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getRequest()
-	 */
+
 	public HttpServletRequest getRequest() {
 		return request;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getResponse()
-	 */
+
 	public HttpServletResponse getResponse() {
 		return response;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getAction(java.lang.String, java.lang.String, java.lang.String)
-	 */
+
 	public ActionMetadata getAction(String controllerName, String actionName,String method) {
 		ControllerMetadata metadata = 
 			controllerMetadataFactory.getControllerMetadata(controllerName);
 		return metadata.getAction(actionName,method);
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#setRedirect(java.lang.String)
-	 */
+
 	public void setRedirect(String redirectUrl) {
 		try {
 			RedirectSession.setAttribute(request.getSession(),
@@ -238,27 +216,21 @@ public class ControllerContextImpl extends InternalControllerContext {
 			throw new RuntimeException(e);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getSessionManager()
-	 */
+
 	public Object getSessionManager(){
 		if(container.hasComponentDef("sessionManager")){
 			return container.getComponent("sessionManager");
 		}
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#createWriter(java.lang.String)
-	 */
+
 	public Writer createWriter(String contentType) throws IOException{
 		redirected = true;
 		response.setContentType( contentType );
 		return response.getWriter();
 		
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#createWriter(java.lang.String, java.lang.String)
-	 */
+
 	public Writer createWriter(String fileName,String contentType) throws IOException{
 		redirected = true;
 		response.setContentType( contentType );
@@ -266,18 +238,14 @@ public class ControllerContextImpl extends InternalControllerContext {
 		return response.getWriter();
 		
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#createOutputStream(java.lang.String)
-	 */
+
 	public OutputStream createOutputStream(String contentType) throws IOException{
 		redirected = true;
 		response.setContentType( contentType );
 		return response.getOutputStream();
 		
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#createOutputStream(java.lang.String, java.lang.String)
-	 */
+
 	public OutputStream createOutputStream(String fileName,String contentType) throws IOException{
 		redirected = true;
 		response.setContentType( contentType );
@@ -285,15 +253,11 @@ public class ControllerContextImpl extends InternalControllerContext {
 		return response.getOutputStream();
 		
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#invalidateSession()
-	 */
+
 	public void invalidateSession(){
 		request.getSession().invalidate();
 	}
-	/* (non-Javadoc)
-	 * @see org.seasar.cadhelin.ControllerContext#getControllerMetadata(java.lang.Class)
-	 */
+
 	public ControllerMetadata getControllerMetadata(Class controllerClass) {
 		return controllerMetadataFactory.getControllerMetadata(controllerClass);
 	}

@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.util.StringUtil;
 
@@ -32,9 +31,7 @@ public class IntConverter extends AbstractConverter {
 	public IntConverter() {
 		super(new Object[]{int.class,Integer.class});
 	}
-	public Converter createInstance() {
-		return new IntConverter();
-	}
+
 	public Object convert(
 			HttpServletRequest request, 
 			Map<String,Message> messages) {

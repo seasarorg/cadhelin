@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.util.StringUtil;
 
@@ -31,9 +30,6 @@ public class FloatConverter extends AbstractConverter {
 		new HashMap<String,Object>();
 	public FloatConverter() {
 		super(new Object[]{float.class,Float.class});
-	}
-	public Converter createInstance() {
-		return new FloatConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 

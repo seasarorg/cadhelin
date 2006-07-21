@@ -1,16 +1,31 @@
 package org.seasar.cadhelin;
 
 import java.beans.PropertyDescriptor;
-
-import org.seasar.cadhelin.util.StringUtil;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PropertyMetadata {
-	private Validator validator;
+	private static Map<Class,Object> editors = new HashMap<Class,Object>();
+	static{
+		editors.put(String.class,String.class);
+		editors.put(boolean.class,String.class);
+		editors.put(Integer.class,String.class);
+	}
+	private Object bean;
 	private PropertyDescriptor pd;
+	private boolean editable;
 	
-	public PropertyMetadata(Validator validator, PropertyDescriptor pd) {
-		this.validator = validator;
+	public PropertyMetadata(Object bean, PropertyDescriptor pd) {
+		this.bean = bean;
 		this.pd = pd;
+		if(pd.getReadMethod()!=null && 			
+				pd.getWriteMethod()!=null &&
+				editors.containsKey(pd.getPropertyType())){
+			this.editable = true;
+		}
+	}
+	public boolean isEditable(){
+		return editable;
 	}
 	public boolean isReadWritable(){
 		return pd.getReadMethod()!=null && 
@@ -24,19 +39,18 @@ public class PropertyMetadata {
 	}
 	public Object getValue(){
 		try {
-			return pd.getReadMethod().invoke(validator, new Object[0]);
+			return pd.getReadMethod().invoke(bean, new Object[0]);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public void setValue(String[] string) {
+	public void setValue(Object value) {
 		try {
-			if(string==null || string.length<1 || StringUtil.isNullOrEmpty(string[0])){
-				pd.getWriteMethod().invoke(validator,new Object[]{null});
-			}else{
-				pd.getWriteMethod().invoke(validator,new Object[]{Integer.valueOf(string[0])});			
-			}
+			pd.getWriteMethod().invoke(bean,new Object[]{value});
 		} catch (Exception e) {
-		}
+		}			
+	}
+	public Class getPropertyType() {
+		return pd.getPropertyType();
 	}
 }

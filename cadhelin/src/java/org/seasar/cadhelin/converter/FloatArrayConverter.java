@@ -19,16 +19,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 
 public class FloatArrayConverter extends AbstractConverter {
 	private static final String ERROR_KEY_REQUIRED = "error.converter.floatarray.required";
 	public FloatArrayConverter() {
 		super(new Object[]{float[].class});
-	}
-	public Converter createInstance() {
-		return new FloatArrayConverter();
 	}
 	
 	public Object convert(

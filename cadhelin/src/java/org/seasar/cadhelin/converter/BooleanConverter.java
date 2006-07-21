@@ -19,15 +19,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 
 public class BooleanConverter extends AbstractConverter {
 	public BooleanConverter() {
 		super(new Object[]{boolean.class,Boolean.class});
-	}
-	public Converter createInstance() {
-		return new BooleanConverter();
 	}
 	public Object convert(
 			HttpServletRequest request, 

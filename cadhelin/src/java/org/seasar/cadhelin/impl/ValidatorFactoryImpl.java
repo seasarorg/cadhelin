@@ -13,9 +13,6 @@ import org.seasar.cadhelin.util.ClassUtil;
 public class ValidatorFactoryImpl implements ValidatorFactory {
 	private Map<Class,List<ValidatorMetadata>> map = 
 		new HashMap<Class,List<ValidatorMetadata>>();
-	public ValidatorFactoryImpl() {
-		System.out.println("test");
-	}
 	public void addValidators(Object[] objects){
 		try{
 			for (Object val : objects) {

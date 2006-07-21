@@ -30,15 +30,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
 
 public class ActionMetadata {
-	private static final Log LOG = LogFactory.getLog(ActionMetadata.class);
 	private HttpMethod httpMethod;
 	private String redirectParameterName = "cadhelin_redirect_to";
 	private String resultName;
@@ -83,7 +80,15 @@ public class ActionMetadata {
 	public Dispatch getDispatch() {
 		return dispatch;
 	}
-	public Converter[] getConverters(){
+	public ConverterMetadata[] getConverterMetadata(){
+		ConverterMetadata[] converterMetadata = 
+			new ConverterMetadata[converters.length];
+		for (int i=0;i<converterMetadata.length;i++) {
+			converterMetadata[i] = new ConverterMetadata(converters[i]);
+		}
+		return converterMetadata;
+	}
+	public Converter[] getConverters() {
 		return converters;
 	}
 	public Converter getConverter(String parameterName){
@@ -214,7 +219,7 @@ public class ActionMetadata {
 							}
 							buff.append(parameterNames[i]);
 							buff.append("=");
-							buff.append(encodeURL(arguments.toString()));
+							buff.append(encodeURL(object.toString()));
 							first = false;
 							
 						}
@@ -267,6 +272,9 @@ public class ActionMetadata {
 	}
 	public Method getMethod() {
 		return method;
+	}
+	public String getMethodName() {
+		return method.getName();
 	}
 	public boolean isGetAndNoParam(){
 		return httpMethod.isGet() && converters.length == 0;

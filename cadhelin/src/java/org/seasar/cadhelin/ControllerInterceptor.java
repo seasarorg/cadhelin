@@ -34,8 +34,10 @@ public class ControllerInterceptor extends AbstractInterceptor {
 				controllerMetadata.getAction(method.getMethod());
 			//かつGETのActionメソッドならリダイレクトする
 			if(actionMetadata.getHttpMethod().isGet()){
-				String url = context.getUrl(method.getThis().getClass(),
-						method.getMethod(),method.getArguments());
+				String url = context.getUrlByMethodName(
+						controllerMetadata.getName(),
+						method.getMethod().getName(),
+						method.getArguments());
 				HttpServletRequest request = context.getRequest();
 				RedirectSession.setAttribute(request.getSession(),
 						MessageTool.MESSAGE_KEY,request.getAttribute(MessageTool.MESSAGE_KEY));				

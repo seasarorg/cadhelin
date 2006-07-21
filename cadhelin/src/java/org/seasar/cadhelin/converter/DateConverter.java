@@ -22,7 +22,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 
 public class DateConverter extends AbstractConverter {
@@ -31,9 +30,6 @@ public class DateConverter extends AbstractConverter {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	public DateConverter() {
 		super(new Object[]{"date",Date.class});
-	}
-	public Converter createInstance() {
-		return new DateConverter();
 	}
 
 	public Object convert(

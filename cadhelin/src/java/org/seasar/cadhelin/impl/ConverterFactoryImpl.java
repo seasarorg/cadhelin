@@ -18,7 +18,9 @@ package org.seasar.cadhelin.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -31,65 +33,83 @@ import org.seasar.cadhelin.annotation.Validate;
 import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.PropertyDesc;
 import org.seasar.framework.beans.factory.BeanDescFactory;
-import org.seasar.framework.mock.servlet.MockHttpServletRequest;
-import org.seasar.framework.mock.servlet.MockHttpServletRequestImpl;
-import org.seasar.framework.mock.servlet.MockServletContext;
-import org.seasar.framework.mock.servlet.MockServletContextImpl;
 import org.seasar.framework.util.ConstructorUtil;
 
 public class ConverterFactoryImpl implements ConverterFactory {
 	private static final Log LOG = LogFactory.getLog(ConverterFactoryImpl.class);
-	private Map<Object,Converter> converters 
-		= new HashMap<Object,Converter>();
+	private Map<Object,List<Converter>> converters 
+		= new HashMap<Object,List<Converter>>();
 	public void addConverter(Converter converter){
 		Object[] converterKey = converter.getConverterKey();
 		for (Object key : converterKey) {
-			this.converters.put(key,converter);
+			List<Converter> cs = converters.get(key);
+			if(cs==null){
+				cs = new ArrayList<Converter>();
+				converters.put(key,cs);
+			}
+			cs.add(converter);
 		}
 	}
 	public void addConverters(Object[] converters){
 		for (Object c : converters) {
-			Converter converter = (Converter) c; 
-			Object[] converterKey = converter.getConverterKey();
-			for (Object key : converterKey) {
-				this.converters.put(key,converter);				
-			}
+			addConverter((Converter) c);
 		}		
 	}
-	public Converter getConverter(
-			String parameterName,
-			String validaterName,
-			Class targetClass,
-			Param validater){
-		Converter converter = converters.get(validaterName);
-		if(converter==null){
+	
+	private Converter newInstance(Converter converter) throws Exception{
+		Class<? extends Converter> class1 = converter.getClass();
+		Constructor<? extends Converter> constructor = class1.getConstructor(new Class[0]);
+		return constructor.newInstance(new Object[0]);
+	}
+	/**
+	 * converterNameをキーにしてConverterを検索します
+	 * @param converterName
+	 * @return Converterが見つからなければnull
+	 */
+	public Converter getConverter(String converterName){
+		List<Converter> cs = converters.get(converterName);
+		if(cs==null || cs.size() == 0){
 			return null;
 		}
-		return converter.createInstance();
+		try {
+			return newInstance(cs.get(0));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-	public Converter getConverter(
-			String parameterName,
-			Class targetClass,
-			Param validater){
-		Converter converter = searchConverter(targetClass);
-		if(converter==null){
+	/**
+	 * targetClassをキーにしてConverterを検索します
+	 * @param targetClass
+	 * @return Converterが見つからなければnull
+	 */
+	public Converter getConverter(Class targetClass){
+		List<Converter> cs = searchConverters(targetClass);
+		if(cs==null){
 			return null;
 		}
-		return converter.createInstance();
+		try {
+			return newInstance(cs.get(0));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-	public Converter findConverter(String parameterName,
+	/**
+	 * 
+	 */
+	public Converter findConverter(
+			String parameterName,
 			Class targetClass,
 			Param param){
 		Converter converter = null;
 		if(param!=null && param.name().length()>0){
-			converter = getConverter(parameterName,param.name(),targetClass,param);				
+			converter = getConverter(param.name());				
 		}else{
-			converter = getConverter(parameterName,parameterName,targetClass,param);								
+			converter = getConverter(parameterName);								
 		}
 		if(converter!=null){
 			return converter;
 		}
-		return getConverter(parameterName,targetClass,param);
+		return getConverter(targetClass);
 	}
 	public Converter[] createConverters(Method method,String[] parameterNames){
 		Class<?>[] parameterTypes = method.getParameterTypes();
@@ -155,16 +175,6 @@ public class ConverterFactoryImpl implements ConverterFactory {
 			}
 		}
 	}
-	public MockHttpServletRequest createRequest(Validate validate) {
-		MockServletContext context = new MockServletContextImpl("t");
-		MockHttpServletRequest request = new MockHttpServletRequestImpl(context,"/t");
-		String[] args = validate.args();
-		for (String arg : args) {
-			String[] ss = arg.split("=");
-			request.addParameter(ss[0], ss[1]);
-		}
-		return request;
-	}
 	private Param findParam(Annotation[] annotations) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Param) {
@@ -173,14 +183,14 @@ public class ConverterFactoryImpl implements ConverterFactory {
 		}
 		return null;
 	}
-	private Converter searchConverter(Class targetClass){
+	public List<Converter> searchConverters(Class targetClass){
 		if(targetClass==null){
 			return null;
 		}
-		Converter converter = converters.get(targetClass);
-		if(converter==null){
-			return searchConverter(targetClass.getSuperclass());
+		List<Converter> cs = converters.get(targetClass);
+		if(cs==null || cs.size()==0){
+			return searchConverters(targetClass.getSuperclass());
 		}
-		return converter;
+		return cs;
 	}
 }

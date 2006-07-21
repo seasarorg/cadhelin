@@ -9,7 +9,7 @@
 	<body>
 		<h1>Controller($controller.name)</h1>
 		<div id="navigation">
-			<a href="$link.helper.controllers()">Controller List</a>
+			<a href="$link.helper.showControllers()">Controller List</a>
 		</div>
 		<table>
 			<tr>
@@ -23,15 +23,15 @@
 		<tr>
 			<td>
 				#if($actionMetadatum.isGetAndNoParam())
-				<a href="$link.getLink($controller.name,$actionMetadatum.name,$null)">$actionMetadatum.name</a>
+				<a href="$link.getLink($controller.name,$actionMetadatum.methodName,$null)">$actionMetadatum.name</a>
 				#else
 				$actionMetadatum.name
 				#end</td>
 			<td>$actionMetadatum.httpMethod</td>
 			<td>$actionMetadatum.method.name</td>
 			<td>
-			#foreach($converter in $actionMetadatum.converters)
-				<a href="$link.helper.parameterConvertor($controllerName,$actionMetadatum.httpMethod,$actionMetadatum.name,$velocityCount)">
+			#foreach($converter in $actionMetadatum.converterMetadata)
+				<a href="$link.helper.showParameterConvertor($controllerName,$actionMetadatum.methodName,$velocityCount)">
 					$converter.parameterType.name $converter.parameterName</a><br/>
 			#end
 			</td>
@@ -39,7 +39,7 @@
 			#end
 		#end
 		</table>
-		<form action="$link.helper.saveController()" method="POST">
+		<form action="$link.helper.doSaveController()" method="POST">
 			<input type="hidden" name="controllerName" value="$controllerName">
 			<input type="submit" value="Save Controller Settings">
 		</form>

@@ -23,7 +23,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 
 public class DateBeanConverter extends AbstractConverter {
@@ -34,10 +33,7 @@ public class DateBeanConverter extends AbstractConverter {
 	private static final String ERROR_KEY_DATE_FORMAT = "error.converter.date.format";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	public DateBeanConverter() {
-		super(new Object[]{"dateBean",});
-	}
-	public Converter createInstance() {
-		return new DateBeanConverter();
+		super(new Object[]{"dateBean",Date.class});
 	}
 
 	public Object convert(

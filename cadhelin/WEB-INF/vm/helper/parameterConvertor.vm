@@ -1,3 +1,51 @@
+#macro(converterForm $converter)
+	<table>
+		<tr>
+			<th>Converter Name</th>
+			<th>Parameter Name</th>
+			<th>Parameter Type</th>
+		</tr>
+		<tr>
+			<td>$converter.name</td>
+			<td>$converter.parameterName</td>
+			<td>$converter.parameterType.name</td>
+		</tr>
+		#foreach($pm in $converter.propertyMetadatas)
+			#if($pm.isEditable())
+			<tr>
+				<td>$pm.name</td>
+				<td>$pm.shortDescription</td>
+				<td>$this.getEditor($pm,"name='${converter.parameterName}_${pm.name}'")</td>
+			</tr>
+			#end
+		#end
+		#foreach($metadata in $converter.validatorMetadata)
+			<tr>
+				<td>$metadata.validatorName</td>
+				<td>$metadata.shortDescription</td>
+				<td><input type="submit" name="deleteValidator" value="Delete Validator" onClick="setDeleteValidator('${converter.parameterName}_${velocityCount}');"></td>
+			</tr>
+			#foreach($pm in $metadata.propertyMetadatas)
+			#if($pm.isReadWritable())
+			<tr>
+				<td>$pm.name</td>
+				<td>$pm.shortDescription</td>
+				<td><input type="text" name="${converter.parameterName}_${metadata.validatorName}_${pm.name}" value="$!pm.value"/></td></tr>
+			#end
+			#end
+		#end
+		</table>
+		#set($validators = $validatorFactory.getValidatorsFor($converter.parameterType))
+		#if($validators && $validators.size() > 0)
+			<select id="validator_$converter.parameterName">
+				<option>----</option>
+			#foreach($validator in $validators)
+				<option value="${converter.parameterName}_$velocityCount">$validator.validatorName</option>
+			#end
+			</select>
+			<input type="submit" name="addValidator" value="Add Validator" onClick="setAddValidator('validator_$converter.parameterName');">
+		#end
+#end
 <html>
 	<head><title>Parameter($parameterConvertor.parameterName)</title>
 	<style type="text/css">
@@ -23,88 +71,21 @@ function setDeleteValidator(id){
 </script>
 	</head>
 	<body>
-	<h1>Converter of $actionName - $parameterConvertor.parameterName</h1>
+	<h1>Converter of $methodName - $parameterConvertor.parameterName</h1>
 	<div id="navigation">
-		<a href="$link.helper.controllers()">Controller List</a> &gt;&gt;
-		<a href="$link.helper.controller($controllerName)">Action List</a>
+		<a href="$link.helper.showControllers()">Controller List</a> &gt;&gt;
+		<a href="$link.helper.showController($controllerName)">Action List</a>
 	</div>
 	<form action="parameterConvertor" method="POST">
 		<input type="hidden" name="controllerName" value="$controllerName">
 		<input type="hidden" name="methodName" value="$methodName">
-		<input type="hidden" name="actionName" value="$actionName">
 		<input type="hidden" name="paramNum" value="$paramNum">
 		<input type="hidden" id="validator">
-		<table>
-			<tr>
-				<th>Converter Name</th>				
-				<th>Parameter Name</th>
-				<th>Parameter Type</th>
-				<th>Required</th>
-			</tr>
-			<tr>
-				<td>$parameterConvertor.class.name</td>
-				<td>$parameterConvertor.parameterName</td>
-				<td>$parameterConvertor.parameterType.name</td>
-				<td><input type="checkbox" name="${parameterConvertor.parameterName}_required" value="true" #if($parameterConvertor.required)checked#end/></td>
-			</tr>
-		</table>
-		<table>
-		#foreach($metadata in $parameterConvertor.validatorMetadata)
-			<tr>
-				<td>$metadata.validatorName</td>
-				<td>$metadata.shortDescription</td>
-				<td><input type="submit" name="deleteValidator" value="Delete Validator" onClick="setDeleteValidator('${parameterConvertor.parameterName}_${velocityCount}');"></td>
-			</tr>
-			#foreach($pm in $metadata.propertyMetadatas)
-			#if($pm.isReadWritable())
-			<tr><td>$pm.name</td><td>$pm.shortDescription</td><td><input type="test" name="${parameterConvertor.parameterName}_${metadata.validatorName}_${pm.name}" value="$!pm.value"/></td></tr>
-			#end
-			#end
+		#converterForm($parameterConvertor)
+		#foreach($convertor in $parameterConvertor.childConverterMetadata)
+			#converterForm($convertor)
 		#end
-		</table>
-		<select id="validator_$parameterConvertor.parameterName">
-			<option>----</option>
-		#foreach($validator in $validatorFactory.getValidatorsFor($parameterConvertor.parameterType))
-			<option value="${parameterConvertor.parameterName}_$velocityCount">$validator.validatorName</option>
-		#end
-		</select>
-		<input type="submit" name="addValidator" value="Add Validator" onClick="setAddValidator('validator_$parameterConvertor.parameterName');">
-		#foreach($convetor in $parameterConvertor.childConvertors)
-			<table>
-				<tr>
-					<th>Parameter Name</th><th>Parameter Type</th><th>Required</th>
-				</tr>
-				<tr>
-					<td>$convetor.parameterName</td>
-					<td>$convetor.parameterType.name</td>
-					<td><input type="checkbox" name="${convetor.parameterName}_required" value="true" #if($convetor.required)checked#end/></td>
-				</tr>
-			</table>
-			<table>
-			#foreach($metadata in $convetor.validatorMetadata)
-				<tr>
-					<td>$metadata.validatorName</td>
-					<td>$metadata.shortDescription</td>
-					<td><input type="submit" name="deleteValidator" value="Delete Validator" onClick="setDeleteValidator('${parameterConvertor.parameterName}_${velocityCount}');"></td>
-				</tr>
-				#foreach($pm in $metadata.propertyMetadatas)
-					#if($pm.isReadWritable())
-						<tr><td>$pm.name</td><td>$pm.shortDescription</td><td><input type="text" name="$pm.name" value="$!pm.value"/></td></tr>
-					#end
-				#end
-			#end
-			</table>
-			#set($validator = $validatorFactory.getValidatorsFor($convetor.parameterType))
-			#if($validator && $validator.size() > 0)
-			<select id="validator_$convetor.parameterName">
-				<option>----</option>
-				#foreach($validator in $validatorFactory.getValidatorsFor($convetor.parameterType))
-					<option value="${convetor.parameterName}_$velocityCount">$validator.validatorName</option>
-				#end
-			</select>
-			<input type="submit" name="addValidator" value="Add Validator" onClick="setAddValidator('validator_$convetor.parameterName');">
-			#end
-		#end
+		<br>
 	<input type="submit" value="update">
 	</form>
 	</body>

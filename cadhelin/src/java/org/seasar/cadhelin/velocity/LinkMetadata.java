@@ -15,9 +15,13 @@
  */
 package org.seasar.cadhelin.velocity;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 
 public class LinkMetadata {
+	private static Log log = LogFactory.getLog(LinkMetadata.class);
 	private InternalControllerContext context;
 	private String controllerName;
 	
@@ -25,10 +29,20 @@ public class LinkMetadata {
 		this.context = context;
 		this.controllerName = controllerName;
 	}
-	public String getLink(String actionName){
-		return context.getUrl(controllerName,actionName,new Object[]{});
+	public String getLink(String methodName){
+		return context.getUrlByMethodName(controllerName,methodName,new Object[]{});
 	}
-	public String getLink(String actionName,Object[] args){
-		return context.getUrl(controllerName,actionName,args);
+	public String getLink(String methodName,Object[] args){
+		String url = context.getUrlByMethodName(controllerName,methodName,args);
+		if(url!=null){
+			return url;
+		}
+		ActionMetadata action = context.getAction(controllerName,methodName,"GET");
+		url = context.getUrlByMethodName(controllerName,action.getMethodName(),args);
+		if(url!=null){
+			log.warn("depricated : please specify not actionName("+action.getName()+
+					") but methodName("+action.getMethodName()+")");
+		}
+		return null;
 	}
 }
