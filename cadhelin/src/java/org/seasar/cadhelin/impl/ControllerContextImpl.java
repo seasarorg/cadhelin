@@ -44,7 +44,7 @@ public class ControllerContextImpl extends InternalControllerContext {
 	private S2Container container;
 	private boolean redirected = false;
 	private boolean firstAction = true;
-	private String viewUrlPattern  = "/WEB-INF/vm/${controllerName}/${actionName}.vm";
+	private String viewUrlPattern  = "${controllerName}/${actionName}.vm";
 	private ControllerMetadataFactory controllerMetadataFactory;
 	private HttpServletRequest request;
 	private HttpServletResponse response;

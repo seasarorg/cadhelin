@@ -30,6 +30,10 @@
 	<servlet>
 		<servlet-name>cadhelin</servlet-name>
 		<servlet-class>org.seasar.cadhelin.ControllerServlet</servlet-class>
+    <init-param>
+       <param-name>viewUrlPattern</param-name>
+       <param-value>/${controllerName}/${actionName}.vm</param-value>
+    </init-param>
    	<load-on-startup>11</load-on-startup>
 	</servlet>
   <servlet>

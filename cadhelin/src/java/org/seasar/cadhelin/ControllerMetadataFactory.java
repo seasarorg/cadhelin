@@ -16,10 +16,8 @@
 package org.seasar.cadhelin;
 
 import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -31,7 +29,6 @@ import org.seasar.cadhelin.annotation.Default;
 import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.ResultName;
 import org.seasar.cadhelin.annotation.Role;
-import org.seasar.cadhelin.impl.ConverterFactoryImpl;
 import org.seasar.cadhelin.util.AnnotationUtil;
 import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.framework.beans.BeanDesc;
@@ -93,6 +90,9 @@ public class ControllerMetadataFactory {
 	}
 	protected Map<String,Converter[]> loadConverterSettings(Class controllerClass){
 		String path = controllerClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+		if(!path.endsWith(".class")){
+			return null;
+		}
 		File file = new File(path.replace(".class", ".converters"));
 		if(!file.exists()){
 			return null;

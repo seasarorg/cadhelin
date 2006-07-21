@@ -17,7 +17,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/ognl-2.6.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.4.0-beta-3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/s2-framework-2.4.0-beta-3.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
+	<classpathentry sourcepath="C:/download/jakarta/velocity-1.4/velocity-1.4/src/java" kind="lib" path="WEB-INF/lib/velocity-dep-1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-io-1.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/log4j-1.2.8.jar"/>

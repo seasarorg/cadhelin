@@ -9,6 +9,7 @@
   <property name="cadhelin.apidocs"  value="${cadhelin.build}/docs"/>
   <property name="cadhelin.dist"     value="${cadhelin.build}/dist"/>
   <property name="jar"               value="${cadhelin.dist}/cadhelin-${build.currentVersion}.jar"/>
+  <property name="helperjar"         value="${cadhelin.dist}/cadhelin-helper-${build.currentVersion}.jar"/>
   <property name="tomcat.lib"        value="${tomcat.home}/common/lib"/>
 
   <!-- Clean -->   
@@ -60,7 +61,17 @@
 
   <!-- Jar Build -->
   <target name="jar-build" depends="compile">
-    <jar jarfile="${jar}" basedir="${cadhelin.classes}"/>
+    <jar jarfile="${jar}" basedir="${cadhelin.classes}">
+    	<exclude name="org/seasar/cadhelin/helperapp/**"/>
+    </jar>
+    <jar jarfile="${helperjar}">
+    	<fileset dir="${cadhelin.classes}">
+      	<include name="org/seasar/cadhelin/helperapp/**"/>
+    	</fileset>
+    	<fileset dir="WEB-INF/vm">
+      	<include name="helper/**"/>
+    	</fileset>
+    </jar>
   </target>
 
   <!-- Java Docs -->

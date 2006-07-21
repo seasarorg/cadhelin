@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.impl.ControllerContextImpl;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
-import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
 import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
@@ -55,12 +54,15 @@ public class ControllerServlet extends HttpServlet {
 		if(s!=null){
 			urlPrefix = s;
 		}
+		s = config.getInitParameter("viewUrlPattern");
+		if(s!=null){
+			viewUrlPattern = s;
+		}
 		container = SingletonS2ContainerFactory.getContainer();
 		controllerMetadataFactory = new ControllerMetadataFactory(container);
 		config.getServletContext().setAttribute(CONTROLLER_METADATA_NAME,controllerMetadataFactory);
-		ComponentDef componentDef = container.getComponentDef(ExceptionHandler.class);
-		if(componentDef!=null){
-			exceptionHandlerMetadata = new ExceptionHandlerMetadata(componentDef);
+		if(container.hasComponentDef(ExceptionHandler.class)){
+			exceptionHandlerMetadata = new ExceptionHandlerMetadata(container.getComponentDef(ExceptionHandler.class));			
 		}
 	}
 	public String convertToURL(String contextPath,Class clazz,Method method,Object[] arguments){
