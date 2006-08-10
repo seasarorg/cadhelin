@@ -43,6 +43,6 @@ public class LinkMetadata {
 			log.warn("depricated : please specify not actionName("+action.getName()+
 					") but methodName("+action.getMethodName()+")");
 		}
-		return null;
+		return url;
 	}
 }
