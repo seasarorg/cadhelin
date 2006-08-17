@@ -75,7 +75,9 @@ public class MessageTool {
     	}
     	for (Entry<String,Object> e : msg.getArguments().entrySet()) {
     		String k = "${" + e.getKey() +"}";
-    		message = message.replace(k,e.getValue().toString());
+    		if(e.getValue()!=null){
+        		message = message.replace(k,e.getValue().toString());    			
+    		}
     	}
     	return message;
     }

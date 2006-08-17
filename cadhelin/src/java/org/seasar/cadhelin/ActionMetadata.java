@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.Render;
+import org.seasar.cadhelin.converter.RedirectConverter;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
 
@@ -152,6 +153,9 @@ public class ActionMetadata {
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
 		}
+		if(context.isRedirected()){
+			return;
+		}
 		if(context.getErrorCount()>0){
 			widthError(context,request,response,error,values);				
 			return;
@@ -162,9 +166,6 @@ public class ActionMetadata {
 			for (Entry entry : (Collection<Entry>)retMap.entrySet()) {
 				request.setAttribute(entry.getKey().toString(),entry.getValue());
 			}
-		}
-		if(context.isRedirected()){
-			return;
 		}
 		String url = context.getViewURL();
 		String redirectUrl = request.getRequestURI();
@@ -201,6 +202,46 @@ public class ActionMetadata {
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
 			dispatcher.forward(request,response);
 		}
+	}
+	public String convertToURL(Object[] arguments,HttpServletRequest request) {
+		StringBuffer buff = new StringBuffer();
+		buff.append(actionName);
+		if(arguments.length>0){
+			boolean first = true;
+			for(int i=0;i<arguments.length;i++){
+				if (converters[i] instanceof RedirectConverter) {
+					RedirectSession.setAttribute(request.getSession(),parameterNames[i],arguments[i]);
+				}else if(arguments[i]!=null){
+					if (arguments[i] instanceof Object[]) {
+						Object[] array = (Object[]) arguments[i];
+						for (Object object : array) {
+							if(first){
+								buff.append("?");
+							}else{
+								buff.append("&");
+							}
+							buff.append(parameterNames[i]);
+							buff.append("=");
+							buff.append(encodeURL(object.toString()));
+							first = false;
+							
+						}
+					}else{
+						if(first){
+							buff.append("?");
+						}else{
+							buff.append("&");
+						}
+						buff.append(parameterNames[i]);
+						buff.append("=");
+						buff.append(encodeURL(arguments[i].toString()));
+						first = false;						
+					}
+				}
+			}
+			
+		}
+		return buff.toString();
 	}
 	public String convertToURL(Object[] arguments) {
 		StringBuffer buff = new StringBuffer();

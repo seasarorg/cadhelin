@@ -35,6 +35,8 @@ public abstract class ControllerContext {
 
 	public abstract boolean isFirstAction();
 
+	public abstract void sendObject(String key, Object obj);
+
 	public abstract void sendMessage(String key, Message message);
 
 	public abstract void addMessage(String key, Message message);

@@ -17,6 +17,7 @@ package examples.employee;
 
 import java.util.Collection;
 
+import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.annotation.ResultName;
 
@@ -43,10 +44,14 @@ public class EmployeeControllerImpl {
 		showIndex();		
 	}
 	public void showDelete(int empno){
+		Employee employee = empdao.getEmployee(empno);
 		empdao.deleteEmployee(empno);
-		showIndex();
+		showDeleted(employee);
 	}
-
+	
+	public void showDeleted(@Param(name="redirect")Employee employee){
+	}
+	
 	@Render("Employee")
 	@ResultName("employee")
 	public Employee showUpdate(int empno){

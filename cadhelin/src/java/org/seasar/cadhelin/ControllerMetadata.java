@@ -108,6 +108,16 @@ public class ControllerMetadata {
 		log.warn("cannot find ActionMetadata by " + methodName);
 		return null;
 	}
+	public String convertToURL(String methodName, Object[] arguments, HttpServletRequest request) {
+		ActionMetadata metadata = 
+			actionByMethodName.get(methodName);
+		if(metadata!=null){
+			return name+"/"+metadata.convertToURL(arguments,request);			
+		}
+		log.warn("cannot find ActionMetadata by " + methodName);
+		return null;
+	}
+
 	public int getPostActionCount(){
 		return getActionCount(HttpMethod.POST);
 	}

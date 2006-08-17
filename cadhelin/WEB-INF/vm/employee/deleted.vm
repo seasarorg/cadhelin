@@ -1,0 +1,7 @@
+<html>
+<head><title>Employee($employee.name) has deleted</title></head>
+<body>
+$employee.name has deleted
+<a href="$link.employee.showIndex()">index</a>
+</body>
+</html>

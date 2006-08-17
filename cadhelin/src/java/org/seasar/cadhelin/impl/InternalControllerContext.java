@@ -1,5 +1,7 @@
 package org.seasar.cadhelin.impl;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerMetadata;
@@ -14,6 +16,8 @@ public abstract class InternalControllerContext extends ControllerContext {
 	
 	public abstract String getUrlByMethodName(String controllerName, String methodName,
 			Object[] arguments);
+	public abstract String getUrlByMethodName(String controllerName, String methodName,
+			Object[] arguments,HttpServletRequest request);
 	
 	public abstract void setFirstAction();
 

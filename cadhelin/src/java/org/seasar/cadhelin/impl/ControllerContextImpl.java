@@ -88,6 +88,12 @@ public class ControllerContextImpl extends InternalControllerContext {
 		String url = metadata.convertToURL(methodName,arguments);
 		return (url!=null)?request.getContextPath() + urlPrefix  + url : null;
 	}
+	@Override
+	public String getUrlByMethodName(String controllerName, String methodName, Object[] arguments, HttpServletRequest request) {
+		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
+		String url = metadata.convertToURL(methodName,arguments,request);
+		return (url!=null)?request.getContextPath() + urlPrefix  + url : null;
+	}
 	public String getViewURL(){
 		return viewUrlPattern.
 			replace("${controllerName}",controllerName).
@@ -127,6 +133,10 @@ public class ControllerContextImpl extends InternalControllerContext {
 	}
 	public boolean isFirstAction() {
 		return firstAction;
+	}
+	@Override
+	public void sendObject(String key, Object obj) {
+		RedirectSession.setAttribute(request.getSession(),key,obj);
 	}
 	@SuppressWarnings("unchecked")
 	public void sendMessage(String key,Message message){
