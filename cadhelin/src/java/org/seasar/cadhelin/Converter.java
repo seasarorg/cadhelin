@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 public interface Converter extends Cloneable{
+	public void setDefaultValue(String defaultValue);
 	public Map<String,Object> getMessageArguments();
 	public void addValidater(Validator validater);
 	public boolean isRequired();

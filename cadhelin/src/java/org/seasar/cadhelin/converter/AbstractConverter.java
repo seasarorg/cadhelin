@@ -26,6 +26,10 @@ import org.seasar.cadhelin.Validator;
 
 public abstract class AbstractConverter implements Converter {
 	protected Map<String,Object> messageArguments = new HashMap<String,Object>();
+	protected String defaultValue;
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
 	protected List<Validator> validaters = 
 		new ArrayList<Validator>();
 	protected boolean required = false;

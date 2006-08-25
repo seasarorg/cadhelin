@@ -33,6 +33,9 @@ public class StringConverter extends AbstractConverter {
 			HttpServletRequest request, 
 			Map<String,Message> message) {
 		String str = request.getParameter(parameterName);
+		if(StringUtil.isNullOrEmpty(str)){
+			str = defaultValue;
+		}
 		if( StringUtil.isNullOrEmpty(str) && required){
 			message.put(parameterName,new Message(ERROR_KEY_REQUIRED +"." + parameterName,messageArguments));
 			return str;

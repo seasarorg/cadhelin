@@ -25,7 +25,6 @@ import org.seasar.cadhelin.util.StringUtil;
 
 public class IntConverter extends AbstractConverter {
 	private String errorMessageKey = "error.integer";
-	private String defaultValue;
 	private Map<String,Object> messageArguments = 
 		new HashMap<String,Object>();
 	public IntConverter() {

@@ -121,6 +121,7 @@ public class ConverterFactoryImpl implements ConverterFactory {
 			converter.setParameterName(parameterNames[i]);
 			converter.setParameterType(parameterTypes[i]);
 			if(param!=null){
+				converter.setDefaultValue(param.defaultVal());
 				converter.setRequired(param.required());
 			}
 			converter.getMessageArguments().put("name",parameterNames[i]);

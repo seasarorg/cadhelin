@@ -67,6 +67,7 @@ public class BeanConverter extends AbstractConverter {
 				converter.setParameterName(pd.getPropertyName());
 				converter.setParameterType(pd.getPropertyType());
 				if(param!=null){
+					converter.setDefaultValue(param.defaultVal());					
 					converter.setRequired(param.required());					
 				}
 				this.converterFactory.setUpValidater(converter,param);
