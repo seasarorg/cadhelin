@@ -20,8 +20,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Message;
+import org.seasar.cadhelin.util.StringUtil;
 
 public class BooleanConverter extends AbstractConverter {
+	private String errorMessageKey = "error.boolean";
 	public BooleanConverter() {
 		super(new Object[]{boolean.class,Boolean.class});
 	}
@@ -30,10 +32,23 @@ public class BooleanConverter extends AbstractConverter {
 			Map<String,Message> messages) {
 		Boolean value = Boolean.FALSE;
 		String str = request.getParameter(parameterName);
-		
-		if(str!=null && str.length() > 0){
-			value = Boolean.valueOf(str);
+
+		if(StringUtil.isNullOrEmpty(str)){
+			str = defaultValue;
 		}
+		
+		if(StringUtil.isNullOrEmpty(str)){
+			if(required){
+				messages.put(parameterName,
+						new Message(errorMessageKey+".required",
+								messageArguments));
+			}
+			if(parameterType.isPrimitive()){
+				return Boolean.FALSE;
+			}
+			return null;
+		}
+		value = Boolean.parseBoolean(str);
 		validate(value,messages);
 		return value;
 	};
