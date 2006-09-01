@@ -18,6 +18,7 @@
 
 package org.seasar.cadhelin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -55,7 +56,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
     /**
      * The parameters for this multipart request
      */
-    protected Map<String,FileItem> fileItems = new HashMap<String,FileItem>();
+    protected List<FileItem> fileItems = new ArrayList<FileItem>();
     
     /**
      * The underlying HttpServletRequest
@@ -130,20 +131,25 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
     	Iterator iter = items.iterator();
     	while(iter.hasNext()){
     		FileItem item = (FileItem) iter.next();
-    		fileItems.put(item.getFieldName(),item);
+    		fileItems.add(item);
     		if(item.isFormField()){
     			setParameter(item.getFieldName(),item.getString());
     		}
     	}
     }
     public Collection<FileItem> getFileItems(){
-    	return fileItems.values();
+    	return fileItems;
     }
     public FileItem getFileItem(String name){
-    	return fileItems.get(name);
+    	for (FileItem fileItem : fileItems) {
+    		if(fileItem.getName().equals(name)){
+    			return fileItem;
+    		}
+		}
+    	return null;
     }
     public void closeFileItems(){
-    	for (FileItem fileItem : fileItems.values()) {
+    	for (FileItem fileItem : fileItems) {
     		fileItem.delete();
 		}
     }
