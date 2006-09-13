@@ -142,7 +142,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
     }
     public FileItem getFileItem(String name){
     	for (FileItem fileItem : fileItems) {
-    		if(fileItem.getName().equals(name)){
+    		if(fileItem.getFieldName().equals(name)){
     			return fileItem;
     		}
 		}
