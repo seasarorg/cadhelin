@@ -19,6 +19,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import org.seasar.cadhelin.annotation.OnError;
 import org.seasar.cadhelin.annotation.Validate;
 
 @Inherited
@@ -27,5 +28,6 @@ public @interface Param {
 	String name() default "";
 	String defaultVal() default "";
 	Validate[] validate() default {};
+	OnError onError() default OnError.ERROR;
 	boolean required() default false;
 }

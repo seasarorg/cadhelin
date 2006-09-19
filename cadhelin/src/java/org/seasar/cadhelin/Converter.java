@@ -19,6 +19,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.seasar.cadhelin.annotation.OnError;
+
 public interface Converter extends Cloneable{
 	public void setDefaultValue(String defaultValue);
 	public Map<String,Object> getMessageArguments();
@@ -31,6 +33,8 @@ public interface Converter extends Cloneable{
 	
 	public Class getParameterType();
 	public void setParameterType(Class parameterType);
+
+	public void setOnError(OnError onError);
 	
 	/**
 	 * Converter‚ÌKey

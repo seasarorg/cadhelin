@@ -29,13 +29,13 @@ public class LinkMetadata {
 		this.context = context;
 		this.controllerName = controllerName;
 	}
-	public String getLink(String methodName){
-		return context.getUrlByMethodName(controllerName,methodName,new Object[]{});
+	public InsertAsIs getLink(String methodName){
+		return new InsertAsIs(context.getUrlByMethodName(controllerName,methodName,new Object[]{}));
 	}
-	public String getLink(String methodName,Object[] args){
+	public InsertAsIs getLink(String methodName,Object[] args){
 		String url = context.getUrlByMethodName(controllerName,methodName,args);
 		if(url!=null){
-			return url;
+			return new InsertAsIs(url);
 		}
 		ActionMetadata action = context.getAction(controllerName,methodName,"GET");
 		url = context.getUrlByMethodName(controllerName,action.getMethodName(),args);
@@ -43,6 +43,6 @@ public class LinkMetadata {
 			log.warn("depricated : please specify not actionName("+action.getName()+
 					") but methodName("+action.getMethodName()+")");
 		}
-		return url;
+		return new InsertAsIs(url);
 	}
 }

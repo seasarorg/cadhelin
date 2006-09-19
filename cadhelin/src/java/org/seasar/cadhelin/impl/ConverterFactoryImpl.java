@@ -115,14 +115,23 @@ public class ConverterFactoryImpl implements ConverterFactory {
 		Class<?>[] parameterTypes = method.getParameterTypes();
 		Converter[] converters = new Converter[parameterTypes.length];
 		Annotation[][] annot = method.getParameterAnnotations();
+		if(parameterNames==null){
+			LOG.warn("cannot find parameterNames for method " + method);
+			return converters;
+		}
 		for(int i=0;i<parameterTypes.length;i++){
 			Param param = findParam(annot[i]);
 			Converter converter = findConverter(parameterNames[i],parameterTypes[i],param);
+			if(converter==null){
+				LOG.warn("cannot find converter for method " + method);
+				continue;
+			}
 			converter.setParameterName(parameterNames[i]);
 			converter.setParameterType(parameterTypes[i]);
 			if(param!=null){
 				converter.setDefaultValue(param.defaultVal());
 				converter.setRequired(param.required());
+				converter.setOnError(param.onError());
 			}
 			converter.getMessageArguments().put("name",parameterNames[i]);
 			setUpValidater(converter,param);

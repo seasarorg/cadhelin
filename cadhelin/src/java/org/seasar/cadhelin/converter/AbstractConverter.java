@@ -23,12 +23,17 @@ import java.util.Map;
 import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Validator;
+import org.seasar.cadhelin.annotation.OnError;
 
 public abstract class AbstractConverter implements Converter {
+	protected OnError onError = OnError.ERROR;
 	protected Map<String,Object> messageArguments = new HashMap<String,Object>();
 	protected String defaultValue;
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+	public void setOnError(OnError onError) {
+		this.onError = onError;
 	}
 	protected List<Validator> validaters = 
 		new ArrayList<Validator>();

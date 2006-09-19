@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.Message;
+import org.seasar.cadhelin.annotation.OnError;
 import org.seasar.cadhelin.util.StringUtil;
 
 public class IntConverter extends AbstractConverter {
@@ -54,6 +55,12 @@ public class IntConverter extends AbstractConverter {
 			validate(value,messages);
 			return value;
 		} catch (NumberFormatException e) {
+			if(onError == OnError.IGNORE){
+				if(!StringUtil.isNullOrEmpty(defaultValue)){
+					return Integer.valueOf(defaultValue);
+				}
+				return new Integer(0);
+			}
 			messages.put(parameterName,
 					new Message(errorMessageKey+".format",messageArguments));
 			return str;

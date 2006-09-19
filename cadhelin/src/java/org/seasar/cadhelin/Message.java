@@ -28,28 +28,28 @@ public class Message {
 	public Message(String key,Object arg1){
 		this.key = key;
 		arguments = new HashMap<String,Object>();
-		arguments.put("1",arg1);
+		arguments.put("0",arg1);
 	}
 	public Message(String key,Object arg1,Object arg2){
 		this.key = key;
 		arguments = new HashMap<String,Object>();
-		arguments.put("1",arg1);
-		arguments.put("2",arg2);
+		arguments.put("0",arg1);
+		arguments.put("1",arg2);
 	}
 	public Message(String key,Object arg1,Object arg2,Object arg3){
 		this.key = key;
 		arguments = new HashMap<String,Object>();
-		arguments.put("1",arg1);
-		arguments.put("2",arg2);
-		arguments.put("3",arg3);
+		arguments.put("0",arg1);
+		arguments.put("1",arg2);
+		arguments.put("2",arg3);
 	}
 	public Message(String key,Object arg1,Object arg2,Object arg3,Object arg4){
 		this.key = key;
 		arguments = new HashMap<String,Object>();
-		arguments.put("1",arg1);
-		arguments.put("2",arg2);
-		arguments.put("3",arg3);
-		arguments.put("4",arg4);
+		arguments.put("0",arg1);
+		arguments.put("1",arg2);
+		arguments.put("2",arg3);
+		arguments.put("3",arg4);
 	}
 	public Message(String key,Map<String,Object> arguments){
 		this.key = key;

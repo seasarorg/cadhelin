@@ -37,13 +37,13 @@ public class LinkTool extends AbstractMap{
 		this.request = request;
 	}
 	
-	public String getLink(String controllerName,String methodName,Object[] arguments){
+	public InsertAsIs getLink(String controllerName,String methodName,Object[] arguments){
 		if(arguments==null){
 			arguments = new Object[0];
 		}
 		InternalControllerContext context =
 			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
-		return context.getUrlByMethodName(controllerName,methodName,arguments);
+		return new InsertAsIs(context.getUrlByMethodName(controllerName,methodName,arguments));
 	}
 	
 	public boolean authorized(String controllerName,String methodName){
