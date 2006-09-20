@@ -154,6 +154,8 @@ public class ActionMetadata {
 			throw e.getTargetException();
 		}
 		if(context.isRedirected()){
+			RedirectSession.setAttribute(request.getSession(), MessageTool.MESSAGE_KEY, request.getAttribute(MessageTool.MESSAGE_KEY));			
+			RedirectSession.setAttribute(request.getSession(), MessageTool.ERROR_KEY, request.getAttribute(MessageTool.ERROR_KEY));
 			return;
 		}
 		if(context.getErrorCount()>0){
