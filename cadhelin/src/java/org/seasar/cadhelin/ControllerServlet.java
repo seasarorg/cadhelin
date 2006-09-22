@@ -40,6 +40,7 @@ import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
 public class ControllerServlet extends HttpServlet {
 	private static Log LOG = LogFactory.getLog(ControllerServlet.class);
+	private String urlEncoding = "Shift_JIS";
 	private String urlPrefix = "/do/";
 	private String viewUrlPattern  = "/${controllerName}/${actionName}.vm";
 	private S2Container container;
@@ -58,8 +59,12 @@ public class ControllerServlet extends HttpServlet {
 		if(s!=null){
 			viewUrlPattern = s;
 		}
+		s = config.getInitParameter("urlEncoding");
+		if(s!=null){
+			urlEncoding = s;
+		}
 		container = SingletonS2ContainerFactory.getContainer();
-		controllerMetadataFactory = new ControllerMetadataFactory(container);
+		controllerMetadataFactory = new ControllerMetadataFactory(container,urlEncoding);
 		config.getServletContext().setAttribute(CONTROLLER_METADATA_NAME,controllerMetadataFactory);
 		if(container.hasComponentDef(ExceptionHandler.class)){
 			exceptionHandlerMetadata = new ExceptionHandlerMetadata(container.getComponentDef(ExceptionHandler.class));			

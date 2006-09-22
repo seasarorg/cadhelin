@@ -50,9 +50,11 @@ public class ActionMetadata {
 	private Converter[] converters;
 	private String render = null;
 	private boolean reternMap = false;
+	private String urlEncoding;
 
 	public ActionMetadata(
 			HttpMethod httpMethod,
+			String urlEncoding,
 			String controllerName,
 			String actionName,
 			String resultName,
@@ -62,6 +64,7 @@ public class ActionMetadata {
 			String[] parameterNames,
 			Converter[] converters) {
 		this.httpMethod = httpMethod;
+		this.urlEncoding = urlEncoding;
 		this.controllerName = controllerName;
 		this.actionName = actionName;
 		this.resultName = resultName;
@@ -285,7 +288,7 @@ public class ActionMetadata {
 	}
     public String encodeURL(String url){
     	try {
-			return URLEncoder.encode(url,"UTF-8");
+			return URLEncoder.encode(url,urlEncoding);
 		} catch (UnsupportedEncodingException e) {
 			return url;
 		}

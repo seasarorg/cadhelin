@@ -44,7 +44,7 @@ public class ControllerMetadataFactory {
 			= new HashMap<Class,ControllerMetadata>();
 	protected String[] getActionPrefix = new String[]{"show"};
 	protected String[] postActionPrefix = new String[]{"do"};
-	
+	protected String urlEncoding;
 	/**
 	 * 
 	 */
@@ -61,7 +61,8 @@ public class ControllerMetadataFactory {
 	protected ActionFilter[] filters = new ActionFilter[0];
 	
 	protected ConverterFactory factory;
-	public ControllerMetadataFactory(S2Container container) {
+	public ControllerMetadataFactory(S2Container container,String urlEncoding) {
+		this.urlEncoding = urlEncoding;
 		factory = 
 			(ConverterFactory) container.getComponent(ConverterFactory.class);
 		Object[] f = container.findComponents(ActionFilter.class);
@@ -181,7 +182,7 @@ public class ControllerMetadataFactory {
 		}else{
 			converters = factory.createConverters(method,parameterNames);
 		}
-		return new ActionMetadata(httpMethod,controllerName,actionName,resultName,dispatch,role,controller,method,parameterNames,converters);
+		return new ActionMetadata(httpMethod,urlEncoding,controllerName,actionName,resultName,dispatch,role,controller,method,parameterNames,converters);
 	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
 		return controllers.get(controllerName);
