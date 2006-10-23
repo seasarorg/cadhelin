@@ -34,6 +34,10 @@
        <param-name>viewUrlPattern</param-name>
        <param-value>/${controllerName}/${actionName}.vm</param-value>
     </init-param>
+    <init-param>
+       <param-name>urlEncoding</param-name>
+       <param-value>Shift_JIS</param-value>
+    </init-param>
    	<load-on-startup>11</load-on-startup>
 	</servlet>
   <servlet>
