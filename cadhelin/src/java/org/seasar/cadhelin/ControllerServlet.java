@@ -33,6 +33,7 @@ import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.impl.ControllerContextImpl;
+import org.seasar.cadhelin.impl.FilterContextImpl;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.container.S2Container;
@@ -99,11 +100,13 @@ public class ControllerServlet extends HttpServlet {
 			ControllerContext.setContext(
 					controllerContext);
 			request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
-			RequestInfo info = new RequestInfo(request.getPathInfo());
-			ControllerMetadata metadata =
-				controllerMetadataFactory.getControllerMetadata(info.getControllerName());
+			ActionMetadata metadata =
+				controllerMetadataFactory.getActionMetadata(request);
 			if(metadata!=null){
 				try {
+					//TODO
+					FilterContextImpl filter = new FilterContextImpl(null,controllerContext,metadata);
+					filter.doFilter(request,response);			
 					metadata.service(controllerContext,request,response);
 				} catch (Throwable e) {
 					if(exceptionHandlerMetadata!=null){

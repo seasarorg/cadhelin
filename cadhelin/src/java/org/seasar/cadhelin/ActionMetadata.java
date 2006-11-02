@@ -37,6 +37,7 @@ import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
 
 public class ActionMetadata {
+	private String urlPattern;
 	private HttpMethod httpMethod;
 	private String redirectParameterName = "cadhelin_redirect_to";
 	private String resultName;
@@ -51,8 +52,10 @@ public class ActionMetadata {
 	private String render = null;
 	private boolean reternMap = false;
 	private String urlEncoding;
-
+	private ControllerMetadata controllerMetadata;
 	public ActionMetadata(
+			ControllerMetadata controllerMetadata,
+			String urlPattern,
 			HttpMethod httpMethod,
 			String urlEncoding,
 			String controllerName,
@@ -63,6 +66,8 @@ public class ActionMetadata {
 			Method method,
 			String[] parameterNames,
 			Converter[] converters) {
+		this.controllerMetadata = controllerMetadata;
+		this.urlPattern = urlPattern;
 		this.httpMethod = httpMethod;
 		this.urlEncoding = urlEncoding;
 		this.controllerName = controllerName;
@@ -206,6 +211,13 @@ public class ActionMetadata {
 			request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
 			dispatcher.forward(request,response);
+		}
+	}
+	public String getUrlPattern(){
+		if(urlPattern.startsWith("/")){
+			return urlPattern;
+		}else{
+			return controllerMetadata.getUrlPattern()+"/" +getUrlPattern();
 		}
 	}
 	public String convertToURL(Object[] arguments,HttpServletRequest request) {

@@ -37,6 +37,7 @@ public class ControllerMetadata {
 	Log log = LogFactory.getLog(this.getClass());
 	private Class controllerClass;
 	private String name;
+	private String urlPattern;
 	private Map<String,ActionMetadata[]> actions = 
 		new HashMap<String,ActionMetadata[]>();
 	private Map<String,ActionMetadata> actionByMethodName = 
@@ -45,9 +46,11 @@ public class ControllerMetadata {
 	private String defaultActionName = null;
 	public ControllerMetadata(
 			String name,
+			String urlPattern,
 			ComponentDef componentDef,
 			ActionFilter[] filters){
 		this.controllerClass = componentDef.getComponentClass();
+		this.urlPattern = urlPattern;
 		this.name = name;
 		this.filters = filters;
 	}
@@ -197,5 +200,8 @@ public class ControllerMetadata {
 			}
 		}
 		return null;
+	}
+	public String getUrlPattern() {
+		return urlPattern;
 	}
 }

@@ -19,16 +19,23 @@ import java.beans.XMLDecoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.annotation.Default;
 import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.ResultName;
 import org.seasar.cadhelin.annotation.Role;
+import org.seasar.cadhelin.annotation.Url;
 import org.seasar.cadhelin.util.AnnotationUtil;
 import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.framework.beans.BeanDesc;
@@ -38,6 +45,8 @@ import org.seasar.framework.container.S2Container;
 import org.seasar.framework.util.InputStreamUtil;
 
 public class ControllerMetadataFactory {
+	protected Map<String,List<ActionMetadata>> actions =
+			new HashMap<String, List<ActionMetadata>>();
 	protected Map<String,ControllerMetadata> controllers 
 			= new HashMap<String,ControllerMetadata>();
 	protected Map<Class,ControllerMetadata> classMap
@@ -115,7 +124,14 @@ public class ControllerMetadataFactory {
 			String name,
 			ComponentDef componentDef){
 		Object controller = componentDef.getComponent();
-		ControllerMetadata metadata = new ControllerMetadata(name,componentDef,filters);
+		Url url = (Url) componentDef.getComponentClass().getAnnotation(Url.class);
+		String urlPattern = null;
+		if(url!=null){
+			urlPattern = url.value();
+		}else{
+			urlPattern = name;
+		}
+		ControllerMetadata metadata = new ControllerMetadata(name,urlPattern,componentDef,filters);
 		Map<String, Converter[]> converterMap = loadConverterSettings(componentDef.getComponentClass());
 		BeanDesc beanDesc = BeanDescFactory.getBeanDesc(componentDef.getComponentClass());
 		Class<?> beanClass = beanDesc.getBeanClass();
@@ -125,19 +141,52 @@ public class ControllerMetadataFactory {
 		for(Method method : methods){
 			if((method.getModifiers() & Modifier.PUBLIC) > 0){
 				ActionMetadata actionMetadata = 
-					createActionMetadata(beanDesc,name,controller, method, role,converterMap);
+					createActionMetadata(metadata, beanDesc,name,controller, method, role,converterMap);
 				if(actionMetadata!=null){
 					metadata.addActionMetadata(actionMetadata.getName(),actionMetadata);					
 					Default def = method.getAnnotation(Default.class);
 					if(def!=null){
 						metadata.setDefaultActionName(actionMetadata.getName());
 					}
+					String up = actionMetadata.getUrlPattern();
+					List<ActionMetadata> as = actions.get(up);
+					if(as==null){
+						as = new ArrayList<ActionMetadata>();
+						actions.put(up, as);
+					}
+					as.add(actionMetadata);
 				}
 			}
 		}
 		return metadata;
 	}
+	public ActionMetadata getActionMetadata(HttpServletRequest request){
+		List<ActionMetadata> metadata = actions.get(request.getPathInfo());
+		if(metadata==null || metadata.size()==0){
+			return null;
+		}
+		for (ActionMetadata metadatum : metadata) {
+			if(metadatum.getHttpMethod().name().equals(request.getMethod()) && 
+					metadatum.getDispatch()!=null){
+				Dispatch dispatch = metadatum.getDispatch();
+				String key = dispatch.key();
+				String parameter = request.getParameter(key);
+				if(parameter!=null){
+					return metadatum;					
+				}
+			}
+		}
+		for (ActionMetadata metadatum : metadata) {
+			if(metadatum.getHttpMethod().name().equals(request.getMethod())&&
+					metadatum.getDispatch()==null){
+				return metadatum;
+			}
+		}
+		return null;
+		
+	}
 	protected ActionMetadata createActionMetadata(
+			ControllerMetadata controllerMetadata,
 			BeanDesc beanDesc,
 			String controllerName,
 			Object controller,
@@ -182,7 +231,14 @@ public class ControllerMetadataFactory {
 		}else{
 			converters = factory.createConverters(method,parameterNames);
 		}
-		return new ActionMetadata(httpMethod,urlEncoding,controllerName,actionName,resultName,dispatch,role,controller,method,parameterNames,converters);
+		Url url = method.getAnnotation(Url.class);
+		String urlPattern = null;
+		if(url!=null){
+			urlPattern = url.value();
+		}else{
+			urlPattern = actionName;
+		}
+		return new ActionMetadata(controllerMetadata,urlPattern, httpMethod,urlEncoding,controllerName,actionName,resultName,dispatch,role,controller,method,parameterNames,converters);
 	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
 		return controllers.get(controllerName);
