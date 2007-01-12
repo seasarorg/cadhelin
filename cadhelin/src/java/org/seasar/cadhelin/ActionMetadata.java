@@ -198,7 +198,7 @@ public class ActionMetadata {
 			//もしリダイレクト先がなくPOSTメソッドならGETにリダイレクトする
 			ActionMetadata action = context.getAction(this.controllerName,this.actionName,"GET");
 			Object[] arguments = action.convertToParameter(request,new HashMap<String,Message>());
-			redirectUrl = action.convertToURL(arguments);
+			redirectUrl = context.getUrlByMethodName(controllerName, method.getName(), arguments);
 		}
 		if(redirectUrl!=null){
 			RedirectSession.setAttribute(request.getSession(),m);
@@ -217,56 +217,18 @@ public class ActionMetadata {
 		if(urlPattern.startsWith("/")){
 			return urlPattern;
 		}else{
-			return controllerMetadata.getUrlPattern()+"/" +getUrlPattern();
+			return controllerMetadata.getUrlPattern() + "/" + urlPattern;
 		}
 	}
 	public String convertToURL(Object[] arguments,HttpServletRequest request) {
 		StringBuffer buff = new StringBuffer();
-		buff.append(actionName);
+		buff.append(getUrlPattern());
 		if(arguments.length>0){
 			boolean first = true;
 			for(int i=0;i<arguments.length;i++){
 				if (converters[i] instanceof RedirectConverter) {
 					RedirectSession.setAttribute(request.getSession(),parameterNames[i],arguments[i]);
 				}else if(arguments[i]!=null){
-					if (arguments[i] instanceof Object[]) {
-						Object[] array = (Object[]) arguments[i];
-						for (Object object : array) {
-							if(first){
-								buff.append("?");
-							}else{
-								buff.append("&");
-							}
-							buff.append(parameterNames[i]);
-							buff.append("=");
-							buff.append(encodeURL(object.toString()));
-							first = false;
-							
-						}
-					}else{
-						if(first){
-							buff.append("?");
-						}else{
-							buff.append("&");
-						}
-						buff.append(parameterNames[i]);
-						buff.append("=");
-						buff.append(encodeURL(arguments[i].toString()));
-						first = false;						
-					}
-				}
-			}
-			
-		}
-		return buff.toString();
-	}
-	public String convertToURL(Object[] arguments) {
-		StringBuffer buff = new StringBuffer();
-		buff.append(actionName);
-		if(arguments.length>0){
-			boolean first = true;
-			for(int i=0;i<arguments.length;i++){
-				if(arguments[i]!=null){
 					if (arguments[i] instanceof Object[]) {
 						Object[] array = (Object[]) arguments[i];
 						for (Object object : array) {
@@ -336,5 +298,8 @@ public class ActionMetadata {
 	}
 	public boolean isGetAndNoParam(){
 		return httpMethod.isGet() && converters.length == 0;
+	}
+	public String getControllerName() {
+		return controllerName;
 	}
 }

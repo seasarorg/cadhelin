@@ -16,8 +16,6 @@ public abstract class InternalControllerContext extends ControllerContext {
 	
 	public abstract String getUrlByMethodName(String controllerName, String methodName,
 			Object[] arguments);
-	public abstract String getUrlByMethodName(String controllerName, String methodName,
-			Object[] arguments,HttpServletRequest request);
 	
 	public abstract void setFirstAction();
 

@@ -19,7 +19,6 @@ import java.beans.XMLDecoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.seasar.cadhelin.annotation.Default;
@@ -74,9 +72,6 @@ public class ControllerMetadataFactory {
 		this.urlEncoding = urlEncoding;
 		factory = 
 			(ConverterFactory) container.getComponent(ConverterFactory.class);
-		Object[] f = container.findComponents(ActionFilter.class);
-		this.filters = new ActionFilter[f.length];
-		System.arraycopy(f,0,filters,0,filters.length);
 		setupControllers(container);
 	}
 	protected void setupControllers(S2Container container){
@@ -129,9 +124,9 @@ public class ControllerMetadataFactory {
 		if(url!=null){
 			urlPattern = url.value();
 		}else{
-			urlPattern = name;
+			urlPattern = "/"+name;
 		}
-		ControllerMetadata metadata = new ControllerMetadata(name,urlPattern,componentDef,filters);
+		ControllerMetadata metadata = new ControllerMetadata(name,urlPattern,componentDef);
 		Map<String, Converter[]> converterMap = loadConverterSettings(componentDef.getComponentClass());
 		BeanDesc beanDesc = BeanDescFactory.getBeanDesc(componentDef.getComponentClass());
 		Class<?> beanClass = beanDesc.getBeanClass();
@@ -147,6 +142,13 @@ public class ControllerMetadataFactory {
 					Default def = method.getAnnotation(Default.class);
 					if(def!=null){
 						metadata.setDefaultActionName(actionMetadata.getName());
+						String up = metadata.getUrlPattern()+"/";
+						List<ActionMetadata> as = actions.get(up);
+						if(as==null){
+							as = new ArrayList<ActionMetadata>();
+							actions.put(up, as);
+						}
+						as.add(actionMetadata);
 					}
 					String up = actionMetadata.getUrlPattern();
 					List<ActionMetadata> as = actions.get(up);

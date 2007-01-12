@@ -33,7 +33,6 @@ import org.seasar.cadhelin.ControllerMetadata;
 import org.seasar.cadhelin.ControllerMetadataFactory;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.MessageTool;
-import org.seasar.cadhelin.RequestInfo;
 import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.container.S2Container;
 
@@ -48,7 +47,7 @@ public class ControllerContextImpl extends InternalControllerContext {
 	private ControllerMetadataFactory controllerMetadataFactory;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	private String urlPrefix = "/do/";
+	private String urlPrefix = "/do";
 	
 	public ControllerContextImpl(
 			S2Container container,
@@ -56,17 +55,17 @@ public class ControllerContextImpl extends InternalControllerContext {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			String urlPrefix,
-			String viewUrlPattern) {
+			String viewUrlPattern,
+			String controllerName,
+			String actionName) {
 		this.container = container;
 		this.controllerMetadataFactory = controllerMetadataFactory;
 		this.request = request;
 		this.response = response;
 		this.urlPrefix = urlPrefix;
 		this.viewUrlPattern = viewUrlPattern;
-		RequestInfo info = 
-			new RequestInfo(request.getPathInfo());
-		this.controllerName = info.getControllerName();
-		this.actionName = info.getActionName();
+		this.controllerName = controllerName;
+		this.actionName = actionName;
 	}
 	public void setViewName(String viewName) {
 		this.viewName = viewName;
@@ -83,15 +82,10 @@ public class ControllerContextImpl extends InternalControllerContext {
 	public String getControllerName(){
 		return controllerName;
 	}
-	public String getUrlByMethodName(String controllerName,String methodName,Object[] arguments){
+	public String getUrlByMethodName(String controllerName, String methodName, Object[] arguments) {
 		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
-		String url = metadata.convertToURL(methodName,arguments);
-		return (url!=null)?request.getContextPath() + urlPrefix  + url : null;
-	}
-	@Override
-	public String getUrlByMethodName(String controllerName, String methodName, Object[] arguments, HttpServletRequest request) {
-		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
-		String url = metadata.convertToURL(methodName,arguments,request);
+		ActionMetadata action = metadata.getAction(methodName);
+		String url = action.convertToURL(arguments, request);
 		return (url!=null)?request.getContextPath() + urlPrefix  + url : null;
 	}
 	public String getViewURL(){

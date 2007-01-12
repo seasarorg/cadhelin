@@ -38,8 +38,7 @@ public class ControllerInterceptor extends AbstractInterceptor {
 				String url = context.getUrlByMethodName(
 						controllerMetadata.getName(),
 						method.getMethod().getName(),
-						method.getArguments(),
-						request);
+						method.getArguments());
 				RedirectSession.setAttribute(request.getSession(),
 						MessageTool.MESSAGE_KEY,request.getAttribute(MessageTool.MESSAGE_KEY));				
 				context.getResponse().sendRedirect(url);

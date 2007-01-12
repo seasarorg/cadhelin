@@ -42,11 +42,12 @@ import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 public class ControllerServlet extends HttpServlet {
 	private static Log LOG = LogFactory.getLog(ControllerServlet.class);
 	private String urlEncoding = "Shift_JIS";
-	private String urlPrefix = "/do/";
+	private String urlPrefix = "/do";
 	private String viewUrlPattern  = "/${controllerName}/${actionName}.vm";
 	private S2Container container;
 	private ExceptionHandlerMetadata exceptionHandlerMetadata;
 	private ControllerMetadataFactory controllerMetadataFactory;
+	private ActionFilter[] filters;
 	public static final String CONTROLLER_METADATA_NAME = "org.seasar.cadhelin.controllermetadata";
 	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
 	@Override
@@ -70,11 +71,10 @@ public class ControllerServlet extends HttpServlet {
 		if(container.hasComponentDef(ExceptionHandler.class)){
 			exceptionHandlerMetadata = new ExceptionHandlerMetadata(container.getComponentDef(ExceptionHandler.class));			
 		}
-	}
-	public String convertToURL(String contextPath,Class clazz,Method method,Object[] arguments){
-		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(clazz);
-		String url = contextPath + urlPrefix + metadata.convertToURL(method.getName(),arguments);
-		return url;
+		Object[] f = container.findComponents(ActionFilter.class);
+		this.filters = new ActionFilter[f.length];
+		System.arraycopy(f,0,filters,0,filters.length);
+
 	}
 	protected HttpServletRequest createHttpRequest(HttpServletRequest request) throws FileUploadException{
 		ServletRequestContext context = new ServletRequestContext(request);
@@ -95,19 +95,19 @@ public class ControllerServlet extends HttpServlet {
 		RedirectSession.move(request.getSession());
 		try{
 			request = createHttpRequest(request);
-			InternalControllerContext controllerContext = 
-				new ControllerContextImpl(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern);
-			ControllerContext.setContext(
-					controllerContext);
-			request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
 			ActionMetadata metadata =
 				controllerMetadataFactory.getActionMetadata(request);
 			if(metadata!=null){
+				InternalControllerContext controllerContext = 
+					new ControllerContextImpl(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern,
+							metadata.getControllerName(),metadata.getName());
+				ControllerContext.setContext(
+						controllerContext);
+				request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
 				try {
 					//TODO
-					FilterContextImpl filter = new FilterContextImpl(null,controllerContext,metadata);
-					filter.doFilter(request,response);			
-					metadata.service(controllerContext,request,response);
+					FilterContextImpl filter = new FilterContextImpl(filters,controllerContext,metadata);
+					filter.doFilter(request,response);
 				} catch (Throwable e) {
 					if(exceptionHandlerMetadata!=null){
 						exceptionHandlerMetadata.service(e,controllerContext,request,response);						
