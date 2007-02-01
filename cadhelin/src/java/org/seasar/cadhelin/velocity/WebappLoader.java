@@ -255,6 +255,14 @@ public class WebappLoader extends ResourceLoader
         }
 
         String path = (String)templatePaths.get(resource.getName());
+        if( path == null ){
+        	String name = resource.getName();
+            while (name.startsWith("/"))
+            {
+            	name = name.substring(1);
+            }
+            path = (String)templatePaths.get(name);
+        }
         File file = new File(rootPath + path, resource.getName());
         if (file.canRead())
         {

@@ -1,7 +1,5 @@
 package org.seasar.cadhelin.impl;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.ControllerContext;
 import org.seasar.cadhelin.ControllerMetadata;

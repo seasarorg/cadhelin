@@ -17,16 +17,6 @@ public class ClassUtil {
 		classMap.put(float.class,Float.class);
 		classMap.put(double.class,Double.class);
 	}
-	private static Class[] classes = new Class[]{
-		Boolean.class,
-		Character.class,
-		Integer.class,
-		Long.class,
-		Short.class,
-		Float.class,
-		Double.class,
-		String.class
-	};
 	public static Class convertPrimitiveToWrapper(Class clazz){
 		if(classMap.containsKey(clazz)){
 			return classMap.get(clazz);
