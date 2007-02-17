@@ -5,40 +5,6 @@
 	<include path="ConverterFactory.dicon"/>
 	<include path="ValidatorFactory.dicon"/>
 	<include path="app.dicon"/>
-	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />
-	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
-		<initMethod name="addClassPattern">
-			<arg>"examples"</arg>
-			<arg>".*ControllerImpl"</arg>
-		</initMethod>
-	</component>
-	<component
-	  class="org.seasar.framework.container.autoregister.AspectAutoRegister">
-	    <property name="interceptor">ca</property>
-	    <property name="pointcut">"show.*,do.*"</property>
-	    <initMethod name="addClassPattern">
-	        <arg>"examples"</arg>
-	        <arg>".*ControllerImpl"</arg>
-	    </initMethod>
-	</component>
-	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
-		<initMethod name="addClassPattern">
-			<arg>"org.seasar.cadhelin.helperapp"</arg>
-			<arg>".*ControllerImpl"</arg>
-		</initMethod>
-	</component>
-	<component
-	  class="org.seasar.framework.container.autoregister.AspectAutoRegister">
-	    <property name="interceptor">ca</property>
-	    <property name="pointcut">"show.*,do.*"</property>
-	    <initMethod name="addClassPattern">
-	        <arg>"org.seasar.cadhelin.helperapp"</arg>
-	        <arg>".*ControllerImpl"</arg>
-	    </initMethod>
-	</component>
-	<component class="org.seasar.cadhelin.filter.AuthorizationFilter">
-		<property name="redirectUrl">"/cadhelin/do/logon/logonForm"</property>
-	</component>
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 		<arg>"messages"</arg>
 		<arg>@org.seasar.cadhelin.MessageTool@MESSAGE_KEY</arg>

@@ -1,0 +1,15 @@
+<html>
+<head><title>add</title></head>
+<body>
+#test('add')
+<form action="">
+	$!msg.getMessage('lhs')
+	<input type="text" name="lhs" value="$lhs"/>
+	+
+	$!msg.getMessage('rhs')
+	<input type="text" name="rhs" value="$rhs"/>
+	= $add
+	<input type="submit" value="add"/>
+</form>
+</body>
+</html>

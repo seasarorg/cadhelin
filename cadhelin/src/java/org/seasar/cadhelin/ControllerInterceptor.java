@@ -27,6 +27,10 @@ public class ControllerInterceptor extends AbstractInterceptor {
 	public Object invoke(MethodInvocation method) throws Throwable {
 		InternalControllerContext context = 
 			(InternalControllerContext) ControllerContext.getContext();
+		if(context==null){
+			System.out.println("interceptor test");
+			return null;
+		}
 		//もしリクエスト中で2回目に呼び出されたActionメソッドで
 		if(!context.isFirstAction()){
 			ControllerMetadata controllerMetadata = context.getControllerMetadata(method.getMethod().getDeclaringClass());

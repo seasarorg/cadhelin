@@ -21,6 +21,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,9 +43,13 @@ import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.factory.BeanDescFactory;
 import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
+import org.seasar.framework.container.hotdeploy.HotdeployFilter;
+import org.seasar.framework.util.Disposable;
+import org.seasar.framework.util.DisposableUtil;
 import org.seasar.framework.util.InputStreamUtil;
 
-public class ControllerMetadataFactory {
+public class ControllerMetadataFactory implements Disposable{
+	protected S2Container container;
 	protected Map<String,List<ActionMetadata>> actions =
 			new HashMap<String, List<ActionMetadata>>();
 	protected Map<String,ControllerMetadata> controllers 
@@ -66,13 +73,19 @@ public class ControllerMetadataFactory {
 		this.defaultRole = defaultRole;
 	}
 	protected ActionFilter[] filters = new ActionFilter[0];
-	
+	public void dispose() {
+		actions.clear();
+		controllers.clear();
+		classMap.clear();
+	}
 	protected ConverterFactory factory;
 	public ControllerMetadataFactory(S2Container container,String urlEncoding) {
+		this.container = container;
 		this.urlEncoding = urlEncoding;
 		factory = 
 			(ConverterFactory) container.getComponent(ConverterFactory.class);
-		setupControllers(container);
+		DisposableUtil.add(this);
+//		setupControllers(container);
 	}
 	protected void setupControllers(S2Container container){
 		int size = container.getComponentDefSize();
@@ -94,7 +107,13 @@ public class ControllerMetadataFactory {
 		}		
 	}
 	protected Map<String,Converter[]> loadConverterSettings(Class controllerClass){
-		String path = controllerClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+		ProtectionDomain protectionDomain = controllerClass.getProtectionDomain();
+		CodeSource codeSource = protectionDomain.getCodeSource();
+		URL location = codeSource.getLocation();
+		if(location==null){
+			return null;
+		}
+		String path = location.getPath();
 		if(!path.endsWith(".class")){
 			return null;
 		}
@@ -165,7 +184,11 @@ public class ControllerMetadataFactory {
 	public ActionMetadata getActionMetadata(HttpServletRequest request){
 		List<ActionMetadata> metadata = actions.get(request.getPathInfo());
 		if(metadata==null || metadata.size()==0){
-			return null;
+			setupActionMetadata(request);
+			metadata = actions.get(request.getPathInfo());
+			if(metadata==null || metadata.size()==0){
+				return null;				
+			}
 		}
 		for (ActionMetadata metadatum : metadata) {
 			if(metadatum.getHttpMethod().name().equals(request.getMethod()) && 
@@ -186,6 +209,12 @@ public class ControllerMetadataFactory {
 		}
 		return null;
 		
+	}
+	private void setupActionMetadata(HttpServletRequest request) {
+		String pathInfo = request.getPathInfo();
+		String controllerName = pathInfo.split("/")[1];
+		ComponentDef componentDef = container.getComponentDef(controllerName+"Controller");
+		createControllerMetadata(controllerName, componentDef);
 	}
 	protected ActionMetadata createActionMetadata(
 			ControllerMetadata controllerMetadata,

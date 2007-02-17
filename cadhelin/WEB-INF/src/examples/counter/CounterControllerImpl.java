@@ -21,6 +21,7 @@ import org.seasar.cadhelin.annotation.Dispatch;
 import examples.SessionManager;
 
 
+
 public class CounterControllerImpl {
 	public void showCount(){
 	}
