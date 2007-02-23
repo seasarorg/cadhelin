@@ -43,7 +43,6 @@ import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.factory.BeanDescFactory;
 import org.seasar.framework.container.ComponentDef;
 import org.seasar.framework.container.S2Container;
-import org.seasar.framework.container.hotdeploy.HotdeployFilter;
 import org.seasar.framework.util.Disposable;
 import org.seasar.framework.util.DisposableUtil;
 import org.seasar.framework.util.InputStreamUtil;
@@ -84,8 +83,6 @@ public class ControllerMetadataFactory implements Disposable{
 		this.urlEncoding = urlEncoding;
 		factory = 
 			(ConverterFactory) container.getComponent(ConverterFactory.class);
-		DisposableUtil.add(this);
-//		setupControllers(container);
 	}
 	protected void setupControllers(S2Container container){
 		int size = container.getComponentDefSize();
@@ -137,6 +134,7 @@ public class ControllerMetadataFactory implements Disposable{
 	protected ControllerMetadata createControllerMetadata(
 			String name,
 			ComponentDef componentDef){
+		DisposableUtil.add(this);
 		Object controller = componentDef.getComponent();
 		Url url = (Url) componentDef.getComponentClass().getAnnotation(Url.class);
 		String urlPattern = null;
@@ -272,7 +270,15 @@ public class ControllerMetadataFactory implements Disposable{
 		return new ActionMetadata(controllerMetadata,urlPattern, httpMethod,urlEncoding,controllerName,actionName,resultName,dispatch,role,controller,method,parameterNames,converters);
 	}
 	public ControllerMetadata getControllerMetadata(String controllerName) {
-		return controllers.get(controllerName);
+		ControllerMetadata controllerMetadata = controllers.get(controllerName);
+		if(controllerMetadata==null){
+			controllerMetadata = setupControllerMetadata(controllerName);
+		}
+		return controllerMetadata;
+	}
+	public ControllerMetadata setupControllerMetadata(String controllerName){
+		ComponentDef componentDef = container.getComponentDef(controllerName+"Controller");
+		return createControllerMetadata(controllerName, componentDef);		
 	}
 	public Collection<ControllerMetadata> getControllerMetadata(){
 		return controllers.values();
@@ -282,6 +288,12 @@ public class ControllerMetadataFactory implements Disposable{
 			ControllerMetadata controllerMetadata = classMap.get(clazz);
 			if(controllerMetadata!=null){
 				return controllerMetadata;
+			}
+			if(clazz.getSimpleName().endsWith("ControllerImpl")){
+				String controllerName = 
+					StringUtil.toLowwerCaseInitial(clazz.getSimpleName().replace("ControllerImpl", ""));
+				ControllerMetadata metadata = setupControllerMetadata(controllerName);
+				return metadata;
 			}
 			clazz = clazz.getSuperclass();
 		}
