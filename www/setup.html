@@ -38,48 +38,90 @@
 
 <h2><a name="setup">セットアップ</a></h2>
 <p>cadhelinはJDK1.5以上が必要です。</p>
-<p>blankプロジェクトがcadhelin-blank-x.x.x.zipとして用意されているので、ダウンロードして解凍してください。できたcadhelin-blankディレクトリをEclipseで
-「ファイル→インポート→既存のプロジェクトをワークスペースへ」してインポートしてください。
+<p>blankプロジェクトがcadhelin-blank-x.x.x.zipとして用意されているので、ダウンロードして解凍してください。<br>
+できたcadhelin-blankディレクトリをEclipseで「ファイル→インポート→既存のプロジェクトをワークスペースへ」してインポートしてください。<br>
 サンプルは、
-<a href="http://jakarta.apache.org/tomcat/">Tomcat5</a>、
-<a href="http://www.sysdeo.com/eclipse/tomcatPlugin.html">Tomcat Plugin</a>を使うことを前提にしています。もし、
-まだインストールしていない場合は、インストールしておいてください。</p>
-<p>Tomcatを起動し、ブラウザでhttp://localhost:8080/cadhelin-blank/do/hello/hellowにアクセスすると、Hellow worldと表示されればセットアップ成功です。</p>
+<ul><a href="http://jakarta.apache.org/tomcat/">Eclipse Diigu Plugin</a></ul>
+<ul><a href="http://jakarta.apache.org/tomcat/">Tomcat5</a></ul>
+<ul><a href="http://www.sysdeo.com/eclipse/tomcatPlugin.html">Tomcat Plugin</a></ul>
+を使うことを前提にしています。もし、まだインストールしていない場合は、インストールしておいてください。</p>
 
-<h2><a name="mappin">URLとActionのマッピング</a></h2>
-<p>リクエストURLがhttp://localhost:8080/cadhelin-blank/do/hello/hellowのような場合、cadhelinはhelloコントローラのhellowアクションを呼び出します</p>
 <!-- controller -->
-<h2><a name="#controller">コントローラ</a></h2>
-<p>cadhelinはまずはじめにS2Containerに登録されたコンポーネントをすべて走査し、コンポーネント名が"Controller"で終わるコンポーネントを、"Controller"をのけた
-名前で登録します。</p>
-<p>cadhelin-blankの場合、S2Containerサーブレットによってはじめに読み込まれるcadhelin.diconに</p>
+<h2><a name="mappin">Controllerの作成と登録</a></h2>
+<p>
+cadhelinではControllerクラスによってHTTPリクエストを処理します。<br>
+Controllerクラスを登録するにはS2Container2.4から利用できるようになった<a href="http://s2container.seasar.org/ja/S2.4SmartDeploy.html">SMART deploy</a>
+機能を利用すると便利です。<br>
+cadhelin-blankの場合、convention.diconに<br>
 <pre>
-&lt;component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister"&gt;
-　　&lt;initMethod name="addClassPattern"&gt;
-　　　　&lt;arg&gt;"examples"&lt;/arg>
-　　　　&lt;arg&gt;".*ControllerImpl"&lt;/arg&gt;
-  &lt;/initMethod&gt;
-&lt;/component&gt;
+    &lt;component class="org.seasar.framework.convention.impl.NamingConventionImpl"&gt;
+        &lt;initMethod name="addRootPackageName"&gt;
+            &lt;arg&gt;"org.examples"&lt;/arg&gt;
+        &lt;/initMethod&gt;
+    &lt;/component&gt;
 </pre>
-<p>のような記述がありますので、exampleパッケージ以下のクラス名が、ControllerImplで終わるクラスが、クラス名からImplを削除したコンポーネント名で登録されます。
-(詳しくは<a href="http://s2container.seasar.org/ja/DIContainer.html#ComponentAutoRegister">コンポーネントの自動登録</a>をご覧ください)</p>
-<p>cadhelin-blankのばあいexamples.hellow.HelloControllerImplクラスがhelloControllerと言う名前でS2Containerに登録されますので、
-examples.hellow.HellowControllerImplがhelloコントローラとして登録されます。</p>
-<p>また、Controllerクラスにはorg.seasar.cadhelin.ControllerInterceptorを適用しなければなりませんがcadhelin.diconにおいて自動登録のせっていがされていますので、
-ほとんどの場合気にする必要はないでしょう。</p>
-<!-- action -->
-<h2><a name="#action">アクション</a></h2>
-<p>つぎに、cadhelinは、コントローラクラスのメソッドを走査し、showではじまるメソッドをGETリクエストを処理するアクション、
-doで始まるメソッドをPOSTリクエストを処理するアクションとして登録します。</p>
-<p>アクション名はメソッド名からdoやshowを削除し、先頭文字を小文字にしたもの使われます。この例ではshowHellow()メソッドがhellowアクションとして登録されます。</p>
-<p>メソッドにDefaultアノテーションが設定されている場合、アクション名が指定されていなければDefaultアノテーションが設定されているメソッドが呼び出されます。</p>
+と書かれているので、org.examplesがプロジェクトのルートパッケージになります。<br>
+<p>Controllerはルートパッケージの下のcontroller.implパッケージにXXXControllerImplという名前でクラスを作成すると
+自動的に登録されます。</p>
 
-<p>メソッドを実行した結果は、アクション名でリクエスト変数として登録されます。</p>
+<p>org.examples.controller.implにCalcControllerImpl.javaを作成してください。<br>
 
-<h2><a name="#rendering">レンダリング</a></h2>
-<p>最後に/WEB-INF/vm/コントローラ名/アクション名.vmのVelocityテンプレートが呼び出されます。
-showHellow()メソッドの返り値が、hellowという名前でrequest変数に登録されていますので
-hellow.vmの$hellowが"Hellow　world"と変換されて表示されます。</p>
+<pre>
+package org.examples.controller.impl;
+
+public class CalcControllerImpl {
+	public int showAdd(int lhs,int rhs){
+		System.out.println("showAdd Method involed");
+		return lhs + rhs;
+	}
+}
+</pre>
+<p>これで、calcControllerという名前で、CalcControllerImplコントローラが登録されました。</p>
+<!-- URL Mapping-->
+<h2><a name="actionInvoke">アクションの呼び出し</a></h2>
+<p>cadhelinはコンテキストパス/do/xxx/yyyというアドレスにGETメソッドでアクセスがあると、xxxControllerという名前で登録された、showYyyメソッドを呼び出します。
+ここで、xxxをコントローラ名、yyyをアクション名と呼びます。
+CalcControllerImplのshowAddメソッドを呼び出したい場合http://localhost:8080/cadhelin-blank/do/calc/addにブラウザからアクセスしてください。
+コンソールに"showAdd Method involed"と表示され、showAddメソッドが呼び出されたことがわかります。
+
+
+<h2><a name="rendering">レンダリング</a></h2>
+<p>
+cadhelinはアクションメソッドを起動した後に、/コントローラ名/アクション名.vmというVelocityファイルによってHTMLをレンダリングしようとします。
+http://localhost:8080/cadhelin-blank/do/calc/addにアクセスすると、ブラウザには次のようなメッセージが表示されます。
+<pre>
+Unable to find resource '/calc/add.vm'
+</pre>
+これは、CalcControllerImplのshowAddメソッドを呼び出したあと、/コントローラ名/アクション名.vmというVelocityファイルによってHTMLをレンダリングしようとして、
+そのVelocityファイルが存在しないために起こります。
+</p>
+<p>
+webapp/WEB-INF/vm/calc/add.vmファイルを作成して、以下のように記述してください。
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Add&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+	&lt;form method="GET"&gt;
+		&lt;input type="text" name="lhs" value="$lhs"&gt; + 
+		&lt;input type="text" name="rhs" value="$rhs"&gt; = $add 
+		&lt;input type="submit" value="add"&gt;
+	&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+もう一度http://localhost:8080/cadhelin-blank/do/calc/addにアクセスすると、HTMLがレンダリングされます。
+
+<div style="border: 1px solid #7e7e7e;padding:1px;">
+<form method="GET">
+		<input type="text" name="lhs" value="0"> + 
+		<input type="text" name="rhs" value="0"> = 0 
+		<input type="submit" value="add">
+	</form>
+</div>
+テキストボックスに数字を入れてaddボタンを押してください。リクエストパラメータlhsがshowAddメソッドのlhsパラメータに、
+リクエストパラメータlhsがshowAddメソッドのrhsパラメータに変換されていることがわかります。
+また、メソッドの引数は引数名で、メソッドの返り値はアクション名でVelocityファイルからアクセスできていることがわかります。
+</p>
 <!-- document end -->
 <!-- don't edit start -->
 </td>
