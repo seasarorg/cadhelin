@@ -3,7 +3,6 @@
     "http://www.seasar.org/dtd/components23.dtd">
 <components>
 	<include path="ConverterFactory.dicon"/>
-	<include path="ValidatorFactory.dicon"/>
 	<include path="app.dicon"/>
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 		<arg>"messages"</arg>

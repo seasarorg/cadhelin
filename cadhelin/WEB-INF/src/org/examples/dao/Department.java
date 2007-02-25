@@ -1,4 +1,4 @@
-package examples.employee;
+package org.examples.dao;
 
 public class Department {
 	private int deptno;

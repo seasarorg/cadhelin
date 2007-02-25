@@ -2,6 +2,8 @@ package examples.employee;
 
 import java.util.Collection;
 
+import org.examples.dao.Department;
+
 public interface DepartmentDao {
 
 	/* (non-Javadoc)

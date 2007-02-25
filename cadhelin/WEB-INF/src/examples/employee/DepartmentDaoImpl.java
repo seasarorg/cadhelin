@@ -3,6 +3,8 @@ package examples.employee;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.examples.dao.Department;
+
 public class DepartmentDaoImpl implements DepartmentDao {
 	private HashMap<Integer,Department> map = new HashMap<Integer,Department>();
 	public DepartmentDaoImpl(){

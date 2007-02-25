@@ -207,7 +207,7 @@ public class ActionMetadata {
 		}else{
 			//リダイレクト先がなければそのままレンダリングを行う
 			String url = context.getViewURL();
-			context.addMessage(error);
+			context.addError(error);
 			request.setAttribute(redirectParameterName,request.getRequestURI()+"/"+request.getQueryString());
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url);
 			dispatcher.forward(request,response);

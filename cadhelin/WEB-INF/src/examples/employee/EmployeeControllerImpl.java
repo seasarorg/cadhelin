@@ -17,6 +17,8 @@ package examples.employee;
 
 import java.util.Collection;
 
+import org.examples.dao.Employee;
+import org.examples.dao.EmployeeDao;
 import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.annotation.ResultName;
