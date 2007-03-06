@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<!-- don't edit start -->
+<head>
+<title>Seasar - DI Container with AOP - </title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link href="seasar_b.css" type="text/css" rel="stylesheet" media="screen" />
+<link href="seasar_p.css" type="text/css" rel="stylesheet" media="print" />
+<script src="seasar_b.js" type="text/JavaScript" language="JavaScript"></script>
+</head>
+<body onload="preload('ja')">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="left"><tr>
+<td align="left" valign="top" width="780"><table width="780" border="0" cellspacing="0" cellpadding="0" class="white">
+<tr><td colspan="7"><img height="5" width="780" src="images/top01_b.gif" alt=""></td></tr>
+<tr><td><img height="117" width="235" src="images/top02_b.gif" alt="Seasar"></td>
+<td colspan="3"><img height="117" width="289" src="images/top03.gif" alt="DI Container with AOP"></td>
+<td colspan="3"><img height="117" width="256" src="images/spacer.gif" alt=""></td>
+</tr><tr><td rowspan="2"><img src="images/top04.gif" alt="" height="49" width="235"></td>
+<td><a href="http://www.seasar.org/index.html"><img src="images/menu01_b_ja.gif" height="30" width="78" border="0" alt="" id="menu01" onmouseover="swap(1)" onmouseout="restore(1)"></a></td>
+<td><a href="http://www.seasar.org/projects.html"><img src="images/menu02_b_ja.gif" height="30" width="101" border="0" alt="" id="menu02" onmouseover="swap(2)" onmouseout="restore(2)"></a></td>
+<td><a href="http://www.seasar.org/products.html"><img src="images/menu03_b_ja.gif" height="30" width="110" border="0" alt="" id="menu03" onmouseover="swap(3)" onmouseout="restore(3)"></a></td>
+<td><a href="http://www.seasar.org/resources.html"><img src="images/menu04_b_ja.gif" height="30" width="113" border="0" alt="" id="menu04" onmouseover="swap(4)" onmouseout="restore(4)"></a></td>
+<td><img src="images/menu05_b_ja.gif" height="30" width="109" border="0" alt="" id="menu05" onmouseover="swap(5)" onmouseout="restore(5)"></td>
+<td><img height="30" width="34" src="images/menu06.gif" alt=""></td></tr><tr>
+<td colspan="6"><img height="19" width="545" src="images/spacer.gif" alt=""></td></tr></table>
+<table  width="780" border="0" cellspacing="0" cellpadding="0" class="white">
+<tr align="left" valign="top"><td width="14"><img height="14" width="14" src="images/spacer.gif" alt=""></td><td width="752" class="main">
+<!-- don't edit end -->
+<!-- document start -->
+<ul>
+<li><a href="#parameter">Session変数</a></li>
+</ul>
+
+<h2><a name="parameter">Session変数</a></h2>
+<p>Session変数はSession Managerによって管理されます。
+Session Managerになるクラスに制限はありませんが、sessionManagerという名前で、instance="session"で
+Containerに登録されている必要があります。
+</p>
+<p>次のようなクラスを作成してください</p>
+<pre>
+package org.examples;
+
+import examples.User;
+
+public class SessionManager {
+	private User user;
+	private int count;
+	
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+}
+</pre>
+<p>また、app.diconに以下のような内容を記入してください</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.3//EN" 
+    "http://www.seasar.org/dtd/components23.dtd"&gt;
+&lt;components&gt;
+	&lt;component name="sessionManager" class="org.examples.SessionManager" instance="session" /&gt;
+&lt;/components&gt;
+</pre>
+<p>Session Managerを利用する場合はControllerContext#getSessionManager()メソッドを利用して取得します。</p>
+<p>次のようなクラスを作成してください</p>
+<pre>
+package org.examples.controller.impl;
+
+import org.examples.SessionManager;
+import org.seasar.cadhelin.ControllerContext;
+import org.seasar.cadhelin.annotation.Dispatch;
+
+public class CounterControllerImpl {
+	public void showCount(){
+	}
+	@Dispatch(actionName="count",key="inc")
+	public void doInc(){
+		SessionManager sessionManager = 
+			(SessionManager) ControllerContext.getContext().getSessionManager();
+		int count = sessionManager.getCount();
+		sessionManager.setCount(count+1);
+		showCount();
+	}
+	@Dispatch(actionName="count",key="dec")
+	public void doDec(){
+		SessionManager sessionManager = 
+			(SessionManager) ControllerContext.getContext().getSessionManager();
+		int count = sessionManager.getCount();
+		sessionManager.setCount(count-1);
+		showCount();
+	}
+}
+</pre>
+<p>また、counter/count.vmを作成してください。</p>
+<pre>
+&lt;html&gt;
+	&lt;head&gt;
+	&lt;title&gt;Count Session&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	&lt;form action="count" method="POST"&gt;
+	&lt;p&gt;$count&lt;/p&gt;
+	&lt;input type="submit" name="inc" value="Increment"&gt;
+	&lt;input type="submit" name="dec" value="Decrement"&gt;
+	&lt;/form&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>ここで、http://localhost:8080/cadhelin-blank/do/counter/count
+にアクセスすると、以下のように表示されます。
+</p>
+<div style="border: 1px solid #7e7e7e;padding:5px;">
+<p>0</p>
+	<input type="submit" name="inc" value="Increment">
+
+	<input type="submit" name="dec" value="Decrement">
+	</form>
+</div>
+<p>IncrementボタンやDecrementボタンを押すと数字が増減することがわかります。
+また、別のブラウザでアクセスすると、セッションごとに数字が保持されていることがわかります。
+</p>
+<p>ここで、Incrementボタンによって、doIncメソッドが呼び足される仕組みについてはURLとアクションメソッドの対応をご覧ください。</p>
+
+
+<!-- document end -->
+<!-- don't edit start -->
+</td>
+<td width="14"><img height="14" width="14" src="images/spacer.gif" alt=""></td>
+</tr><tr>
+<td width="14"><img height="30" width="14" src="images/spacer.gif" alt=""></td>
+<td width="766"><img height="30" width="592" src="images/spacer.gif" alt=""></td>
+</tr><tr>
+<td width="14"><img height="14" width="14" src="images/spacer.gif" alt=""></td>
+<td width="766" class="copyright">&copy; Copyright The Seasar Foundation and the others 2004-2005, all rights reserved.</td>
+</tr></table>
+<td class="backright" align="left" valign="top">&nbsp;</td></tr><tr>
+<td class="backunder" align="left"  valign="top" width="780" height="16">&nbsp;</td>
+<td class="backcorner" align="left" valign="top" height="16">&nbsp;</td>
+</tr></table></body>
+<!-- don't edit end -->
+</html>
