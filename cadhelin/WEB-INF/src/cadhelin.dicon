@@ -4,6 +4,7 @@
 <components>
 	<include path="ConverterFactory.dicon"/>
 	<include path="app.dicon"/>
+	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />	
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 		<arg>"messages"</arg>
 		<arg>@org.seasar.cadhelin.MessageTool@MESSAGE_KEY</arg>

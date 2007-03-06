@@ -13,7 +13,9 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package examples;
+package org.examples;
+
+import examples.User;
 
 public class SessionManager {
 	private User user;

@@ -15,6 +15,7 @@
  */
 package examples;
 
+import org.examples.SessionManager;
 import org.seasar.cadhelin.AuthorizationManager;
 
 public class AuthorizationManagerImpl implements AuthorizationManager {

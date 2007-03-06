@@ -13,31 +13,32 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package examples;
+package org.examples.controller.impl;
 
 import org.examples.SessionManager;
 import org.seasar.cadhelin.ControllerContext;
-import org.seasar.cadhelin.Message;
-import org.seasar.cadhelin.annotation.ResultName;
+import org.seasar.cadhelin.annotation.Dispatch;
 
-public class LogonControllerImpl {
-	UserManager userManager;
-	public LogonControllerImpl(UserManager userManager) {
-		this.userManager = userManager;
+
+
+
+public class CounterControllerImpl {
+	public void showCount(){
 	}
-	public void logonForm(){
+	@Dispatch(actionName="count",key="inc")
+	public void doInc(){
+		SessionManager sessionManager = 
+			(SessionManager) ControllerContext.getContext().getSessionManager();
+		int count = sessionManager.getCount();
+		sessionManager.setCount(count+1);
+		showCount();
 	}
-	@ResultName("user")
-	public User logon(SessionManager sessionManager,String userName,String password){
-		User user = userManager.authenticate(userName,password);
-		if(user==null){
-			ControllerContext context = 
-				ControllerContext.getContext();
-			context.addMessage("logon",new Message("error.logon"));
-			logonForm();
-			return null;
-		}
-		sessionManager.setUser(user);
-		return user;
+	@Dispatch(actionName="count",key="dec")
+	public void doDec(){
+		SessionManager sessionManager = 
+			(SessionManager) ControllerContext.getContext().getSessionManager();
+		int count = sessionManager.getCount();
+		sessionManager.setCount(count-1);
+		showCount();
 	}
 }
