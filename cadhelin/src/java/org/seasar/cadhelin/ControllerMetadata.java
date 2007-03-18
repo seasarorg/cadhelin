@@ -22,22 +22,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.seasar.cadhelin.annotation.Dispatch;
-import org.seasar.cadhelin.impl.FilterContextImpl;
-import org.seasar.cadhelin.impl.InternalControllerContext;
-import org.seasar.cadhelin.util.StringUtil;
 import org.seasar.framework.container.ComponentDef;
 
 public class ControllerMetadata {
 	Log log = LogFactory.getLog(this.getClass());
 	private Class controllerClass;
 	private String name;
-	private String urlPattern;
 	private Map<String,ActionMetadata[]> actions = 
 		new HashMap<String,ActionMetadata[]>();
 	private Map<String,ActionMetadata> actionByMethodName = 
@@ -45,10 +37,8 @@ public class ControllerMetadata {
 	private String defaultActionName = null;
 	public ControllerMetadata(
 			String name,
-			String urlPattern,
 			ComponentDef componentDef){
 		this.controllerClass = componentDef.getComponentClass();
-		this.urlPattern = urlPattern;
 		this.name = name;
 	}
 	public String getName() {
@@ -68,9 +58,9 @@ public class ControllerMetadata {
 		int count = 0;
 		Collection<ActionMetadata> actions = actionByMethodName.values();
 		for (ActionMetadata metadata : actions) {
-			if(method.equals(metadata.getHttpMethod())){
-				count++;
-			}
+//			if(method.equals(metadata.getHttpMethod())){
+//				count++;
+//			}
 		}
 		return count;
 	}
@@ -137,8 +127,5 @@ public class ControllerMetadata {
 			}
 		}
 		return null;
-	}
-	public String getUrlPattern() {
-		return urlPattern;
 	}
 }

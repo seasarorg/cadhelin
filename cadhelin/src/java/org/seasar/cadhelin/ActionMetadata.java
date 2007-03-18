@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.seasar.cadhelin.annotation.Action;
 import org.seasar.cadhelin.annotation.Dispatch;
 import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.converter.RedirectConverter;
@@ -37,8 +38,11 @@ import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
 
 public class ActionMetadata {
-	private String urlPattern;
+	private String requestPath;
+	private RequestNamingConvention requestNamingConvention;
 	private HttpMethod httpMethod;
+	private String urlPrefix;
+	private String urlSuffix;
 	private String redirectParameterName = "cadhelin_redirect_to";
 	private String resultName;
 	private String actionName;
@@ -52,10 +56,7 @@ public class ActionMetadata {
 	private String render = null;
 	private boolean reternMap = false;
 	private String urlEncoding;
-	private ControllerMetadata controllerMetadata;
 	public ActionMetadata(
-			ControllerMetadata controllerMetadata,
-			String urlPattern,
 			HttpMethod httpMethod,
 			String urlEncoding,
 			String controllerName,
@@ -64,10 +65,9 @@ public class ActionMetadata {
 			Dispatch dispatch, String role,
 			Object controller,
 			Method method,
+			RequestNamingConvention requestNamingConvention,
 			String[] parameterNames,
 			Converter[] converters) {
-		this.controllerMetadata = controllerMetadata;
-		this.urlPattern = urlPattern;
 		this.httpMethod = httpMethod;
 		this.urlEncoding = urlEncoding;
 		this.controllerName = controllerName;
@@ -85,6 +85,12 @@ public class ActionMetadata {
 			render = render2.value();
 		}
 		reternMap = Map.class.isAssignableFrom(method.getReturnType());
+		urlPrefix = requestNamingConvention.getUrlPrefix();
+		urlSuffix = requestNamingConvention.getDefaultUrlSuffix();
+		Action annotation = method.getAnnotation(Action.class);
+		if(annotation!=null && annotation.suffix().length()>0){
+			urlSuffix = annotation.suffix();
+		}
 	}
 	public Dispatch getDispatch() {
 		return dispatch;
@@ -196,7 +202,7 @@ public class ActionMetadata {
 		String redirectUrl = request.getParameter(redirectParameterName);
 		if(redirectUrl == null && httpMethod.isPost()){
 			//もしリダイレクト先がなくPOSTメソッドならGETにリダイレクトする
-			ActionMetadata action = context.getAction(this.controllerName,this.actionName,"GET");
+			ActionMetadata action = context.getAction(this.controllerName,this.actionName,HttpMethod.GET);
 			Object[] arguments = action.convertToParameter(request,new HashMap<String,Message>());
 			redirectUrl = context.getUrlByMethodName(controllerName, method.getName(), arguments);
 		}
@@ -214,11 +220,7 @@ public class ActionMetadata {
 		}
 	}
 	public String getUrlPattern(){
-		if(urlPattern.startsWith("/")){
-			return urlPattern;
-		}else{
-			return controllerMetadata.getUrlPattern() + "/" + urlPattern;
-		}
+		return requestPath;
 	}
 	public String convertToURL(Object[] arguments,HttpServletRequest request) {
 		StringBuffer buff = new StringBuffer();
@@ -258,7 +260,10 @@ public class ActionMetadata {
 			}
 			
 		}
-		return buff.toString();
+		return request.getContextPath() +
+				urlPrefix + 
+				buff.toString() +
+				urlSuffix;
 	}
     public String encodeURL(String url){
     	try {

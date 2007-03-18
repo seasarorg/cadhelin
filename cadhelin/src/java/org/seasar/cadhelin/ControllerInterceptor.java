@@ -23,25 +23,18 @@ import org.seasar.cadhelin.util.RedirectSession;
 import org.seasar.framework.aop.interceptors.AbstractInterceptor;
 
 public class ControllerInterceptor extends AbstractInterceptor {
-
 	public Object invoke(MethodInvocation method) throws Throwable {
 		InternalControllerContext context = 
 			(InternalControllerContext) ControllerContext.getContext();
-		if(context==null){
-			System.out.println("interceptor test");
-			return null;
-		}
 		//もしリクエスト中で2回目に呼び出されたActionメソッドで
 		if(!context.isFirstAction()){
-			ControllerMetadata controllerMetadata = context.getControllerMetadata(method.getMethod().getDeclaringClass());
-			ActionMetadata actionMetadata =
-				controllerMetadata.getAction(method.getMethod());
+			ActionMetadata actionMetadata = context.getActionMetadata(method.getMethod());
 			//かつGETのActionメソッドならリダイレクトする
 			if(actionMetadata.getHttpMethod().isGet()){
 				HttpServletRequest request = context.getRequest();
 				String url = context.getUrlByMethodName(
-						controllerMetadata.getName(),
-						method.getMethod().getName(),
+						actionMetadata.getControllerName(), 
+						actionMetadata.getMethodName(), 
 						method.getArguments());
 				RedirectSession.setAttribute(request.getSession(),
 						MessageTool.MESSAGE_KEY,request.getAttribute(MessageTool.MESSAGE_KEY));				

@@ -16,7 +16,6 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -33,6 +32,7 @@ import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.impl.ControllerContextImpl;
+import org.seasar.cadhelin.impl.ActionMetadataFactoryImpl;
 import org.seasar.cadhelin.impl.FilterContextImpl;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
@@ -46,7 +46,7 @@ public class ControllerServlet extends HttpServlet {
 	private String viewUrlPattern  = "/${controllerName}/${actionName}.vm";
 	private S2Container container;
 	private ExceptionHandlerMetadata exceptionHandlerMetadata;
-	private ControllerMetadataFactory controllerMetadataFactory;
+	private ActionMetadataFactory actionMetadataFactory;
 	private ActionFilter[] filters;
 	public static final String CONTROLLER_METADATA_NAME = "org.seasar.cadhelin.controllermetadata";
 	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
@@ -66,8 +66,8 @@ public class ControllerServlet extends HttpServlet {
 			urlEncoding = s;
 		}
 		container = SingletonS2ContainerFactory.getContainer();
-		controllerMetadataFactory = new ControllerMetadataFactory(container,urlEncoding);
-		config.getServletContext().setAttribute(CONTROLLER_METADATA_NAME,controllerMetadataFactory);
+		actionMetadataFactory = new ActionMetadataFactoryImpl(container);
+		config.getServletContext().setAttribute(CONTROLLER_METADATA_NAME,actionMetadataFactory);
 		if(container.hasComponentDef(ExceptionHandler.class)){
 			exceptionHandlerMetadata = new ExceptionHandlerMetadata(container.getComponentDef(ExceptionHandler.class));			
 		}
@@ -94,12 +94,17 @@ public class ControllerServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		RedirectSession.move(request.getSession());
 		try{
+			System.out.println(request.getRequestURI());
+			System.out.println(request.getContextPath());
+			System.out.println(request.getServletPath());
+			System.out.println(request.getPathInfo());
+			System.out.println(request.getPathTranslated());
 			request = createHttpRequest(request);
 			ActionMetadata metadata =
-				controllerMetadataFactory.getActionMetadata(request);
+				actionMetadataFactory.getActionMetadata(request);
 			if(metadata!=null){
 				InternalControllerContext controllerContext = 
-					new ControllerContextImpl(container,controllerMetadataFactory,request,response,urlPrefix,viewUrlPattern,
+					new ControllerContextImpl(container,actionMetadataFactory,request,response,urlPrefix,viewUrlPattern,
 							metadata.getControllerName(),metadata.getName());
 				ControllerContext.setContext(
 						controllerContext);
