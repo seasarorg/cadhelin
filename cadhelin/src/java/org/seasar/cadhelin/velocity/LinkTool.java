@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.AuthorizationManager;
 import org.seasar.cadhelin.ControllerServlet;
+import org.seasar.cadhelin.HttpMethod;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 
 public class LinkTool extends AbstractMap{
@@ -49,7 +50,7 @@ public class LinkTool extends AbstractMap{
 	public boolean authorized(String controllerName,String methodName){
 		InternalControllerContext context =
 			(InternalControllerContext) request.getAttribute(ControllerServlet.CONTROLLER_CONTEXT_NAME);
-		ActionMetadata action = context.getAction(controllerName,methodName,"GET");
+		ActionMetadata action = context.getAction(controllerName,methodName,HttpMethod.GET);
 		if(authorizationManager == null || action==null){
 			return false;
 		}

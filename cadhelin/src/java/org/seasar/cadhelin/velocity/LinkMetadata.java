@@ -18,6 +18,7 @@ package org.seasar.cadhelin.velocity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.seasar.cadhelin.ActionMetadata;
+import org.seasar.cadhelin.HttpMethod;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 
 public class LinkMetadata {
@@ -37,7 +38,7 @@ public class LinkMetadata {
 		if(url!=null){
 			return new InsertAsIs(url);
 		}
-		ActionMetadata action = context.getAction(controllerName,methodName,"GET");
+		ActionMetadata action = context.getAction(controllerName,methodName,HttpMethod.GET);
 		url = context.getUrlByMethodName(controllerName,action.getMethodName(),args);
 		if(url!=null){
 			log.warn("depricated : please specify not actionName("+action.getName()+
