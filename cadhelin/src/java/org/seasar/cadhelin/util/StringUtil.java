@@ -15,6 +15,8 @@
  */
 package org.seasar.cadhelin.util;
 
+import java.util.ArrayList;
+
 public class StringUtil {
 	public static String convertToString(Object value){
 		StringBuffer buff = new StringBuffer();
@@ -39,6 +41,36 @@ public class StringUtil {
 			return str;
 		}
 		return Character.toLowerCase(str.charAt(0)) + str.substring(1);
+	}
+	public static String[] split(String str,char ch) {
+		ArrayList<String> list = new ArrayList<String>();
+		int pos = 0;
+		do{
+			int nextPos = str.indexOf(ch);
+			if(nextPos<=0){
+				break;
+			}
+			list.add(str.substring(0, nextPos));
+			str = str.substring(nextPos+1);
+		}while(0<=pos);
+		list.add(str);
+		return (String[]) list.toArray(new String[list.size()]);
+	}
+	public static void main(String[] args) {
+		System.out.println("["+join(split("", '/'), "],[")+"]");
+		System.out.println("["+join(split("test", '/'), "],[")+"]");
+		System.out.println("["+join(split("test/", '/'), "],[")+"]");
+		System.out.println("["+join(split("test/test2", '/'), "],[")+"]");
+	}
+	public static String join(Object[] arrays, String delim) {
+		StringBuilder buff = new StringBuilder();
+		for(int i=0;i < arrays.length;i++){
+			if(i>0){
+				buff.append(delim);
+			}
+			buff.append(arrays[i]);
+		}
+		return buff.toString();
 	}
 	public static String join(String[] strs, String delim, int len) {
 		StringBuilder buff = new StringBuilder();
