@@ -1,8 +1,10 @@
 package org.seasar.cadhelin.impl;
 
+import java.lang.reflect.Method;
+
 import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.ControllerContext;
-import org.seasar.cadhelin.ControllerMetadata;
+import org.seasar.cadhelin.HttpMethod;
 
 public abstract class InternalControllerContext extends ControllerContext {
 
@@ -22,12 +24,11 @@ public abstract class InternalControllerContext extends ControllerContext {
 	public abstract void setRedirected(boolean redirected);
 
 	public abstract void setRedirect(String redirectUrl);
-
-	public abstract ControllerMetadata getControllerMetadata(
-			Class controllerClass);
+	
+	public abstract ActionMetadata getActionMetadata(Method method);
 	
 	public abstract ActionMetadata getAction(String controllerName,
-			String actionName, String method);
+			String actionName, HttpMethod method);
 
 
 }

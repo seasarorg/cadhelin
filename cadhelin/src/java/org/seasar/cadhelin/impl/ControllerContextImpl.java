@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -29,8 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.seasar.cadhelin.ActionMetadata;
-import org.seasar.cadhelin.ControllerMetadata;
-import org.seasar.cadhelin.ControllerMetadataFactory;
+import org.seasar.cadhelin.ActionMetadataFactory;
+import org.seasar.cadhelin.HttpMethod;
 import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.MessageTool;
 import org.seasar.cadhelin.util.RedirectSession;
@@ -44,14 +45,13 @@ public class ControllerContextImpl extends InternalControllerContext {
 	private boolean redirected = false;
 	private boolean firstAction = true;
 	private String viewUrlPattern  = "${controllerName}/${actionName}.vm";
-	private ControllerMetadataFactory controllerMetadataFactory;
+	private ActionMetadataFactory actionMetadataFactory;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	private String urlPrefix = "/do";
 	
 	public ControllerContextImpl(
 			S2Container container,
-			ControllerMetadataFactory controllerMetadataFactory,
+			ActionMetadataFactory controllerMetadataFactory,
 			HttpServletRequest request,
 			HttpServletResponse response,
 			String urlPrefix,
@@ -59,10 +59,9 @@ public class ControllerContextImpl extends InternalControllerContext {
 			String controllerName,
 			String actionName) {
 		this.container = container;
-		this.controllerMetadataFactory = controllerMetadataFactory;
+		this.actionMetadataFactory = controllerMetadataFactory;
 		this.request = request;
 		this.response = response;
-		this.urlPrefix = urlPrefix;
 		this.viewUrlPattern = viewUrlPattern;
 		this.controllerName = controllerName;
 		this.actionName = actionName;
@@ -83,10 +82,8 @@ public class ControllerContextImpl extends InternalControllerContext {
 		return controllerName;
 	}
 	public String getUrlByMethodName(String controllerName, String methodName, Object[] arguments) {
-		ControllerMetadata metadata = controllerMetadataFactory.getControllerMetadata(controllerName);
-		ActionMetadata action = metadata.getAction(methodName);
-		String url = action.convertToURL(arguments, request);
-		return (url!=null)?request.getContextPath() + urlPrefix  + url : null;
+		ActionMetadata action = actionMetadataFactory.getActionMetadata(controllerName,methodName);
+		return action.convertToURL(arguments, request);
 	}
 	public String getViewURL(){
 		return viewUrlPattern.
@@ -204,12 +201,9 @@ public class ControllerContextImpl extends InternalControllerContext {
 		return response;
 	}
 
-	public ActionMetadata getAction(String controllerName, String actionName,String method) {
-		ControllerMetadata metadata = 
-			controllerMetadataFactory.getControllerMetadata(controllerName);
-		return metadata.getAction(actionName,method);
+	public ActionMetadata getAction(String controllerName, String actionName,HttpMethod method) {
+		return actionMetadataFactory.getActionMetadata(controllerName,actionName,method);
 	}
-
 	public void setRedirect(String redirectUrl) {
 		try {
 			RedirectSession.setAttribute(request.getSession(),
@@ -262,7 +256,7 @@ public class ControllerContextImpl extends InternalControllerContext {
 		request.getSession().invalidate();
 	}
 
-	public ControllerMetadata getControllerMetadata(Class controllerClass) {
-		return controllerMetadataFactory.getControllerMetadata(controllerClass);
+	public ActionMetadata getActionMetadata(Method method) {
+		return actionMetadataFactory.getActionMetadata(method);
 	}
 }
