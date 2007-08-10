@@ -21,6 +21,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ognl-2.6.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.4.9.jar" sourcepath="/seasar2/s2-extension/src/main/java"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/s2-framework-2.4.9.jar" sourcepath="C:/tmp/S2.4.9/seasar2/lib/s2-framework-2.4.9-sources.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/s2-framework-2.4.9.jar" sourcepath="/seasar2"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

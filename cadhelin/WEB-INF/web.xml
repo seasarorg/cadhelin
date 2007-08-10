@@ -16,11 +16,11 @@
     
 	<filter-mapping>
 		<filter-name>s2filter</filter-name>
-		<url-pattern>/do/*</url-pattern>
+		<url-pattern>*.html</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>hotdeployfilter</filter-name>
-		<url-pattern>/do/*</url-pattern>
+		<url-pattern>*.html</url-pattern>
 	</filter-mapping>
 	<servlet>
 		<servlet-name>s2servlet</servlet-name>
@@ -41,10 +41,6 @@
     <init-param>
        <param-name>viewUrlPattern</param-name>
        <param-value>/${controllerName}/${actionName}.vm</param-value>
-    </init-param>
-    <init-param>
-       <param-name>urlEncoding</param-name>
-       <param-value>Shift_JIS</param-value>
     </init-param>
    	<load-on-startup>11</load-on-startup>
 	</servlet>
@@ -74,7 +70,7 @@
 
 	<servlet-mapping>
      <servlet-name>cadhelin</servlet-name>
-     <url-pattern>/do/*</url-pattern>
+     <url-pattern>*.html</url-pattern>
   </servlet-mapping>
 
 

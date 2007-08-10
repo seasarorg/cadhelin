@@ -13,12 +13,14 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package examples.employee;
+package org.examples.controller.impl;
 
 import java.util.Collection;
 
 import org.examples.dao.Employee;
 import org.examples.dao.EmployeeDao;
+import org.seasar.cadhelin.ControllerContext;
+import org.seasar.cadhelin.Message;
 import org.seasar.cadhelin.Param;
 import org.seasar.cadhelin.annotation.Render;
 import org.seasar.cadhelin.annotation.ResultName;
@@ -35,12 +37,12 @@ public class EmployeeControllerImpl {
 	
 	@Render("Employee")
 	@ResultName("employee")
-	public Employee showAdd(){
+	public Employee showAdd(@Param(name="redirect")Employee employee){
 		return new Employee();
 	}
 	public void doAdd(Employee employee){
-		empdao.addEmployee(employee);
-		doTest();
+//		empdao.addEmployee(employee);
+		ControllerContext.getContext().addError("test", new Message("test"));
 	}
 	public void doTest(){
 		showIndex();		

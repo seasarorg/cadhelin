@@ -31,8 +31,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.seasar.cadhelin.impl.ControllerContextImpl;
 import org.seasar.cadhelin.impl.ActionMetadataFactoryImpl;
+import org.seasar.cadhelin.impl.ControllerContextImpl;
 import org.seasar.cadhelin.impl.FilterContextImpl;
 import org.seasar.cadhelin.impl.InternalControllerContext;
 import org.seasar.cadhelin.util.RedirectSession;
@@ -41,10 +41,9 @@ import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
 
 public class ControllerServlet extends HttpServlet {
 	private static Log LOG = LogFactory.getLog(ControllerServlet.class);
-	private String urlEncoding = "Shift_JIS";
-	private String urlPrefix = "/do";
 	private String viewUrlPattern  = "/${controllerName}/${actionName}.vm";
 	private S2Container container;
+	private String encoding = "UTF-8";
 	private ExceptionHandlerMetadata exceptionHandlerMetadata;
 	private ActionMetadataFactory actionMetadataFactory;
 	private ActionFilter[] filters;
@@ -53,17 +52,13 @@ public class ControllerServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		LOG.info("start cadhelin servlert" + config.getServletName());
-		String s = config.getInitParameter("urlPrefix");
+		String s = config.getInitParameter("encoding");
 		if(s!=null){
-			urlPrefix = s;
+			encoding = s;
 		}
 		s = config.getInitParameter("viewUrlPattern");
 		if(s!=null){
 			viewUrlPattern = s;
-		}
-		s = config.getInitParameter("urlEncoding");
-		if(s!=null){
-			urlEncoding = s;
 		}
 		container = SingletonS2ContainerFactory.getContainer();
 		actionMetadataFactory = new ActionMetadataFactoryImpl(container);
@@ -92,25 +87,20 @@ public class ControllerServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding(encoding);
 		RedirectSession.move(request.getSession());
 		try{
-			System.out.println(request.getRequestURI());
-			System.out.println(request.getContextPath());
-			System.out.println(request.getServletPath());
-			System.out.println(request.getPathInfo());
-			System.out.println(request.getPathTranslated());
 			request = createHttpRequest(request);
 			ActionMetadata metadata =
 				actionMetadataFactory.getActionMetadata(request);
 			if(metadata!=null){
 				InternalControllerContext controllerContext = 
-					new ControllerContextImpl(container,actionMetadataFactory,request,response,urlPrefix,viewUrlPattern,
+					new ControllerContextImpl(container,actionMetadataFactory,request,response,viewUrlPattern,
 							metadata.getControllerName(),metadata.getName());
 				ControllerContext.setContext(
 						controllerContext);
 				request.setAttribute(CONTROLLER_CONTEXT_NAME,controllerContext);
 				try {
-					//TODO
 					FilterContextImpl filter = new FilterContextImpl(filters,controllerContext,metadata);
 					filter.doFilter(request,response);
 				} catch (Throwable e) {
@@ -119,7 +109,7 @@ public class ControllerServlet extends HttpServlet {
 					}
 				}				
 			}else{
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);				
+				response.sendError(HttpServletResponse.SC_NOT_FOUND,request.getRequestURI());				
 			}
 		} catch (FileUploadException e) {
 			LOG.error("",e);

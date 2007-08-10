@@ -15,11 +15,12 @@
  */
 package org.examples.dao;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.seasar.cadhelin.Param;
 
-public class Employee {
+public class Employee  implements Serializable{
 	private int empno;
 	private int deptno;
 	private String name;

@@ -32,8 +32,8 @@ import org.seasar.cadhelin.Converter;
 import org.seasar.cadhelin.ConverterFactory;
 import org.seasar.cadhelin.HttpMethod;
 import org.seasar.cadhelin.RequestNamingConvention;
-import org.seasar.cadhelin.annotation.Default;
 import org.seasar.cadhelin.annotation.Dispatch;
+import org.seasar.cadhelin.annotation.ParamNames;
 import org.seasar.cadhelin.annotation.ResultName;
 import org.seasar.cadhelin.annotation.Role;
 import org.seasar.cadhelin.util.AnnotationUtil;
@@ -93,9 +93,10 @@ public class ActionMetadataFactoryImpl implements Disposable, ActionMetadataFact
 		Role r = (Role) beanClass.getAnnotation(Role.class);
 		String role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
 		Method[] methods = beanClass.getDeclaredMethods();
+		String controllerPath = requestNamingConvention.createControllerPath(controllerName);
 		for(Method method : methods){
 			if((method.getModifiers() & Modifier.PUBLIC) > 0){
-				ActionMetadata actionMetadata = createActionMetadata(metadata, beanDesc,controllerName,controller, method, role);
+				ActionMetadata actionMetadata = createActionMetadata(metadata, beanDesc,controllerPath,controllerName,controller, method, role);
 				if(actionMetadata!=null){
 					metadata.addActionMetadata(actionMetadata.getName(),actionMetadata);
 					String actionPath = requestNamingConvention.getActionPath(actionMetadata);
@@ -138,14 +139,18 @@ public class ActionMetadataFactoryImpl implements Disposable, ActionMetadataFact
 		return defaultAction;
 		
 	}
-	private void setupActionMetadata(HttpServletRequest request) {
+	private void setupActionMetadata(HttpServletRequest request){
 		String controllerName = requestNamingConvention.getControllerName(request);
-		ComponentDef componentDef = container.getComponentDef(controllerName+"Controller");
-		createControllerMetadata(controllerName,componentDef);
+		String controllerKey = controllerName+"Controller";
+		if(container.hasComponentDef(controllerKey)){
+			ComponentDef componentDef = container.getComponentDef(controllerKey);
+			createControllerMetadata(controllerName,componentDef);
+		}
 	}
 	protected ActionMetadata createActionMetadata(
 			ControllerMetadata controllerMetadata,
 			BeanDesc beanDesc,
+			String controllerPath,
 			String controllerName,
 			Object controller,
 			Method method,
@@ -164,7 +169,13 @@ public class ActionMetadataFactoryImpl implements Disposable, ActionMetadataFact
 			return null;
 		}
 		actionName = StringUtil.toLowwerCaseInitial(actionName);
-		String[] parameterNames = beanDesc.getMethodParameterNames(method);
+		String[] parameterNames = null;
+		ParamNames param = method.getAnnotation(ParamNames.class);
+		if(param!=null){
+			parameterNames = param.value();
+		}else{
+			parameterNames = beanDesc.getMethodParameterNames(method);
+		}
 		Role r = method.getAnnotation(Role.class);
 		String role = (r!=null && r.value().length() > 0)? r.value() : defaultRole;
 		String resultName = actionName;
@@ -176,6 +187,7 @@ public class ActionMetadataFactoryImpl implements Disposable, ActionMetadataFact
 		return new ActionMetadata(
 				httpMethod,
 				urlEncoding,
+				controllerPath,
 				controllerName,
 				actionName,
 				resultName,
@@ -203,8 +215,8 @@ public class ActionMetadataFactoryImpl implements Disposable, ActionMetadataFact
 		return controllerMetadata.getAction(methodName);
 	}
 	public ActionMetadata getActionMetadata(String controllerName, String actionName, HttpMethod method) {
-		// TODO Auto-generated method stub
-		return null;
+		ControllerMetadata controllerMetadata = getControllerMetadata(controllerName);
+		return controllerMetadata.getAction(actionName,method.toString());
 	}
 	public ActionMetadata getActionMetadata(Method method) {
 		Class<?> clazz = method.getDeclaringClass();

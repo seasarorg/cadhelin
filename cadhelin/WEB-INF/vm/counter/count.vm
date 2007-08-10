@@ -3,7 +3,7 @@
 	<title>Count Session</title>
 	</head>
 	<body>
-	<form action="count" method="POST">
+	<form action="count.html" method="POST">
 	<p>$count</p>
 	<input type="submit" name="inc" value="Increment">
 	<input type="submit" name="dec" value="Decrement">

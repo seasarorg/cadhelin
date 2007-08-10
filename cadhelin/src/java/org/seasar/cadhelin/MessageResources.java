@@ -15,29 +15,65 @@
  */
 package org.seasar.cadhelin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
-import org.seasar.framework.util.ResourceBundleUtil;
+import org.apache.commons.io.IOUtils;
+import org.seasar.framework.util.Disposable;
+import org.seasar.framework.util.DisposableUtil;
 
-public class MessageResources {
+public class MessageResources implements Disposable{
 	private static MessageResources instance = new MessageResources();
-	public static ResourceBundle getResourceBundle(String key){
-		return instance.getResourceBundles(key);
+	public static Map<String,String> getResourceBundle(String encoding,String key){
+		DisposableUtil.add(instance);
+		return instance.getResourceBundles(encoding,key);
 	}
-    private Map<String,ResourceBundle> bundleMap =
-    	new HashMap<String,ResourceBundle>();
+    private Map<String,Map<String,String>> bundleMap =
+    	new HashMap<String,Map<String,String>>();
     private MessageResources() {
 	}
-	public ResourceBundle getResourceBundles(String key) {
+    public void dispose() {
+    	bundleMap.clear();
+    }
+	public Map<String,String> getResourceBundles(String encoding,String key) {
 		if(bundleMap.containsKey(key)){
 			return bundleMap.get(key);
 		}
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(key,Locale.getDefault());
-		bundleMap.put(key,resourceBundle);
-		return resourceBundle;
+		Map<String, String> resource = new HashMap<String, String>();
+		try {
+			resource = importResources(key,encoding);
+		} catch (IOException e) {
+		}
+		bundleMap.put(key,resource);
+		return resource;
     }
+	private Map<String,String> importResources(String key, String encoding) throws IOException{
+		HashMap<String,String> map = new HashMap<String,String>();
+		InputStream is = null;
+		BufferedReader reader = null;
+		try{
+			is = getClass().getClassLoader().getResourceAsStream(key);
+			if(is==null){
+				return map;
+			}
+			reader = new BufferedReader(new InputStreamReader(is,encoding));
+			String line = null;
+			while((line=reader.readLine())!=null){
+				if(line.startsWith("#"))continue;
+				String[] strings = line.split("=");
+				if(strings.length==2){
+					map.put(strings[0], strings[1]);
+				}
+			}			
+		}finally{
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(reader);
+		}
+		return map;
+	}
 
 }

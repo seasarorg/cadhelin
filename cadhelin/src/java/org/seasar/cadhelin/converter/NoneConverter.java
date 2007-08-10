@@ -13,24 +13,23 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package org.seasar.cadhelin.util;
+package org.seasar.cadhelin.converter;
 
 import java.util.Map;
 
-public class ResourceBundleUtil {
-	public static String getString(Map<String,String> bundle,String key,String defaultStr){
-		String string = bundle.get(key);
-		return (string!=null)?string:defaultStr;
+import javax.servlet.http.HttpServletRequest;
+
+import org.seasar.cadhelin.Message;
+
+public class NoneConverter extends AbstractConverter {
+	public NoneConverter() {
+		super(new Object[]{"none"});
 	}
-	public static String getStringRecursive(Map<String,String> bundle,String key,String defaultStr){
-		String[] strs = key.split("\\.");
-		for(int i=strs.length;0<i;i--){
-			String k = StringUtil.join(strs,".",i);
-			String string = bundle.get(k);
-			if(string!=null){
-				return string;				
-			}
-		}
-		return defaultStr;
-	}
+
+	public Object convert(
+			HttpServletRequest request, 
+			Map<String,Message> messages) {
+		return null;
+	};
+
 }

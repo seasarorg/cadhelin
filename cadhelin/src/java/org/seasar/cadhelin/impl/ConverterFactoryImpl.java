@@ -102,7 +102,10 @@ public class ConverterFactoryImpl implements ConverterFactory {
 			Param param){
 		Converter converter = null;
 		if(param!=null && param.name().length()>0){
-			converter = getConverter(param.name());				
+			converter = getConverter(param.name());	
+			if(converter==null){
+				return null;
+			}
 		}else{
 			converter = getConverter(parameterName);								
 		}

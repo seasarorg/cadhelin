@@ -2,16 +2,13 @@ package org.seasar.cadhelin.impl;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.seasar.cadhelin.ActionMetadata;
 import org.seasar.cadhelin.HttpMethod;
 import org.seasar.cadhelin.RequestInfo;
 import org.seasar.cadhelin.RequestNamingConvention;
 import org.seasar.cadhelin.util.StringUtil;
-import org.seasar.framework.util.ArrayUtil;
 
 public class RequestNamingConventionImpl implements RequestNamingConvention {
 	private String[] getMethodPrefix = new String[]{"show"};
@@ -88,8 +85,13 @@ public class RequestNamingConventionImpl implements RequestNamingConvention {
 		return null;
 	}
 	public String getActionPath(ActionMetadata actionMetadata) {
-		// TODO Auto-generated method stub
-		return null;
+		return actionMetadata.getActionPath();
+	}
+	public String createControllerPath(String controllerName) {
+		if(defaultControllerName.equals(controllerName)){
+			return "";
+		}
+		return controllerName+"/";
 	}
 	public String getActionName(Method method) {
 		for (String prefix : getMethodPrefix) {
@@ -117,5 +119,8 @@ public class RequestNamingConventionImpl implements RequestNamingConvention {
 			}
 		}
 		return null;
+	}
+	public void setUrlPrefix(String urlPrefix) {
+		this.urlPrefix = urlPrefix;
 	}
 }

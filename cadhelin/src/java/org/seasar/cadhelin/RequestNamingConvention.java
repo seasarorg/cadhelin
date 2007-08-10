@@ -28,4 +28,6 @@ public interface RequestNamingConvention {
 
 	public String getActionPath(ActionMetadata actionMetadata);
 
+	public String createControllerPath(String controllerName);
+
 }

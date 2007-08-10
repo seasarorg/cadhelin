@@ -3,7 +3,7 @@
 <body>
 $!errors.getMessages()
 
-<form action="$actionName" method="POST">
+<form action="$link.employee.doAdd()" method="POST">
 <input type="hidden" name="empno" value="$!employee.empno"/>
 	<table>
 		<tbody>

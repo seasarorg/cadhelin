@@ -15,10 +15,11 @@
  */
 package org.seasar.cadhelin;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Message {
+public class Message implements Serializable{
 	private String key;
 	private Map<String,Object> arguments;
 	

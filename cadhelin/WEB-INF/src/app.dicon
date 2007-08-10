@@ -3,4 +3,5 @@
     "http://www.seasar.org/dtd/components23.dtd">
 <components>
 	<component name="sessionManager" class="org.examples.SessionManager" instance="session" />
+	<component name="error" class="org.examples.ExceptionHandlerImpl"/>
 </components>

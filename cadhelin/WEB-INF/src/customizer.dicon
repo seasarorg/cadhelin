@@ -6,10 +6,12 @@
     	name="controllerCustomizer" 
     	class="org.seasar.framework.container.customizer.CustomizerChain">
     	<initMethod name="addCustomizer">
-    	<arg><component class="org.seasar.framework.container.customizer.AspectCustomizer">
-    		<property name="interceptorName">"ca"</property>
-    		<property name="pointcut">"show.*,do.*"</property>
-    	</component></arg>
+	    	<arg>
+	    		<component class="org.seasar.framework.container.customizer.AspectCustomizer">
+		    		<property name="interceptorName">"ca"</property>
+		    		<property name="pointcut">"show.*,do.*"</property>
+		    	</component>
+		    </arg>
     	</initMethod>
     </component>
 </components>

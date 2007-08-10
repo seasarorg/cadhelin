@@ -54,7 +54,6 @@ public class ControllerContextImpl extends InternalControllerContext {
 			ActionMetadataFactory controllerMetadataFactory,
 			HttpServletRequest request,
 			HttpServletResponse response,
-			String urlPrefix,
 			String viewUrlPattern,
 			String controllerName,
 			String actionName) {

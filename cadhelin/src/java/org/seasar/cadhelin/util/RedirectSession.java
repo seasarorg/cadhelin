@@ -15,6 +15,12 @@
  */
 package org.seasar.cadhelin.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,17 +30,41 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class RedirectSession {
+import org.seasar.framework.exception.SRuntimeException;
+import org.seasar.framework.util.Disposable;
+import org.seasar.framework.util.DisposableUtil;
+
+public class RedirectSession implements Serializable{
 	private static String firstKey = "CADHELIN_REDIRECT_SESSION_FIRST";
 	private static String secondKey = "CADHELIN_REDIRECT_SESSION_SECOND";
 	
 	private Map<String,Object> values = 
 		new HashMap<String,Object>();
 	public static void move(HttpSession session){
-		session.setAttribute(secondKey,session.getAttribute(firstKey));
+		Object attribute = session.getAttribute(firstKey);
+		if(disposed){
+			try{
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(bos);
+				oos.writeObject(attribute);
+				ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+				attribute = ois.readObject();
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		session.setAttribute(secondKey,attribute);
 		session.setAttribute(firstKey,new RedirectSession());
+		DisposableUtil.add(new Disposable(){
+			public void dispose() {
+				disposed = true;
+			}
+		});
 	}
-	
+	private static boolean disposed = false;
+	public void dispose() {
+		disposed = true;
+	}
 	public static void setAttribute(HttpSession session,String key,Object value){
 		RedirectSession first = 
 			(RedirectSession) session.getAttribute(firstKey);

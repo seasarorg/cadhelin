@@ -24,6 +24,7 @@ import org.examples.dao.EmployeeDao;
 
 
 public class EmployeeDaoImpl implements EmployeeDao {
+	@SuppressWarnings("unused")
 	private DepartmentDao departmentDao;
 	HashMap <Integer,Employee> employees 
 		= new HashMap<Integer,Employee>();

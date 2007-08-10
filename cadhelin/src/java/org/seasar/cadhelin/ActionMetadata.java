@@ -46,6 +46,7 @@ public class ActionMetadata {
 	private String redirectParameterName = "cadhelin_redirect_to";
 	private String resultName;
 	private String actionName;
+	private String controllerPath;
 	private String controllerName;
 	private Object controller;
 	private String role;
@@ -59,6 +60,7 @@ public class ActionMetadata {
 	public ActionMetadata(
 			HttpMethod httpMethod,
 			String urlEncoding,
+			String controllerPath,
 			String controllerName,
 			String actionName,
 			String resultName,
@@ -71,6 +73,7 @@ public class ActionMetadata {
 		this.httpMethod = httpMethod;
 		this.urlEncoding = urlEncoding;
 		this.controllerName = controllerName;
+		this.controllerPath = controllerPath;
 		this.actionName = actionName;
 		this.resultName = resultName;
 		this.dispatch = dispatch;
@@ -224,7 +227,7 @@ public class ActionMetadata {
 	}
 	public String convertToURL(Object[] arguments,HttpServletRequest request) {
 		StringBuffer buff = new StringBuffer();
-		buff.append(getUrlPattern());
+		buff.append(getActionPath());
 		if(arguments.length>0){
 			boolean first = true;
 			for(int i=0;i<arguments.length;i++){
@@ -261,13 +264,11 @@ public class ActionMetadata {
 			
 		}
 		return request.getContextPath() +
-				urlPrefix + 
-				buff.toString() +
-				urlSuffix;
+				buff.toString();
 	}
     public String encodeURL(String url){
     	try {
-			return URLEncoder.encode(url,urlEncoding);
+			return URLEncoder.encode(url,"UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			return url;
 		}
@@ -306,5 +307,8 @@ public class ActionMetadata {
 	}
 	public String getControllerName() {
 		return controllerName;
+	}
+	public String getActionPath() {
+		return urlPrefix + controllerPath + actionName + urlSuffix;
 	}
 }

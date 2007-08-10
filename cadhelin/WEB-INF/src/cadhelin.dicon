@@ -4,7 +4,10 @@
 <components>
 	<include path="ConverterFactory.dicon"/>
 	<include path="app.dicon"/>
-    <component class="org.seasar.cadhelin.impl.RequestNamingConventionImpl"/>
+    <component class="org.seasar.cadhelin.impl.RequestNamingConventionImpl">
+    	<property name="urlPrefix">"/"</property>
+    	<property name="defaultUrlSuffix">".html"</property>
+    </component>
 	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />	
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 		<arg>"messages"</arg>

@@ -16,7 +16,6 @@
 package org.seasar.cadhelin;
 
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,13 +31,16 @@ public class MessageTool {
 	private String messageSuffix = "";
 	private String messagesPrefix = "";
 	private String messagesSuffix = "";
-    private ResourceBundle bundle;
+    private Map<String,String> bundle;
 	private HttpServletRequest request;
     public MessageTool(String prefix,String messageKey){
-    	this(prefix,messageKey,null,null);
+    	this(prefix,"UTF-8",messageKey,null,null);
     }
     public MessageTool(String prefix,String messageKey,String messageAppendKey,String messagesAppendKey){
-    	bundle = MessageResources.getResourceBundle(prefix);
+    	this(prefix,"UTF-8",messageKey,messageAppendKey,messagesAppendKey);
+    }
+    public MessageTool(String prefix,String encoding,String messageKey,String messageAppendKey,String messagesAppendKey){
+    	bundle = MessageResources.getResourceBundle(encoding,prefix+".properties");
     	this.messageKey = messageKey;
     	if(messageAppendKey!=null){
     		this.messagePrefix = ResourceBundleUtil.getString(bundle,messageAppendKey + ".header","");

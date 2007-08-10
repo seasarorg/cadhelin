@@ -39,6 +39,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.io.VelocityWriter;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.util.SimplePool;
+import org.seasar.framework.container.factory.SingletonS2ContainerFactory;
+import org.seasar.framework.container.impl.S2ContainerImpl;
 
 
 /**
@@ -403,8 +405,14 @@ public class VelocityViewServlet extends HttpServlet
          throws ServletException, IOException
     {
         Context context = null;
+        ClassLoader oldClassLoader = null;
         try
         {
+        	oldClassLoader = Thread.currentThread().getContextClassLoader();
+            S2ContainerImpl container = (S2ContainerImpl) SingletonS2ContainerFactory
+                    .getContainer();
+            Thread.currentThread().setContextClassLoader(container.getClassLoader());
+
             // first, get a context
             context = createContext(request, response);
             
@@ -435,6 +443,7 @@ public class VelocityViewServlet extends HttpServlet
         }
         finally
         {
+        	Thread.currentThread().setContextClassLoader(oldClassLoader);
             // call cleanup routine to let a derived class do some cleanup
             requestCleanup(request, response, context);
         }
