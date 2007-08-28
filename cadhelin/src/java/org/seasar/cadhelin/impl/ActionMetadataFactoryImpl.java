@@ -203,6 +203,7 @@ public class ActionMetadataFactoryImpl implements Disposable, ActionMetadataFact
 		ControllerMetadata controllerMetadata = controllers.get(controllerName);
 		if(controllerMetadata==null){
 			controllerMetadata = setupControllerMetadata(controllerName);
+			controllers.put(controllerName, controllerMetadata);
 		}
 		return controllerMetadata;
 	}

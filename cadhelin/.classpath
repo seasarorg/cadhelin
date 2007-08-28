@@ -15,12 +15,12 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-ejb_2.1_spec-1.0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-j2ee_1.4_spec-1.0.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-j2ee_1.4_spec-1.0.jar" sourcepath="/seasar2"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-jta_1.0.1B_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javassist-3.4.ga.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ognl-2.6.7.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.4.9.jar" sourcepath="/seasar2/s2-extension/src/main/java"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/s2-framework-2.4.9.jar" sourcepath="/seasar2"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/s2-extension-2.4.16.jar" sourcepath="/seasar2"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/s2-framework-2.4.16.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

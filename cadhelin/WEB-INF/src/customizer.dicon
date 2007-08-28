@@ -8,7 +8,7 @@
     	<initMethod name="addCustomizer">
 	    	<arg>
 	    		<component class="org.seasar.framework.container.customizer.AspectCustomizer">
-		    		<property name="interceptorName">"ca"</property>
+		    		<property name="interceptorName">"controllerInterceptor"</property>
 		    		<property name="pointcut">"show.*,do.*"</property>
 		    	</component>
 		    </arg>

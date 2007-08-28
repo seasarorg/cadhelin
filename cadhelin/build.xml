@@ -41,6 +41,8 @@
         srcdir="src/java"
         destdir="${cadhelin.classes}"
         encoding="MS932"
+	    	target="1.5"
+    		source="1.5"
         debug="on"
         optimize="off"
     	debuglevel="lines,vars,source"

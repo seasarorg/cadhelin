@@ -207,7 +207,7 @@ public class ActionMetadata {
 			//もしリダイレクト先がなくPOSTメソッドならGETにリダイレクトする
 			ActionMetadata action = context.getAction(this.controllerName,this.actionName,HttpMethod.GET);
 			Object[] arguments = action.convertToParameter(request,new HashMap<String,Message>());
-			redirectUrl = context.getUrlByMethodName(controllerName, method.getName(), arguments);
+			redirectUrl = action.convertToURL(arguments, request);
 		}
 		if(redirectUrl!=null){
 			RedirectSession.setAttribute(request.getSession(),m);

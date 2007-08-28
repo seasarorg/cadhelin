@@ -8,7 +8,7 @@
     	<property name="urlPrefix">"/"</property>
     	<property name="defaultUrlSuffix">".html"</property>
     </component>
-	<component name="ca" class="org.seasar.cadhelin.ControllerInterceptor" instance="prototype" />	
+	<component name="controllerInterceptor" class="org.seasar.cadhelin.interceptor.ControllerInterceptor" instance="prototype" />	
 	<component name="msg" class="org.seasar.cadhelin.MessageTool" instance="request">
 		<arg>"messages"</arg>
 		<arg>@org.seasar.cadhelin.MessageTool@MESSAGE_KEY</arg>
