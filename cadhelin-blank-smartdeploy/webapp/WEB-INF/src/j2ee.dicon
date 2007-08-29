@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container//EN"
+"http://www.seasar.org/dtd/components.dtd">
+<components namespace="j2ee">
+	<include path="jta.dicon"/>
+	<component name="actionTx"
+		class="org.seasar.cadhelin.interceptor.RequiredInterceptor"/>    	
+	<component name="requiredTx"
+		class="org.seasar.extension.tx.RequiredInterceptor"/>
+	<component name="requiresNewTx"
+		class="org.seasar.extension.tx.RequiresNewInterceptor"/>
+	<component name="mandatoryTx"
+		class="org.seasar.extension.tx.MandatoryInterceptor"/>
+	<component name="notSupportedTx"
+		class="org.seasar.extension.tx.NotSupportedInterceptor"/>
+		
+	<component class="org.seasar.extension.jdbc.impl.BasicResultSetFactory"/>
+	<component class="org.seasar.extension.jdbc.impl.BasicStatementFactory"/>
+
+	<!-- for HSQLDB -->
+	<component name="xaDataSource"
+		class="org.seasar.extension.dbcp.impl.XADataSourceImpl">
+		<property name="driverClassName">
+			"org.hsqldb.jdbcDriver"
+		</property>
+		<property name="URL">
+			<!--
+			"jdbc:hsqldb:hsql://localhost:9001"
+			-->
+			"jdbc:hsqldb:file:data/demo"
+		</property>
+		<property name="user">"sa"</property>
+		<property name="password">""</property>
+	</component>
+
+	<component name="connectionPool"
+		class="org.seasar.extension.dbcp.impl.ConnectionPoolImpl">
+		<property name="timeout">600</property>
+		<property name="maxPoolSize">10</property>
+		<!-- JTAトランザクションが開始されていない場合にコネクションを
+		     取得できないようにするには次のプロパティをfalseにしてください．-->
+		<property name="allowLocalTx">true</property>
+		<destroyMethod name="close"/>
+	</component>
+	<component name="dataSource"
+		class="org.seasar.extension.dbcp.impl.DataSourceImpl"/>
+	
+
+</components>

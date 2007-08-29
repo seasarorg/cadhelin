@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN" 
+    "http://www.seasar.org/dtd/components24.dtd">
+<components>
+	<component 
+    	name="helperCustomizer" 
+    	class="org.seasar.framework.container.customizer.CustomizerChain">
+    </component>
+	<component 
+    	name="serviceCustomizer" 
+    	class="org.seasar.framework.container.customizer.CustomizerChain">
+    </component>
+   	<component name="daoCustomizer" class="org.seasar.framework.container.customizer.AspectCustomizer">
+		<property name="interceptorName">"dao.interceptor"</property>
+	</component>
+    <component 
+    	name="controllerCustomizer" 
+    	class="org.seasar.framework.container.customizer.CustomizerChain">
+    </component>
+</components>
