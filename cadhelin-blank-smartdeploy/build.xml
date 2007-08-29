@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<project name="cadhelin-blank" default="build">
+  <!-- War Build -->
+  <target name="build">
+  	<mkdir dir="target"/>
+    <zip zipfile="target/cadhelin-blank-smartdeploy.zip">
+      <zipfileset dir=".">
+        <include name="**/*"/>
+        <exclude name="target/**"/>
+        <exclude name="work/**"/>
+      </zipfileset>
+    </zip>
+  </target>
+</project>
