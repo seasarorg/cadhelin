@@ -47,8 +47,15 @@ public class ControllerServlet extends HttpServlet {
 	private ExceptionHandlerMetadata exceptionHandlerMetadata;
 	private ActionMetadataFactory actionMetadataFactory;
 	private ActionFilter[] filters;
+	private Plugin[] plugins = new Plugin[0];
 	public static final String CONTROLLER_METADATA_NAME = "org.seasar.cadhelin.controllermetadata";
 	public static final String CONTROLLER_CONTEXT_NAME = "org.seasar.cadhelin.controllercontext";
+	@Override
+	public void destroy() {
+		for (Plugin plugin : plugins) {
+			plugin.stop();
+		}
+	}
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		LOG.info("start cadhelin servlert" + config.getServletName());
@@ -61,6 +68,14 @@ public class ControllerServlet extends HttpServlet {
 			viewUrlPattern = s;
 		}
 		container = SingletonS2ContainerFactory.getContainer();
+		Object[] objects = container.findAllComponents(Plugin.class);
+		if(objects != null && 0 < objects.length){
+			plugins = new Plugin[objects.length];
+			System.arraycopy(objects, 0, plugins, 0, plugins.length);
+		}
+		for (Plugin plugin : plugins) {
+			plugin.start(config);
+		}
 		actionMetadataFactory = new ActionMetadataFactoryImpl(container);
 		config.getServletContext().setAttribute(CONTROLLER_METADATA_NAME,actionMetadataFactory);
 		if(container.hasComponentDef(ExceptionHandler.class)){
