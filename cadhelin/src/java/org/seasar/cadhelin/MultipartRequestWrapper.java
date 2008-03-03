@@ -18,6 +18,7 @@
 
 package org.seasar.cadhelin;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -127,13 +128,17 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
         }
         return value;
     }
-    public void setFileItems(List items){
+    public void setFileItems(List items) throws UnsupportedEncodingException{
     	Iterator iter = items.iterator();
     	while(iter.hasNext()){
     		FileItem item = (FileItem) iter.next();
     		fileItems.add(item);
     		if(item.isFormField()){
-    			setParameter(item.getFieldName(),item.getString());
+    			String string = item.getString(request.getCharacterEncoding());
+				setParameter(item.getFieldName(),string);
+    		}else{
+    			String name = item.getName();
+    			System.out.println(name);
     		}
     	}
     }

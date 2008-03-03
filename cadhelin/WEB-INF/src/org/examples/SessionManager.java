@@ -15,9 +15,11 @@
  */
 package org.examples;
 
+import java.io.Serializable;
+
 import examples.User;
 
-public class SessionManager {
+public class SessionManager implements Serializable{
 	private User user;
 	private int count;
 	

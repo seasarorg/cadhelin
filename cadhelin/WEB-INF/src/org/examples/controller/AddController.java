@@ -1,7 +1,9 @@
 package org.examples.controller;
 
-public interface AddController {
+import org.seasar.cadhelin.annotation.ParamNames;
 
+public interface AddController {
+	@ParamNames({"lhs","rhs"})
 	public abstract int showAdd(int lhs, int rhs);
 
 }

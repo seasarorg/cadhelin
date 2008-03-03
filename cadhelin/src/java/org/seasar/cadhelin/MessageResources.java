@@ -64,9 +64,9 @@ public class MessageResources implements Disposable{
 			String line = null;
 			while((line=reader.readLine())!=null){
 				if(line.startsWith("#"))continue;
-				String[] strings = line.split("=");
-				if(strings.length==2){
-					map.put(strings[0], strings[1]);
+				int i = line.indexOf('=');
+				if(0<i){
+					map.put(line.substring(0, i), line.substring(i+1));
 				}
 			}			
 		}finally{
@@ -75,5 +75,4 @@ public class MessageResources implements Disposable{
 		}
 		return map;
 	}
-
 }

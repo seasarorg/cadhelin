@@ -15,12 +15,16 @@
  */
 package org.seasar.cadhelin.converter;
 
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.FileItem;
 import org.seasar.cadhelin.Message;
+import org.seasar.cadhelin.MultipartRequestWrapper;
 
 public class ParameterConverter extends AbstractConverter {
 	public ParameterConverter() {
@@ -31,7 +35,23 @@ public class ParameterConverter extends AbstractConverter {
 	public Object convert(
 			HttpServletRequest request, 
 			Map<String,Message> messages) {
-		return new HashMap<String,String[]>(request.getParameterMap());
+		HashMap<String, Object[]> parameters = new HashMap<String,Object[]>(request.getParameterMap());
+		Enumeration parameterNames = request.getParameterNames();
+		while(parameterNames.hasMoreElements()){
+			String name = (String) parameterNames.nextElement();
+			parameters.put(name, request.getParameterValues(name));
+		}
+		if (request instanceof MultipartRequestWrapper) {
+			MultipartRequestWrapper multiPartRequest 
+				= (MultipartRequestWrapper) request;
+			Collection<FileItem> fileItems = multiPartRequest.getFileItems();
+			for (FileItem item : fileItems) {
+				if(!item.isFormField()){
+					parameters.put(item.getFieldName(), new FileItem[]{item});
+				}
+			}
+		}
+		return parameters;
 	};
 
 }

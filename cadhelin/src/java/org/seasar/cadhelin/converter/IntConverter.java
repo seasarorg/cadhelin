@@ -42,7 +42,7 @@ public class IntConverter extends AbstractConverter {
 		if(StringUtil.isNullOrEmpty(str)){
 			if(required){
 				messages.put(parameterName,
-						new Message(errorMessageKey+".required",
+						new Message(errorMessageKey+".required." + parameterName,
 								messageArguments));
 			}
 			if(parameterType.isPrimitive()){
@@ -62,7 +62,7 @@ public class IntConverter extends AbstractConverter {
 				return new Integer(0);
 			}
 			messages.put(parameterName,
-					new Message(errorMessageKey+".format",messageArguments));
+					new Message(errorMessageKey+".format." + parameterName,messageArguments));
 			return str;
 		}
 	};

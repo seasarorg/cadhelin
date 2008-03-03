@@ -16,6 +16,7 @@
 package org.seasar.cadhelin;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -86,7 +87,7 @@ public class ControllerServlet extends HttpServlet {
 		System.arraycopy(f,0,filters,0,filters.length);
 
 	}
-	protected HttpServletRequest createHttpRequest(HttpServletRequest request) throws FileUploadException{
+	protected HttpServletRequest createHttpRequest(HttpServletRequest request) throws FileUploadException, UnsupportedEncodingException{
 		ServletRequestContext context = new ServletRequestContext(request);
 		if(FileUploadBase.isMultipartContent(context)){
 			MultipartRequestWrapper wrapper = new MultipartRequestWrapper(request);
